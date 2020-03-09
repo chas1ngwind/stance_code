@@ -49,8 +49,8 @@ from pytorch_pretrained_bert.modeling import BertForSequenceClassification
 # In[10]:
 
 
-# import logging
-# logging.basicConfig(level=logging.INFO)
+import logging
+logging.basicConfig(level=logging.INFO)
 
 
 # In[11]:
@@ -66,14 +66,14 @@ from pytorch_pretrained_bert.modeling import BertForSequenceClassification
 # In[12]:
 
 
-tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+tokenizer = BertTokenizer.from_pretrained('bert-large-uncased')
 
 
 # In[13]:
 
 
 # Prepare model 
-model = BertForSequenceClassification.from_pretrained('bert-base-uncased',num_labels = 2)
+model = BertForSequenceClassification.from_pretrained('bert-large-uncased',num_labels = 2)
 model.to(device)
 
 # model = BertModel.from_pretrained('bert-base-uncased')
@@ -106,10 +106,10 @@ for p in params[-4:]:
 # In[10]:
 
 
-data_dir = "D:/Jupyter/data/dataset/perspective_stances/"
-data_dir_output = "D:/Projects/Stance/Models/"
+data_dir = "/home/syg340/project/stance_code/Dataset"
+data_dir_output = "/home/syg340/project//Models/"
 output_dir=data_dir_output
-max_seq_length=32
+max_seq_length=128
 max_grad_norm = 1.0
 num_training_steps = 1000
 num_warmup_steps = 100
@@ -120,7 +120,7 @@ eval_batch_size=8
 learning_rate=5e-5
 num_train_epochs=3
 local_rank=-1
-seed=42
+seed=19
 gradient_accumulation_steps=1
 loss_scale=128
 train_batch_size = int(train_batch_size / gradient_accumulation_steps)
@@ -183,7 +183,7 @@ train_dataloader = DataLoader(train_data, sampler=train_sampler, batch_size=trai
 
 
 # In[12]:
-
+n_gpu = torch.cuda.device_count()
 
 model.train()
 for _ in trange(int(num_train_epochs), desc="Epoch"):
@@ -194,12 +194,12 @@ for _ in trange(int(num_train_epochs), desc="Epoch"):
         input_ids, input_mask, segment_ids, label_ids = batch
         loss = model(input_ids, segment_ids, input_mask, label_ids)
         print(loss)
-        if n_gpu > 1:
-            loss = loss.mean() # mean() to average on multi-gpu.
-#         if fp16 and loss_scale != 1.0:
-#             # rescale loss for fp16 training
-#             # see https://docs.nvidia.com/deeplearning/sdk/mixed-precision-training/index.html
-#             loss = loss * loss_scale
+       # if n_gpu > 1:
+       #     loss = loss.mean() # mean() to average on multi-gpu.
+       # if fp16 and loss_scale != 1.0:
+             # rescale loss for fp16 training
+             # see https://docs.nvidia.com/deeplearning/sdk/mixed-precision-training/index.html
+       #     loss = loss * loss_scale
         if gradient_accumulation_steps > 1:
             loss = loss / gradient_accumulation_steps
         loss.backward()
@@ -244,7 +244,7 @@ torch.save(model.state_dict(), output_dir + "output.pth")
 
 import csv
 from pytorch_pretrained_bert.file_utils import PYTORCH_PRETRAINED_BERT_CACHE
-def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
+def train_and_test(data_dir, bert_model="bert-large-uncased", task_name=None,
                    output_dir=None, max_seq_length=32, do_train=False, do_eval=False, do_lower_case=False,
                    train_batch_size=32, eval_batch_size=8, learning_rate=5e-5, num_train_epochs=3,
                    warmup_proportion=0.1,no_cuda=False, local_rank=-1, seed=42, gradient_accumulation_steps=1,
@@ -567,8 +567,8 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
                   'eval_micro_p': eval_micro_p,
                   'eval_micro_r': eval_micro_r,
                   'eval_micro_f1': eval_micro_f1,
-                  # 'eval_macro_p': eval_macro_p,
-                  # 'eval_macro_r': eval_macro_r,
+                   #'eval_macro_p': eval_macro_p,
+                   #'eval_macro_r': eval_macro_r,
                   # 'eval_macro_f1': eval_macro_f1,
 #                   'global_step': global_step,
                   # 'loss': tr_loss/nb_tr_steps
@@ -607,7 +607,7 @@ def experiments():
 #     data_dir = "D:/Jupyter/data/dataset/perspective_stances/"
     data_dir = "/home/syg340/project/stance_code/Dataset"
     # data_dir_output = data_dir + "output2/"
-    data_dir_output = "/home/syg340/project/stance_code/Models/""
+    data_dir_output = "/home/syg340/project/Models/"
     train_and_test(data_dir=data_dir, do_train=True, do_eval=True, output_dir=data_dir_output,task_name="Mrpc")
 
 
@@ -615,10 +615,10 @@ def experiments():
 
 
 def evaluation_with_pretrained():
-    bert_model = "/home/syg340/project/stance_code/Models/output.pth"
+    bert_model = "/home/syg340/project/Models/output.pth"
     data_dir = "/home/syg340/project/stance_code/Dataset"
     # data_dir_output = data_dir + "output2/"
-    data_dir_output = "home/syg340/project/stance_code/Evaluation/bert_dummy_output/"
+    data_dir_output = "/home/syg340/project/Evaluation/bert_dummy_output/"
     train_and_test(data_dir=data_dir, do_train=False, do_eval=True, output_dir=data_dir_output,task_name="Mrpc",saved_model=bert_model)
 
 
