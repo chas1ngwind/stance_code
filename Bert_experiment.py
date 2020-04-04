@@ -106,8 +106,8 @@ for p in params[-4:]:
 # In[10]:
 
 
-data_dir = "/home/syg340/project/stance_code/Dataset"
-data_dir_output = "/home/syg340/project//Models/"
+data_dir = "/var/scratch/syg340/project/stance_code/Dataset"
+data_dir_output = "/var/scracth/syg340/project/models/"
 output_dir=data_dir_output
 max_seq_length=128
 max_grad_norm = 1.0
@@ -605,9 +605,9 @@ def train_and_test(data_dir, bert_model="bert-large-uncased", task_name=None,
 
 def experiments():
 #     data_dir = "D:/Jupyter/data/dataset/perspective_stances/"
-    data_dir = "/home/syg340/project/stance_code/Dataset"
+    data_dir = "/var/scratch/syg340/project/stance_code/Dataset"
     # data_dir_output = data_dir + "output2/"
-    data_dir_output = "/home/syg340/project/Models/"
+    data_dir_output = "/var/scratch/syg340/project/models/"
     train_and_test(data_dir=data_dir, do_train=True, do_eval=True, output_dir=data_dir_output,task_name="Mrpc")
 
 
