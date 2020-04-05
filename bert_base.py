@@ -620,7 +620,7 @@ def evaluation_with_pretrained():
     bert_model = "/var/scratch/syg340/project/models/bert_base.pth"
     data_dir = "/var/scratch/syg340/project/stance_code/Dataset"
     # data_dir_output = data_dir + "output2/"
-    data_dir_output = "/var/scratch/syg340/project/Evaluation/bert_dummy_output/"
+    data_dir_output = "/var/scratch/syg340/project/stance_code/Evaluation/bert_dummy_output/"
     train_and_test(data_dir=data_dir, do_train=False, do_eval=True, output_dir=data_dir_output,task_name="Mrpc",saved_model=bert_model)
 
 
