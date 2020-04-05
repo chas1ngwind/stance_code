@@ -103,7 +103,7 @@ print('\n==== First Transformer ====\n')
 for p in params[5:21]:
     print("{:<55} {:>12}".format(p[0], str(tuple(p[1].size()))))
  
-print('\n==== Output Layer ====\n')
+    print('\n==== Output Layer ====\n')
 
 for p in params[-4:]:
     print("{:<55} {:>12}".format(p[0], str(tuple(p[1].size()))))
@@ -547,7 +547,7 @@ def train_and_test(data_dir, bert_model="bert-large-uncased", task_name=None,
             eval_gold_c += tmp_gold_c
             
             pred_label = np.argmax(logits, axis=1)
-            raw_score += zip(logits, label_ids)
+            raw_score += zip(logits, pred_label, label_ids)
             # Macro F1 (averaged P, R across mini batches)
             tmp_eval_p, tmp_eval_r, tmp_eval_f1 = p_r_f1(logits, label_ids)
 
