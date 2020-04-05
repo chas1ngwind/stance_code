@@ -113,7 +113,7 @@ for p in params[-4:]:
 
 
 data_dir = "/var/scratch/syg340/project/stance_code/Dataset"
-data_dir_output = "/var/scracth/syg340/project/models/"
+data_dir_output = "/var/scratch/syg340/project/models/"
 output_dir=data_dir_output
 max_seq_length=128
 max_grad_norm = 1.0

@@ -66,14 +66,14 @@ logging.basicConfig(level=logging.INFO)
 # In[12]:
 
 
-tokenizer = BertTokenizer.from_pretrained('bert-large-uncased')
+tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 
 
 # In[13]:
 
 
 # Prepare model 
-model = BertForSequenceClassification.from_pretrained('bert-large-uncased',num_labels = 2)
+model = BertForSequenceClassification.from_pretrained('bert-base-uncased',num_labels = 2)
 model.to(device)
 
 # model = BertModel.from_pretrained('bert-base-uncased')
@@ -107,7 +107,7 @@ for p in params[-4:]:
 
 
 data_dir = "/var/scratch/syg340/project/stance_code/Dataset"
-data_dir_output = "/var/scracth/syg340/project/models/"
+data_dir_output = "/var/scratch/syg340/project/models/"
 output_dir=data_dir_output
 max_seq_length=128
 max_grad_norm = 1.0
@@ -230,7 +230,7 @@ for _ in trange(int(num_train_epochs), desc="Epoch"):
             model.zero_grad()
             global_step += 1
 
-torch.save(model.state_dict(), output_dir + "output.pth")
+torch.save(model.state_dict(), output_dir + "bert_base.pth")
 
 
 # In[ ]:
@@ -244,7 +244,7 @@ torch.save(model.state_dict(), output_dir + "output.pth")
 
 import csv
 from pytorch_pretrained_bert.file_utils import PYTORCH_PRETRAINED_BERT_CACHE
-def train_and_test(data_dir, bert_model="bert-large-uncased", task_name=None,
+def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
                    output_dir=None, max_seq_length=32, do_train=False, do_eval=False, do_lower_case=False,
                    train_batch_size=32, eval_batch_size=8, learning_rate=5e-5, num_train_epochs=3,
                    warmup_proportion=0.1,no_cuda=False, local_rank=-1, seed=42, gradient_accumulation_steps=1,
@@ -490,7 +490,7 @@ def train_and_test(data_dir, bert_model="bert-large-uncased", task_name=None,
                     model.zero_grad()
                     global_step += 1
 
-        torch.save(model.state_dict(), output_dir + "output.pth")
+        torch.save(model.state_dict(), output_dir + "bert_base.pth")
 
 
     if do_eval and (local_rank == -1 or torch.distributed.get_rank() == 0):
@@ -539,8 +539,9 @@ def train_and_test(data_dir, bert_model="bert-large-uncased", task_name=None,
             eval_tp += tmp_tp
             eval_pred_c += tmp_pred_c
             eval_gold_c += tmp_gold_c
-
-            raw_score += zip(logits, label_ids)
+            
+            pred_label = np.argmax(logits, axis=1)
+            raw_score += zip(logits, pred_label, label_ids)
             # Macro F1 (averaged P, R across mini batches)
             tmp_eval_p, tmp_eval_r, tmp_eval_f1 = p_r_f1(logits, label_ids)
 
@@ -574,8 +575,8 @@ def train_and_test(data_dir, bert_model="bert-large-uncased", task_name=None,
                   # 'loss': tr_loss/nb_tr_steps
                   }
 
-        output_eval_file = os.path.join(output_dir, "test_eval_results.txt")
-        output_raw_score = os.path.join(output_dir, "test_raw_score.csv")
+        output_eval_file = os.path.join(output_dir, "base_test_eval_results.txt")
+        output_raw_score = os.path.join(output_dir, "base_test_raw_score.csv")
         with open(output_eval_file, "w") as writer:
             logger.info("***** Eval results *****")
             for key in sorted(result.keys()):
@@ -583,13 +584,14 @@ def train_and_test(data_dir, bert_model="bert-large-uncased", task_name=None,
                 writer.write("%s = %s\n" % (key, str(result[key])))
 
         with open(output_raw_score, 'w') as fout:
-            fields = ["undermine_score", "support_score", "gold"]
+            fields = ["undermine_score", "support_score", "predict_label", "gold"]
             writer = csv.DictWriter(fout, fieldnames=fields)
             writer.writeheader()
-            for score, gold in raw_score:
+            for score, pred, gold in raw_score:
                 writer.writerow({
                     "undermine_score": str(score[0]),
                     "support_score": str(score[1]),
+                    "predict_label": str(pred),
                     "gold": str(gold)
                 })
 
@@ -615,10 +617,10 @@ def experiments():
 
 
 def evaluation_with_pretrained():
-    bert_model = "/home/syg340/project/Models/output.pth"
-    data_dir = "/home/syg340/project/stance_code/Dataset"
+    bert_model = "/var/scratch/syg340/project/models/bert_base.pth"
+    data_dir = "/var/scratch/syg340/project/stance_code/Dataset"
     # data_dir_output = data_dir + "output2/"
-    data_dir_output = "/home/syg340/project/Evaluation/bert_dummy_output/"
+    data_dir_output = "/var/scratch/syg340/project/Evaluation/bert_dummy_output/"
     train_and_test(data_dir=data_dir, do_train=False, do_eval=True, output_dir=data_dir_output,task_name="Mrpc",saved_model=bert_model)
 
 
