@@ -97,7 +97,7 @@ print('\n==== First Transformer ====\n')
 for p in params[5:21]:
     print("{:<55} {:>12}".format(p[0], str(tuple(p[1].size()))))
  
-print('\n==== Output Layer ====\n')
+    print('\n==== Output Layer ====\n')
 
 for p in params[-4:]:
     print("{:<55} {:>12}".format(p[0], str(tuple(p[1].size()))))
