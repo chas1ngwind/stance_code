@@ -1,4 +1,4 @@
-eval_loss = 0.6915129527921979
+eval_loss = 0.6916542487804072
 eval_micro_f1 = 0.693069306930693
 eval_micro_p = 0.5303030303030303
 eval_micro_r = 1.0
