@@ -324,6 +324,7 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 #         "cola": ColaProcessor,
 #         "mnli": MnliProcessor,
         "mrpc": MrpcProcessor,
+        "stance":StanceProcessor
     }
 
     if local_rank == -1 or no_cuda:
