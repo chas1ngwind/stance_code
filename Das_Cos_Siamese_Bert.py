@@ -200,7 +200,7 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
                 loss_fct_cos = CosineEmbeddingLoss()
 
                 labels2[labels2==0] = -1
-                loss_cos = loss_fct_cos(pooled_output, pooled_outputC, labels2)
+                loss_cos = loss_fct_cos(pooled_output, pooled_output2, labels2)
                 labels2[labels2==-1] = 0
                 print('loss_cos:')
                 print(loss_cos)
