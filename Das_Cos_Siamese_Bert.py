@@ -645,7 +645,7 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 def experiments():
     data_dir = "/var/scratch/syg340/project/stance_code/Dataset"
     
-    data_dir_output = "/var/scratch/syg340/project/models/"
+    data_dir_output = "/var/scratch/syg340/project/cos_siamese_models/"
     train_and_test(data_dir=data_dir, do_train=True, do_eval=True, output_dir=data_dir_output,task_name="stance")
 
 
