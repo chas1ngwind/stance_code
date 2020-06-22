@@ -191,8 +191,8 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
             else:
                 loss_fct_ce = CrossEntropyLoss()
                 loss_ce = loss_fct_ce(logits_ce.view(-1, self.num_labels), labels.view(-1))
-                print('loss_ce:')
-                print(loss_ce)
+                logger.info('loss_ce:')
+                logger.info(loss_ce)
 
 #                 loss_ori = loss_fct_ce(logits_ori.view(-1, self.num_labels), labels.view(-1))
 #                 print('loss_ori:')
@@ -202,12 +202,12 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
                 labels2[labels2==0] = -1
                 loss_cos = loss_fct_cos(pooled_output, pooled_output2, labels2)
                 labels2[labels2==-1] = 0
-                print('loss_cos:')
-                print(loss_cos)
+                logger.info('loss_cos:')
+                logger.info(loss_cos)
             
                 loss = loss_ce+loss_cos
-                print('final loss:')
-                print(loss)
+                logger.info('final loss:')
+                logger.info(loss)
                 
 #             outputs = (loss,) + outputs
 #             outputs = (loss,) + logits_cos 
@@ -490,12 +490,12 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
                     model.zero_grad()
                     global_step += 1
 
-        torch.save(model.state_dict(), output_dir + "cosloss_camimu_siamese_bert_epoch5.pth")
+        torch.save(model.state_dict(), output_dir + "319_cosloss_camimu_siamese_bert_epoch5.pth")
 
 
     if do_eval and (local_rank == -1 or torch.distributed.get_rank() == 0):
-#         eval_examples = processor.get_test_examples(data_dir)
-        eval_examples = processor.get_dev_examples(data_dir)
+        eval_examples = processor.get_test_examples(data_dir)
+#         eval_examples = processor.get_dev_examples(data_dir)
         claim_features = convert_claims_to_features(eval_examples, label_list, max_seq_length, tokenizer)
         eval_features = convert_pers_to_features(
             eval_examples, label_list, max_seq_length, tokenizer)
@@ -613,8 +613,8 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 #                   'loss': tr_loss/nb_tr_steps
                   }
 
-        output_eval_file = os.path.join(output_dir, "cosloss_camimu_siamese_bert_epoch5_siamese_bert_test_eval_results.txt")
-        output_raw_score = os.path.join(output_dir, "cosloss_camimu_siamese_bert_epoch5_siamese_bert_test_raw_score.csv")
+        output_eval_file = os.path.join(output_dir, "319_cosloss_camimu_siamese_bert_epoch5_siamese_bert_test_eval_results.txt")
+        output_raw_score = os.path.join(output_dir, "319_cosloss_camimu_siamese_bert_epoch5_siamese_bert_test_raw_score.csv")
         with open(output_eval_file, "w") as writer:
             logger.info("***** Eval results *****")
             for key in sorted(result.keys()):
@@ -644,7 +644,8 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 
 
 def experiments():
-    data_dir = "/var/scratch/syg340/project/stance_code/Dataset"
+#     data_dir = "/var/scratch/syg340/project/stance_code/Dataset"
+    data_dir = "/var/scratch/syg340/project/stance_code/Dataset/319/"
     
     data_dir_output = "/var/scratch/syg340/project/cos_siamese_models/"
     train_and_test(data_dir=data_dir, do_train=True, do_eval=True, output_dir=data_dir_output,task_name="stance")
@@ -654,8 +655,9 @@ def experiments():
 
 
 def evaluation_with_pretrained():
-    bert_model = "/var/scratch/syg340/project/cos_siamese_models/cosloss_camimu_siamese_bert_epoch5.pth"
-    data_dir = "/var/scratch/syg340/project/stance_code/Dataset"
+    bert_model = "/var/scratch/syg340/project/cos_siamese_models/319_cosloss_camimu_siamese_bert_epoch5.pth"
+#     data_dir = "/var/scratch/syg340/project/stance_code/Dataset"
+    data_dir = "/var/scratch/syg340/project/stance_code/Dataset/319/"
 
     data_dir_output = "/var/scratch/syg340/project/stance_code/Evaluation/bert_dummy_output/"
     train_and_test(data_dir=data_dir, do_train=False, do_eval=True, output_dir=data_dir_output,task_name="stance",saved_model=bert_model)
