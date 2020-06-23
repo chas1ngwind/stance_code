@@ -647,9 +647,9 @@ def experiments():
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset"
     data_dir = "/var/scratch/syg340/project/stance_code/Dataset/319/"
     
-#     data_dir_output = "/var/scratch/syg340/project/cos_siamese_models/"
-    data_dir_output = "/var/scratch/syg340/project/stance_code/Evaluation/319/"
-    train_and_test(data_dir=data_dir, do_train=True, do_eval=True, output_dir=data_dir_output,task_name="stance")
+    data_dir_output = "/var/scratch/syg340/project/cos_siamese_models/"
+#     data_dir_output = "/var/scratch/syg340/project/stance_code/Evaluation/319/"
+    train_and_test(data_dir=data_dir, do_train=True, do_eval=False, output_dir=data_dir_output,task_name="stance")
 
 
 # In[10]:
@@ -668,8 +668,8 @@ def evaluation_with_pretrained():
 
 
 if __name__ == "__main__":
-    experiments()
-#     evaluation_with_pretrained()
+#     experiments()
+    evaluation_with_pretrained()
 
 
 # In[ ]:
