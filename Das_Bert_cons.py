@@ -353,7 +353,7 @@ for p in params[-4:]:
 # data_dir = "D:/Projects/Stance/Dataset/BertForOppositeClassification/"
 # # data_dir_output = "D:/Projects/Stance/Models/Consistency_Cues/"
 # data_dir_output = "D:/Projects/Stance/Models/dataExpantion/"
-data_dir = "/var/scratch/syg340/project/stance_code/Dataset/319/"
+data_dir = "/var/scratch/syg340/project/stance_code/Dataset/stancy/"
     
 data_dir_output = "/var/scratch/syg340/project/cos_siamese_models/319stancy/"
 output_dir=data_dir_output
@@ -937,7 +937,7 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 
 def experiments():
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset"
-    data_dir = "/var/scratch/syg340/project/stance_code/Dataset/319/"
+    data_dir = "/var/scratch/syg340/project/stance_code/Dataset/stancy/"
     
     data_dir_output = "/var/scratch/syg340/project/cos_siamese_models/319stancy/"
 #     data_dir_output = "/var/scratch/syg340/project/stance_code/Evaluation/319/"
@@ -950,7 +950,7 @@ def experiments():
 def evaluation_with_pretrained():
     bert_model = "/var/scratch/syg340/project/cos_siamese_models/319stancy/319_bertcons_epoch5.pth"
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset"
-    data_dir = "/var/scratch/syg340/project/stance_code/Dataset/319/"
+    data_dir = "/var/scratch/syg340/project/stance_code/Dataset/stancy/"
 
     data_dir_output = "/var/scratch/syg340/project/stance_code/Evaluation/bert_dummy_output/"
     train_and_test(data_dir=data_dir, do_train=False, do_eval=True, output_dir=data_dir_output,task_name="stance",saved_model=bert_model)
