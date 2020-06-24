@@ -202,7 +202,7 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 
     # Prepare model
     model = BertForSequenceClassification.from_pretrained(bert_model,
-                cache_dir=PYTORCH_PRETRAINED_BERT_CACHE / 'distributed_{}'.format(local_rank))
+                cache_dir=PYTORCH_PRETRAINED_BERT_CACHE / 'distributed_{}'.format(local_rank), num_labels=2)
     if fp16:
         model.half()
     model.to(device)
