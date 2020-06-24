@@ -46,7 +46,7 @@ import csv
 from pytorch_pretrained_bert.file_utils import PYTORCH_PRETRAINED_BERT_CACHE
 def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
                    output_dir=None, max_seq_length=128, do_train=False, do_eval=False, do_lower_case=False,
-                   train_batch_size=32, eval_batch_size=8, learning_rate=5e-5, num_train_epochs=5,
+                   train_batch_size=128, eval_batch_size=8, learning_rate=5e-5, num_train_epochs=5,
                    warmup_proportion=0.1,no_cuda=False, local_rank=-1, seed=42, gradient_accumulation_steps=1,
                    optimize_on_cpu=False, fp16=False, loss_scale=128, saved_model=""):
     
@@ -229,10 +229,11 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
     t_total = num_train_steps
     if local_rank != -1:
         t_total = t_total // torch.distributed.get_world_size()
-    optimizer = BertAdam(optimizer_grouped_parameters,
-                         lr=learning_rate,
-                         warmup=warmup_proportion,
-                         t_total=t_total)
+    if do_train:
+        optimizer = BertAdam(optimizer_grouped_parameters,
+                             lr=learning_rate,
+                             warmup=warmup_proportion,
+                             t_total=t_total)
 
     global_step = 0
     if do_train:
@@ -332,35 +333,17 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
         raw_score = []
 
         nb_eval_steps, nb_eval_examples = 0, 0
-        for input_ids, input_mask, segment_ids, label_ids, claim_input_ids, claim_input_mask, claim_segment_ids, claim_label_ids in eval_dataloader:
+        for input_ids, input_mask, segment_ids, label_ids in eval_dataloader:
             input_ids = input_ids.to(device)
             input_mask = input_mask.to(device)
             segment_ids = segment_ids.to(device)
             label_ids = label_ids.to(device)
-            claim_input_ids = claim_input_ids.to(device)
-            claim_input_mask = claim_input_mask.to(device)
-            claim_segment_ids = claim_segment_ids.to(device)
-            claim_label_ids = claim_label_ids.to(device)
 
-#             print("start")
-#             print(input_ids)
-#             print(input_mask)
-#             print(segment_ids)
-#             print(label_ids)
-#             print(claim_input_ids)
-#             print(claim_input_mask)
-#             print(claim_segment_ids)
-#             print(claim_label_ids)
-#             print("end")
             with torch.no_grad():
-                tmp_eval_loss = model(input_ids=input_ids, token_type_ids=segment_ids, attention_mask=input_mask, labels=label_ids, input_ids2=claim_input_ids, token_type_ids2=claim_segment_ids, attention_mask2=claim_input_mask, labels2=claim_label_ids)
-                
-                logits = model(input_ids=input_ids, token_type_ids=segment_ids, attention_mask=input_mask, input_ids2=claim_input_ids, token_type_ids2=claim_segment_ids, attention_mask2=claim_input_mask)
-            
-            print(logits)
-#             print(logits[0])
+                tmp_eval_loss = model(input_ids, segment_ids, input_mask, label_ids)
+                logits = model(input_ids, segment_ids, input_mask)
+
             logits = logits.detach().cpu().numpy()
-            print(logits)
             label_ids = label_ids.to('cpu').numpy()
 #             print(label_ids)
 
@@ -462,8 +445,8 @@ def evaluation_with_pretrained():
 
 
 if __name__ == "__main__":
-    experiments()
-#     evaluation_with_pretrained()
+#     experiments()
+    evaluation_with_pretrained()
 
 
 # In[ ]:

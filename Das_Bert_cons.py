@@ -184,8 +184,8 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
         hidden_size = list(pooled_output.size())[1]
 
         logits_ce = self.classifier2(pooled_output)
-        print('logits_ce:')
-        print(logits_ce)
+#         print('logits_ce:')
+#         print(logits_ce)
         
     
         ## v2: concat
@@ -199,8 +199,8 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
 #         logits_cos = self.classifier2((pooled_output*cos_pooled_outputs.unsqueeze(1)))
 #         self.classifier = torch.nn.Linear(hidden_size+batch_size, 2).to(device)
 #         logits_cos = self.classifier(torch.cat((pooled_output, cos_pooled_outputs.repeat(batch_size,1)),1))
-        print('logits_cos:')
-        print(logits_cos)
+#         print('logits_cos:')
+#         print(logits_cos)
         
 #         logits = self.classifier(pooled_output)
 #         logitsC = self.classifier(pooled_outputC)
@@ -363,7 +363,7 @@ num_training_steps = 1000
 num_warmup_steps = 100
 warmup_proportion = float(num_warmup_steps) / float(num_training_steps)  # 0.1
 # warmup_proportion = 0.1
-train_batch_size=16
+train_batch_size=32
 eval_batch_size=8
 learning_rate=5e-5
 num_train_epochs=5
@@ -517,8 +517,8 @@ for _ in trange(int(num_train_epochs), desc="Epoch"):
 ## v2: concat
 ## v3: multiply
 model_to_save = model.module if hasattr(model, 'module') else model
-torch.save(model.state_dict(), output_dir + "consistencycue_expansion.pth")
-torch.save(model_to_save.state_dict(), output_dir + "finetuned_consistencycues_expansion.bin")
+torch.save(model.state_dict(), output_dir + "319_bertcons_epoch5.pth")
+# torch.save(model_to_save.state_dict(), output_dir + "finetuned_consistencycues_expansion.bin")
 
 
 # In[ ]:
