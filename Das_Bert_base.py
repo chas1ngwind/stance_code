@@ -38,191 +38,14 @@ else:
     logger.info('No GPU available, using the CPU instead.')
     device = torch.device("cpu")
 
-
-# In[12]:
-
-
 from transformers import BertTokenizer, AdamW, get_linear_schedule_with_warmup
 from pytorch_pretrained_bert.modeling import BertForSequenceClassification, BertPreTrainedModel, BertModel, BertConfig
 from torch.nn import BCEWithLogitsLoss, CosineEmbeddingLoss,CrossEntropyLoss, MSELoss
 
-
-# In[13]:
-
-
-class BertForConsistencyCueClassification(BertPreTrainedModel):
-    def __init__(self, config, num_labels=2):
-        super(BertForConsistencyCueClassification, self).__init__(config)
-        self.num_labels = num_labels
-
-        self.bert = BertModel(config)
-        self.dropout = torch.nn.Dropout(config.hidden_dropout_prob)
-        self.classifier = torch.nn.Linear(config.hidden_size*4+1, num_labels)
-        self.classifier2 = torch.nn.Linear(config.hidden_size*4, num_labels)
-        self.apply(self.init_bert_weights)
-#         self.init_weights()
-
-#     @add_start_docstrings_to_callable(BERT_INPUTS_DOCSTRING)
-    def forward(
-        self,
-        input_ids=None,
-        attention_mask=None,
-        token_type_ids=None,
-        position_ids=None,
-        head_mask=None,
-        inputs_embeds=None,
-        labels=None,
-        input_ids2=None,
-        attention_mask2=None,
-        token_type_ids2=None,
-        position_ids2=None,
-        head_mask2=None,
-        inputs_embeds2=None,
-        labels2=None,
-    ):
-        r"""
-        labels (:obj:`torch.LongTensor` of shape :obj:`(batch_size,)`, `optional`, defaults to :obj:`None`):
-            Labels for computing the sequence classification/regression loss.
-            Indices should be in :obj:`[0, ..., config.num_labels - 1]`.
-            If :obj:`config.num_labels == 1` a regression loss is computed (Mean-Square loss),
-            If :obj:`config.num_labels > 1` a classification loss is computed (Cross-Entropy).
-
-    Returns:
-        :obj:`tuple(torch.FloatTensor)` comprising various elements depending on the configuration (:class:`~transformers.BertConfig`) and inputs:
-        loss (:obj:`torch.FloatTensor` of shape :obj:`(1,)`, `optional`, returned when :obj:`label` is provided):
-            Classification (or regression if config.num_labels==1) loss.
-        logits (:obj:`torch.FloatTensor` of shape :obj:`(batch_size, config.num_labels)`):
-            Classification (or regression if config.num_labels==1) scores (before SoftMax).
-        hidden_states (:obj:`tuple(torch.FloatTensor)`, `optional`, returned when ``config.output_hidden_states=True``):
-            Tuple of :obj:`torch.FloatTensor` (one for the output of the embeddings + one for the output of each layer)
-            of shape :obj:`(batch_size, sequence_length, hidden_size)`.
-
-            Hidden-states of the model at the output of each layer plus the initial embedding outputs.
-        attentions (:obj:`tuple(torch.FloatTensor)`, `optional`, returned when ``config.output_attentions=True``):
-            Tuple of :obj:`torch.FloatTensor` (one for each layer) of shape
-            :obj:`(batch_size, num_heads, sequence_length, sequence_length)`.
-
-            Attentions weights after the attention softmax, used to compute the weighted average in the self-attention
-            heads.
-
-    Examples::
-
-        from transformers import BertTokenizer, BertForSequenceClassification
-        import torch
-
-        tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
-        model = BertForSequenceClassification.from_pretrained('bert-base-uncased')
-
-        input_ids = torch.tensor(tokenizer.encode("Hello, my dog is cute", add_special_tokens=True)).unsqueeze(0)  # Batch size 1
-        labels = torch.tensor([1]).unsqueeze(0)  # Batch size 1
-        outputs = model(input_ids, labels=labels)
-
-        loss, logits = outputs[:2]
-
-        """
-
-        _, outputs = self.bert(
-            input_ids,
-            attention_mask=attention_mask,
-            token_type_ids=token_type_ids,
-#             position_ids=position_ids,
-#             head_mask=head_mask,
-#             inputs_embeds=inputs_embeds,
-        )
-
-        _, outputs2 = self.bert(
-            input_ids2,
-            attention_mask=attention_mask2,
-            token_type_ids=token_type_ids2,
-#             position_ids=position_ids2,
-#             head_mask=head_mask2,
-#             inputs_embeds=inputs_embeds2,
-        )
-
-        pooled_output = outputs
-        pooled_output2 = outputs2
-
-        pooled_output = self.dropout(pooled_output)
-        pooled_output2 = self.dropout(pooled_output2)
-        
-#         A series of different concatenations(concat(),|minus|,multiply, ...)
-        final_output_cat = torch.cat((pooled_output, pooled_output2),1)
-        final_output_minus = torch.abs(pooled_output-pooled_output2)
-        final_output_mult = torch.mul(pooled_output, pooled_output2)
-#         final_output_mimu = torch.cat((final_output_minus, final_output_mult),1)
-#         final_output_camu = torch.cat((final_output_cat, final_output_mult),1)
-#         final_output_cami = torch.cat((final_output_cat, final_output_minus),1)
-        final_output_camimu = torch.cat((final_output_cat, final_output_minus, final_output_mult),1)
-    
-        cos_pooled_outputs = torch.cosine_similarity(pooled_output, pooled_output2, dim=1)
-#         1
-#         torch.Size([hidden_size*2, 768])
-#         2
-#         torch.Size([hidden_size, 768])
-#         3
-#         torch.Size([hidden_size, 768])
-#         4
-#         torch.Size([hidden_size*2, 768])
-#         5
-#         torch.Size([hidden_size*3, 768])
-#         6
-#         torch.Size([hidden_size*3, 768])
-#         7
-#         torch.Size([hidden_size*4, 768])
-        
-        batch_size = list(pooled_output.size())[0]
-        hidden_size = list(pooled_output.size())[1]
-        
-        final_output_all = torch.cat((final_output_camimu, cos_pooled_outputs.unsqueeze(1)),1)
-        logits_ce = self.classifier(final_output_all)
-#         print('logits_ce:')
-#         print(logits_ce)
-        
-#         logits_ori = self.classifier2(final_output_camimu)
-#         print('logits_ori:')
-#         print(logits_ori)
-
-        #Calculate loss during training process
-        if labels is not None:
-            if self.num_labels == 1:
-                #  We are doing regression
-                loss_fct = MSELoss()
-                loss = loss_fct(logits.view(-1), labels.view(-1))
-            else:
-                loss_fct_ce = CrossEntropyLoss()
-                loss_ce = loss_fct_ce(logits_ce.view(-1, self.num_labels), labels.view(-1))
-#                 logger.info('loss_ce:')
-#                 logger.info(loss_ce)
-
-#                 loss_ori = loss_fct_ce(logits_ori.view(-1, self.num_labels), labels.view(-1))
-#                 print('loss_ori:')
-#                 print(loss_ori)
-                loss_fct_cos = CosineEmbeddingLoss()
-
-                labels2[labels2==0] = -1
-                loss_cos = loss_fct_cos(pooled_output, pooled_output2, labels2)
-                labels2[labels2==-1] = 0
-#                 logger.info('loss_cos:')
-#                 logger.info(loss_cos)
-            
-                loss = loss_ce+loss_cos
-                logger.info('final loss:')
-                logger.info(loss)
-                
-#             outputs = (loss,) + outputs
-#             outputs = (loss,) + logits_cos 
-                outputs = loss
-                return outputs
-        else:
-            #Get predictions when doing evaluation
-            return logits_ce
-        
-          # (loss), logits, (hidden_states), (attentions)
-
 import csv
 from pytorch_pretrained_bert.file_utils import PYTORCH_PRETRAINED_BERT_CACHE
 def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
-                   output_dir=None, max_seq_length=96, do_train=False, do_eval=False, do_lower_case=False,
+                   output_dir=None, max_seq_length=128, do_train=False, do_eval=False, do_lower_case=False,
                    train_batch_size=32, eval_batch_size=8, learning_rate=5e-5, num_train_epochs=5,
                    warmup_proportion=0.1,no_cuda=False, local_rank=-1, seed=42, gradient_accumulation_steps=1,
                    optimize_on_cpu=False, fp16=False, loss_scale=128, saved_model=""):
@@ -368,60 +191,53 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
     processor = processors[task_name]()
     label_list = processor.get_labels()
 
-#     tokenizer = BertTokenizer.from_pretrained(bert_model, do_lower_case=do_lower_case)
-    tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
-    
+    tokenizer = BertTokenizer.from_pretrained(bert_model, do_lower_case=do_lower_case)
 
     train_examples = None
     num_train_steps = None
     if do_train:
         train_examples = processor.get_train_examples(data_dir)
-        
         num_train_steps = int(
             len(train_examples) / train_batch_size / gradient_accumulation_steps * num_train_epochs)
 
     # Prepare model
-#     model = BertForSequenceClassification.from_pretrained(bert_model,
-#                 cache_dir=PYTORCH_PRETRAINED_BERT_CACHE / 'distributed_{}'.format(local_rank), num_labels = 2)
+    model = BertForSequenceClassification.from_pretrained(bert_model,
+                cache_dir=PYTORCH_PRETRAINED_BERT_CACHE / 'distributed_{}'.format(local_rank))
+    if fp16:
+        model.half()
+    model.to(device)
+    if local_rank != -1:
+        model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[local_rank],
+                                                          output_device=local_rank)
+    elif n_gpu > 1:
+        model = torch.nn.DataParallel(model)
 
-        model = BertForConsistencyCueClassification.from_pretrained('bert-base-uncased', num_labels=2)
-        model.to(device)
-        
-        if fp16:
-            model.half()
-
-        if local_rank != -1:
-            model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[local_rank],
-                                                              output_device=local_rank)
-        elif n_gpu > 1:
-            model = torch.nn.DataParallel(model)
-
-        # Prepare optimizer
-        if fp16:
-            param_optimizer = [(n, param.clone().detach().to('cpu').float().requires_grad_())                                 for n, param in model.named_parameters()]
-        elif optimize_on_cpu:
-            param_optimizer = [(n, param.clone().detach().to('cpu').requires_grad_())                                 for n, param in model.named_parameters()]
-        else:
-            param_optimizer = list(model.named_parameters())
-        no_decay = ['bias', 'gamma', 'beta']
-        optimizer_grouped_parameters = [
-            {'params': [p for n, p in param_optimizer if not any(nd in n for nd in no_decay)], 'weight_decay_rate': 0.01},
-            {'params': [p for n, p in param_optimizer if any(nd in n for nd in no_decay)], 'weight_decay_rate': 0.0}
-            ]
-        t_total = num_train_steps
-#     print(t_total)
+    # Prepare optimizer
+    if fp16:
+        param_optimizer = [(n, param.clone().detach().to('cpu').float().requires_grad_()) \
+                            for n, param in model.named_parameters()]
+    elif optimize_on_cpu:
+        param_optimizer = [(n, param.clone().detach().to('cpu').requires_grad_()) \
+                            for n, param in model.named_parameters()]
+    else:
+        param_optimizer = list(model.named_parameters())
+    no_decay = ['bias', 'gamma', 'beta']
+    optimizer_grouped_parameters = [
+        {'params': [p for n, p in param_optimizer if not any(nd in n for nd in no_decay)], 'weight_decay_rate': 0.01},
+        {'params': [p for n, p in param_optimizer if any(nd in n for nd in no_decay)], 'weight_decay_rate': 0.0}
+        ]
+    t_total = num_train_steps
     if local_rank != -1:
         t_total = t_total // torch.distributed.get_world_size()
-    if do_train:
-        optimizer = BertAdam(optimizer_grouped_parameters,
+    optimizer = BertAdam(optimizer_grouped_parameters,
                          lr=learning_rate,
                          warmup=warmup_proportion,
                          t_total=t_total)
 
     global_step = 0
     if do_train:
-        claim_features = convert_claims_to_features(train_examples, label_list, max_seq_length, tokenizer)
-        train_features = convert_pers_to_features(train_examples, label_list, max_seq_length, tokenizer)
+        train_features = convert_examples_to_features(
+            train_examples, label_list, max_seq_length, tokenizer)
         logger.info("***** Running training *****")
         logger.info("  Num examples = %d", len(train_examples))
         logger.info("  Batch size = %d", train_batch_size)
@@ -430,14 +246,7 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
         all_input_mask = torch.tensor([f.input_mask for f in train_features], dtype=torch.long)
         all_segment_ids = torch.tensor([f.segment_ids for f in train_features], dtype=torch.long)
         all_label_ids = torch.tensor([f.label_id for f in train_features], dtype=torch.long)
-
-        claims_input_ids = torch.tensor([f.input_ids for f in claim_features], dtype=torch.long)
-        claims_input_mask = torch.tensor([f.input_mask for f in claim_features], dtype=torch.long)
-        claims_segment_ids = torch.tensor([f.segment_ids for f in claim_features], dtype=torch.long)
-        claims_label_ids = torch.tensor([f.label_id for f in claim_features], dtype=torch.long)
-
-        train_data = TensorDataset(all_input_ids, all_input_mask, all_segment_ids, all_label_ids, claims_input_ids, claims_input_mask, claims_segment_ids, claims_label_ids)
-
+        train_data = TensorDataset(all_input_ids, all_input_mask, all_segment_ids, all_label_ids)
         if local_rank == -1:
             train_sampler = RandomSampler(train_data)
         else:
@@ -450,14 +259,8 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
             nb_tr_examples, nb_tr_steps = 0, 0
             for step, batch in enumerate(tqdm(train_dataloader, desc="Iteration")):
                 batch = tuple(t.to(device) for t in batch)
-                input_ids, input_mask, segment_ids, label_ids, claim_input_ids, claim_input_mask, claim_segment_ids, claim_label_ids = batch
-                
-                out_results = model(input_ids=input_ids, token_type_ids=segment_ids, attention_mask=input_mask, labels=label_ids, input_ids2=claim_input_ids, token_type_ids2=claim_segment_ids, attention_mask2=claim_input_mask, labels2=claim_label_ids)
-#                 loss = model(input_ids, segment_ids, input_mask, label_ids)
-                print("out_results:")
-                print(out_results)
-                loss = out_results
-            
+                input_ids, input_mask, segment_ids, label_ids = batch
+                loss = model(input_ids, segment_ids, input_mask, label_ids)
                 if n_gpu > 1:
                     loss = loss.mean() # mean() to average on multi-gpu.
                 if fp16 and loss_scale != 1.0:
@@ -490,17 +293,14 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
                     model.zero_grad()
                     global_step += 1
 
-        torch.save(model.state_dict(), output_dir + "319_cos_camimu_siamese_bert_epoch5.pth")
+        torch.save(model.state_dict(), output_dir + "319_bertbase_epoch5.pth")
 
 
     if do_eval and (local_rank == -1 or torch.distributed.get_rank() == 0):
         eval_examples = processor.get_test_examples(data_dir)
 #         eval_examples = processor.get_dev_examples(data_dir)
-        claim_features = convert_claims_to_features(eval_examples, label_list, max_seq_length, tokenizer)
-        eval_features = convert_pers_to_features(
+        eval_features = convert_examples_to_features(
             eval_examples, label_list, max_seq_length, tokenizer)
-            
-    
         logger.info("***** Running evaluation *****")
         logger.info("  Num examples = %d", len(eval_examples))
         logger.info("  Batch size = %d", eval_batch_size)
@@ -508,23 +308,17 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
         all_input_mask = torch.tensor([f.input_mask for f in eval_features], dtype=torch.long)
         all_segment_ids = torch.tensor([f.segment_ids for f in eval_features], dtype=torch.long)
         all_label_ids = torch.tensor([f.label_id for f in eval_features], dtype=torch.long)
-        
-        claims_input_ids = torch.tensor([f.input_ids for f in claim_features], dtype=torch.long)
-        claims_input_mask = torch.tensor([f.input_mask for f in claim_features], dtype=torch.long)
-        claims_segment_ids = torch.tensor([f.segment_ids for f in claim_features], dtype=torch.long)
-        claims_label_ids = torch.tensor([f.label_id for f in claim_features], dtype=torch.long)
-        
-        eval_data = TensorDataset(all_input_ids, all_input_mask, all_segment_ids, all_label_ids, claims_input_ids, claims_input_mask, claims_segment_ids, claims_label_ids)
+        eval_data = TensorDataset(all_input_ids, all_input_mask, all_segment_ids, all_label_ids)
         # Run prediction for full data
-#         eval_sampler = SequentialSampler(eval_data)
         eval_sampler = SequentialSampler(eval_data)
         eval_dataloader = DataLoader(eval_data, sampler=eval_sampler, batch_size=eval_batch_size)
-#         print('all_input_ids:')
-#         print(all_input_ids)
-        
-        
 
         model.load_state_dict(torch.load(saved_model))
+
+#         model.eval()        
+        
+
+# #         model.load_state_dict(torch.load(saved_model))
 #         model_state_dict = torch.load(saved_model)
 #         model = BertForConsistencyCueClassification.from_pretrained('bert-base-uncased', num_labels=2, state_dict=model_state_dict)
         model.to(device)
@@ -613,8 +407,8 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 #                   'loss': tr_loss/nb_tr_steps
                   }
 
-        output_eval_file = os.path.join(output_dir, "319_cos_camimu_siamese_bert_epoch5_siamese_bert_test_eval_results.txt")
-        output_raw_score = os.path.join(output_dir, "319_cos_camimu_siamese_bert_epoch5_siamese_bert_test_raw_score.csv")
+        output_eval_file = os.path.join(output_dir, "319_bertbase_epoch5_eval_results.txt")
+        output_raw_score = os.path.join(output_dir, "319_bertbase_epoch5_raw_score.csv")
         with open(output_eval_file, "w") as writer:
             logger.info("***** Eval results *****")
             for key in sorted(result.keys()):
@@ -647,7 +441,7 @@ def experiments():
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset"
     data_dir = "/var/scratch/syg340/project/stance_code/Dataset/319/"
     
-    data_dir_output = "/var/scratch/syg340/project/cos_siamese_models/319cos/"
+    data_dir_output = "/var/scratch/syg340/project/cos_siamese_models/319base/"
 #     data_dir_output = "/var/scratch/syg340/project/stance_code/Evaluation/319/"
     train_and_test(data_dir=data_dir, do_train=True, do_eval=False, output_dir=data_dir_output,task_name="stance")
 
@@ -656,7 +450,7 @@ def experiments():
 
 
 def evaluation_with_pretrained():
-    bert_model = "/var/scratch/syg340/project/cos_siamese_models/319cos/319_cos_camimu_siamese_bert_epoch5.pth"
+    bert_model = "/var/scratch/syg340/project/cos_siamese_models/319base/319_bertbase_epoch5.pth"
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset"
     data_dir = "/var/scratch/syg340/project/stance_code/Dataset/319/"
 
