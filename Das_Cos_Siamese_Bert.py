@@ -454,8 +454,8 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
                 
                 out_results = model(input_ids=input_ids, token_type_ids=segment_ids, attention_mask=input_mask, labels=label_ids, input_ids2=claim_input_ids, token_type_ids2=claim_segment_ids, attention_mask2=claim_input_mask, labels2=claim_label_ids)
 #                 loss = model(input_ids, segment_ids, input_mask, label_ids)
-                print("out_results:")
-                print(out_results)
+#                 print("out_results:")
+#                 print(out_results)
                 loss = out_results
             
                 if n_gpu > 1:
