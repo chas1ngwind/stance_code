@@ -249,7 +249,7 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
 #                 print('loss_cos:')
 #                 print(loss_cos)
             
-                loss = loss_ce + loss_cos
+                loss = loss_cos
 #                 print('final loss:')
 #                 print(loss)
 #                 logits = self.classifier(loss)
