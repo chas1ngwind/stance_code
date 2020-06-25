@@ -230,10 +230,10 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
 #                 print(loss_ce)
 
                 loss_fct_cos = CosineEmbeddingLoss()
-                labels2[labels2==0] = -1
+#                 labels2[labels2==0] = -1
 #                 loss_cos = loss_fct_cos(pooled_output, pooled_outputC, labels2)
-                loss_cos = loss_fct_cos(logits_ce, logits_cos, labels2)
-                labels2[labels2==-1] = 0
+#                 loss_cos = loss_fct_cos(logits_ce, logits_cos, labels2)
+#                 labels2[labels2==-1] = 0
                 
 #                 loss_fct_cos = CosineEmbeddingLoss()
 # #                 print(labels)
@@ -245,7 +245,7 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
         
         
 # #                 loss_cos = loss_fct_cos(logits_ce, logits_cos, labels2)
-#                 loss_cos = loss_fct_ce(logits_cos.view(-1, self.num_labels), labels2.view(-1))
+                loss_cos = loss_fct_ce(logits_cos.view(-1, self.num_labels), labels2.view(-1))
 #                 print('loss_cos:')
 #                 print(loss_cos)
             
@@ -473,8 +473,8 @@ for _ in trange(int(num_train_epochs), desc="Epoch"):
     
         out_results = model(input_ids=input_ids, token_type_ids=segment_ids, attention_mask=input_mask, labels=label_ids, input_ids2=claim_input_ids, token_type_ids2=claim_segment_ids, attention_mask2=claim_input_mask, labels2=claim_label_ids)
 #         loss = ce_loss + cos_loss
-        print("out_results:")
-        print(out_results)
+#         print("out_results:")
+#         print(out_results)
         loss = out_results
 #         print(cos_loss)
 #         print(loss.item())
