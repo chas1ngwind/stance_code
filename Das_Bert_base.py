@@ -294,7 +294,7 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
                     model.zero_grad()
                     global_step += 1
 
-        torch.save(model.state_dict(), output_dir + "319_bertbase_epoch5.pth")
+        torch.save(model.state_dict(), output_dir + "ibmcs_bert_base_epoch5.pth")
 
 
     if do_eval and (local_rank == -1 or torch.distributed.get_rank() == 0):
@@ -390,8 +390,8 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 #                   'loss': tr_loss/nb_tr_steps
                   }
 
-        output_eval_file = os.path.join(output_dir, "319_bertbase_epoch5_eval_results.txt")
-        output_raw_score = os.path.join(output_dir, "319_bertbase_epoch5_raw_score.csv")
+        output_eval_file = os.path.join(output_dir, "ibmcs_bert_base_eval_results.txt")
+        output_raw_score = os.path.join(output_dir, "ibmcs_bert_base_raw_score.csv")
         with open(output_eval_file, "w") as writer:
             logger.info("***** Eval results *****")
             for key in sorted(result.keys()):
@@ -422,10 +422,10 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 
 def experiments():
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset"
-    data_dir = "/var/scratch/syg340/project/stance_code/Dataset/stancy/"
+    data_dir = "/var/scratch/syg340/project/stance_code/Dataset/ibmcs/"
     
-    data_dir_output = "/var/scratch/syg340/project/cos_siamese_models/319base/"
-#     data_dir_output = "/var/scratch/syg340/project/stance_code/Evaluation/stancy/"
+    data_dir_output = "/var/scratch/syg340/project/cos_siamese_models/base_ibmcs/"
+#     data_dir_output = "/var/scratch/syg340/project/stance_code/Evaluation/319/"
     train_and_test(data_dir=data_dir, do_train=True, do_eval=False, output_dir=data_dir_output,task_name="stance")
 
 
@@ -433,13 +433,12 @@ def experiments():
 
 
 def evaluation_with_pretrained():
-    bert_model = "/var/scratch/syg340/project/cos_siamese_models/319base/319_bertbase_epoch5.pth"
+    bert_model = "/var/scratch/syg340/project/cos_siamese_models/base_ibmcs/ibmcs_bert_base_epoch5.pth"
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset"
-    data_dir = "/var/scratch/syg340/project/stance_code/Dataset/stancy/"
+    data_dir = "/var/scratch/syg340/project/stance_code/Dataset/ibmcs/"
 
     data_dir_output = "/var/scratch/syg340/project/stance_code/Evaluation/bert_dummy_output/"
     train_and_test(data_dir=data_dir, do_train=False, do_eval=True, output_dir=data_dir_output,task_name="stance",saved_model=bert_model)
-
 
 # In[11]:
 
