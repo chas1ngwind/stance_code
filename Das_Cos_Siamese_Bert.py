@@ -524,9 +524,9 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
         
         
 
-        model.load_state_dict(torch.load(saved_model))
-#         model_state_dict = torch.load(saved_model)
-#         model = BertForConsistencyCueClassification.from_pretrained('bert-base-uncased', num_labels=2, state_dict=model_state_dict)
+#         model.load_state_dict(torch.load(saved_model))
+        model_state_dict = torch.load(saved_model)
+        model = BertForConsistencyCueClassification.from_pretrained('bert-base-uncased', num_labels=2, state_dict=model_state_dict)
         model.to(device)
         
         model.eval()
