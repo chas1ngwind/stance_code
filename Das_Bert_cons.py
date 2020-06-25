@@ -230,10 +230,10 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
 #                 print(loss_ce)
 
                 loss_fct_cos = CosineEmbeddingLoss()
-                labels2[labels2==0] = -1
-                loss_cos = loss_fct_cos(pooled_output, pooled_outputC, labels2)
+#                 labels2[labels2==0] = -1
+#                 loss_cos = loss_fct_cos(pooled_output, pooled_outputC, labels2)
 #                 loss_cos = loss_fct_cos(logits_ce, logits_cos, labels2)
-                labels2[labels2==-1] = 0
+#                 labels2[labels2==-1] = 0
                 
 #                 loss_fct_cos = CosineEmbeddingLoss()
 # #                 print(labels)
@@ -241,11 +241,11 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
 
 
 # #                 labels2[labels2==0] = -1
-# #                 loss_cos = loss_fct_cos(pooled_output, pooled_outputC, labels2)
+# #                loss_cos = loss_fct_cos(pooled_output, pooled_outputC, labels2)
         
         
 # #                 loss_cos = loss_fct_cos(logits_ce, logits_cos, labels2)
-#                 loss_cos = loss_fct_ce(logits_cos.view(-1, self.num_labels), labels2.view(-1))
+                loss_cos = loss_fct_ce(logits_cos.view(-1, self.num_labels), labels2.view(-1))
 #                 print('loss_cos:')
 #                 print(loss_cos)
             
@@ -519,7 +519,7 @@ for _ in trange(int(num_train_epochs), desc="Epoch"):
 ## v2: concat
 ## v3: multiply
 model_to_save = model.module if hasattr(model, 'module') else model
-torch.save(model.state_dict(), output_dir + "bertcons_epoch5.pth")
+torch.save(model.state_dict(), output_dir + "ibmcs_bert_cons_epoch5.pth")
 # torch.save(model_to_save.state_dict(), output_dir + "finetuned_consistencycues_expansion.bin")
 
 
