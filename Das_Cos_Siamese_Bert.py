@@ -206,8 +206,8 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
 #                 logger.info(loss_cos)
             
                 loss = loss_ce
-                logger.info('final loss:')
-                logger.info(loss)
+#                 logger.info('final loss:')
+#                 logger.info(loss)
                 
 #             outputs = (loss,) + outputs
 #             outputs = (loss,) + logits_cos 
@@ -357,7 +357,7 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 
     if do_train:
         if os.path.exists(output_dir) and os.listdir(output_dir):
-            raise ValueError("Output directory ({}) already exists and is not emp1ty.".format(output_dir))
+            raise ValueError("Output directory ({}) already exists and is not empty.".format(output_dir))
         os.makedirs(output_dir, exist_ok=True)
 
     task_name = task_name.lower()
@@ -490,7 +490,7 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
                     model.zero_grad()
                     global_step += 1
 
-        torch.save(model.state_dict(), output_dir + "319_cos_camimu_siamese_bert_epoch5.pth")
+        torch.save(model.state_dict(), output_dir + "cos_camimu_siamese_bert_epoch5.pth")
 
 
     if do_eval and (local_rank == -1 or torch.distributed.get_rank() == 0):
@@ -566,7 +566,7 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
             print(logits)
 #             print(logits[0])
             logits = logits.detach().cpu().numpy()
-            print(logits)
+#             print(logits)
             label_ids = label_ids.to('cpu').numpy()
 #             print(label_ids)
 
@@ -613,8 +613,8 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 #                   'loss': tr_loss/nb_tr_steps
                   }
 
-        output_eval_file = os.path.join(output_dir, "319_cos_camimu_siamese_bert_epoch5_siamese_bert_test_eval_results.txt")
-        output_raw_score = os.path.join(output_dir, "319_cos_camimu_siamese_bert_epoch5_siamese_bert_test_raw_score.csv")
+        output_eval_file = os.path.join(output_dir, "on319_cos_camimu_siamese_bert_epoch5_eval_results.txt")
+        output_raw_score = os.path.join(output_dir, "on319_cos_camimu_siamese_bert_epoch5_raw_score.csv")
         with open(output_eval_file, "w") as writer:
             logger.info("***** Eval results *****")
             for key in sorted(result.keys()):
@@ -645,9 +645,9 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 
 def experiments():
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset"
-    data_dir = "/var/scratch/syg340/project/stance_code/Dataset/stancy/"
+    data_dir = "/var/scratch/syg340/project/stance_code/Dataset/"
     
-    data_dir_output = "/var/scratch/syg340/project/cos_siamese_models/319cos/"
+    data_dir_output = "/var/scratch/syg340/project/cos_siamese_models/siamese/"
 #     data_dir_output = "/var/scratch/syg340/project/stance_code/Evaluation/319/"
     train_and_test(data_dir=data_dir, do_train=True, do_eval=False, output_dir=data_dir_output,task_name="stance")
 
@@ -656,7 +656,8 @@ def experiments():
 
 
 def evaluation_with_pretrained():
-    bert_model = "/var/scratch/syg340/project/cos_siamese_models/319cos/319_cos_camimu_siamese_bert_epoch5.pth"
+#     bert_model = "/var/scratch/syg340/project/cos_siamese_models/319cos/319_cos_camimu_siamese_bert_epoch5.pth"
+    bert_model = "/var/scratch/syg340/project/cos_siamese_models/siamese/cos_camimu_siamese_bert_epoch5.pth"
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset"
     data_dir = "/var/scratch/syg340/project/stance_code/Dataset/stancy/"
 
@@ -668,8 +669,8 @@ def evaluation_with_pretrained():
 
 
 if __name__ == "__main__":
-#     experiments()
-    evaluation_with_pretrained()
+    experiments()
+#     evaluation_with_pretrained()
 
 
 # In[ ]:
