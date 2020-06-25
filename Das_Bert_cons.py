@@ -518,7 +518,7 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
 # ## v2: concat
 # ## v3: multiply
 # model_to_save = model.module if hasattr(model, 'module') else model
-# torch.save(model.state_dict(), output_dir + "319_bert_cons_epoch5.pth")
+# torch.save(model.state_dict(), output_dir + "319_bertcons_epoch5.pth")
 # # torch.save(model_to_save.state_dict(), output_dir + "finetuned_consistencycues_expansion.bin")
 
 
@@ -949,7 +949,7 @@ def experiments():
 
 
 def evaluation_with_pretrained():
-    bert_model = "/var/scratch/syg340/project/cos_siamese_models/319stancy/319_bert_cons_epoch5.pth"
+    bert_model = "/var/scratch/syg340/project/cos_siamese_models/319stancy/319_bertcons_epoch5.pth"
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset"
     data_dir = "/var/scratch/syg340/project/stance_code/Dataset/stancy/"
 
