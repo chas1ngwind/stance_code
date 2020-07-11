@@ -541,6 +541,7 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
         train_dataloader = DataLoader(train_data, sampler=train_sampler, batch_size=train_batch_size)
 
         model.train()
+        logging.info("xxx xxx")
         for _ in trange(int(num_train_epochs), desc="Epoch"):
             tr_loss = 0
             nb_tr_examples, nb_tr_steps = 0, 0
