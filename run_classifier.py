@@ -347,7 +347,9 @@ def convert_examples_to_features(examples, label_list, max_seq_length, tokenizer
 Customized fucntion start
 
 """""
+import spacy
 from spacy.matcher import PhraseMatcher
+nlp = spacy.load("en_core_web_sm")
 def generate_opposite(text):
     
     matcher = PhraseMatcher(nlp.vocab, attr="lower")
