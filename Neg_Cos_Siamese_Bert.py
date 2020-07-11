@@ -72,6 +72,7 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
         head_mask=None,
         inputs_embeds=None,
         labels=None,
+        
         input_ids2=None,
         attention_mask2=None,
         token_type_ids2=None,
