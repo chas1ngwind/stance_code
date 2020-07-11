@@ -502,11 +502,12 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 
     global_step = 0
     if do_train:
+        logger.info("aaa aaa")
         claim_features = convert_claims_to_features(train_examples, label_list, max_seq_length, tokenizer)
         train_features = convert_pers_to_features(train_examples, label_list, max_seq_length, tokenizer)
         opposite_claim_features = convert_opp_claims_to_features(train_examples, label_list, max_seq_length, tokenizer)
         opposite_perspective_features = convert_opp_pers_to_features(train_examples, label_list, max_seq_length, tokenizer)
-        
+        logger.info("bbb bbb")
         logger.info("***** Running training *****")
         logger.info("  Num examples = %d", len(train_examples))
         logger.info("  Batch size = %d", train_batch_size)
@@ -773,7 +774,7 @@ def experiments():
     
 #     data_dir_output = "/var/scratch/syg340/project/cos_siamese_models/siamese_ibmcs/"
     data_dir_output = "/var/scratch/syg340/project/stance_code/Evaluation/319/"
-    train_and_test(data_dir=data_dir, do_train=True, do_eval=True, output_dir=data_dir_output,task_name="stance")
+    train_and_test(data_dir=data_dir, do_train=True, do_eval=False, output_dir=data_dir_output,task_name="stance")
 
 
 # In[10]:

@@ -1104,7 +1104,7 @@ def convert_opp_pers_to_features(examples, label_list, max_seq_length, tokenizer
         label_id = label_map[example.label]
 
         if ex_index < 5:
-            logger.info("*** Perspective Example ***")
+            logger.info("*** Opposite Perspective Example ***")
             logger.info("guid: %s" % (example.guid))
             logger.info("tokens: %s" % " ".join(
                     [str(x) for x in tokens]))
@@ -1119,6 +1119,8 @@ def convert_opp_pers_to_features(examples, label_list, max_seq_length, tokenizer
                               input_mask=input_mask,
                               segment_ids=segment_ids,
                               label_id=label_id))
+    logger.info("why not continue")
+    logger.info(features)
     return features
 
 def convert_opp_claims_to_features(examples, label_list, max_seq_length, tokenizer):
@@ -1200,7 +1202,7 @@ def convert_opp_claims_to_features(examples, label_list, max_seq_length, tokeniz
         label_id = label_map[example.label]
 
         if ex_index < 5:
-            logger.info("*** Claim Example ***")
+            logger.info("*** Opposite Claim Example ***")
             logger.info("guid: %s" % (example.guid))
             logger.info("tokens: %s" % " ".join(
                     [str(x) for x in tokens]))
