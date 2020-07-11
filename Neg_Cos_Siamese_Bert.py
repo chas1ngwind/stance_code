@@ -136,7 +136,7 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
         loss, logits = outputs[:2]
 
         """
-
+# Pers rep
         _, outputs = self.bert(
             input_ids,
             attention_mask=attention_mask,
@@ -145,7 +145,7 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
 #             head_mask=head_mask,
 #             inputs_embeds=inputs_embeds,
         )
-
+# Claim rep
         _, outputs2 = self.bert(
             input_ids2,
             attention_mask=attention_mask2,
@@ -154,7 +154,7 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
 #             head_mask=head_mask2,
 #             inputs_embeds=inputs_embeds2,
         )
-        
+# Opp Pers rep        
         _, outputs3 = self.bert(
             input_ids3,
             attention_mask=attention_mask3,
@@ -163,7 +163,7 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
 #             head_mask=head_mask2,
 #             inputs_embeds=inputs_embeds2,
         )
- 
+# Opp Claim rep 
         _, outputs4 = self.bert(
             input_ids4,
             attention_mask=attention_mask4,
@@ -184,44 +184,44 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
         pooled_output4 = self.dropout(pooled_output4)
         
 #         A series of different concatenations(concat(),|minus|,multiply, ...)
-        final_output_cat = torch.cat((pooled_output, pooled_output2),1)
-        final_output_minus = torch.abs(pooled_output-pooled_output2)
-        final_output_mult = torch.mul(pooled_output, pooled_output2)
+        final_output_cat = torch.cat((pooled_output2, pooled_output),1)
+        final_output_minus = torch.abs(pooled_output2-pooled_output)
+        final_output_mult = torch.mul(pooled_output2, pooled_output)
 #         final_output_mimu = torch.cat((final_output_minus, final_output_mult),1)
 #         final_output_camu = torch.cat((final_output_cat, final_output_mult),1)
 #         final_output_cami = torch.cat((final_output_cat, final_output_minus),1)
         final_output_camimu = torch.cat((final_output_cat, final_output_minus, final_output_mult),1)
-        cos_pooled_outputs = torch.cosine_similarity(pooled_output, pooled_output2, dim=1)
+        cos_pooled_outputs = torch.cosine_similarity(pooled_output2, pooled_output, dim=1)
         
         
-        cop_final_output_cat = torch.cat((pooled_output, pooled_output4),1)
-        cop_final_output_minus = torch.abs(pooled_output-pooled_output4)
-        cop_final_output_mult = torch.mul(pooled_output, pooled_output4)
+        cop_final_output_cat = torch.cat((pooled_output2, pooled_output3),1)
+        cop_final_output_minus = torch.abs(pooled_output2-pooled_output3)
+        cop_final_output_mult = torch.mul(pooled_output2, pooled_output3)
 #         final_output_mimu = torch.cat((final_output_minus, final_output_mult),1)
 #         final_output_camu = torch.cat((final_output_cat, final_output_mult),1)
 #         final_output_cami = torch.cat((final_output_cat, final_output_minus),1)
-        final_output_camimu = torch.cat((cop_final_output_cat, cop_final_output_minus, cop_final_output_mult),1)
-        cop_cos_pooled_outputs = torch.cosine_similarity(pooled_output, pooled_output4, dim=1)
+        cop_final_output_camimu = torch.cat((cop_final_output_cat, cop_final_output_minus, cop_final_output_mult),1)
+        cop_cos_pooled_outputs = torch.cosine_similarity(pooled_output2, pooled_output3, dim=1)
         
         
-        ocp_final_output_cat = torch.cat((pooled_output3, pooled_output2),1)
-        ocp_final_output_minus = torch.abs(pooled_output3-pooled_output2)
-        ocp_final_output_mult = torch.mul(pooled_output3, pooled_output2)
+        ocp_final_output_cat = torch.cat((pooled_output4, pooled_output1),1)
+        ocp_final_output_minus = torch.abs(pooled_output4-pooled_output1)
+        ocp_final_output_mult = torch.mul(pooled_output4, pooled_output1)
 #         final_output_mimu = torch.cat((final_output_minus, final_output_mult),1)
 #         final_output_camu = torch.cat((final_output_cat, final_output_mult),1)
 #         final_output_cami = torch.cat((final_output_cat, final_output_minus),1)
         ocp_final_output_camimu = torch.cat((ocp_final_output_cat, ocp_final_output_minus, ocp_final_output_mult),1)
-        ocp_cos_pooled_outputs = torch.cosine_similarity(pooled_output3, pooled_output2, dim=1)
+        ocp_cos_pooled_outputs = torch.cosine_similarity(pooled_output4, pooled_output1, dim=1)
         
         
-        ocop_final_output_cat = torch.cat((pooled_output3, pooled_output4),1)
-        ocop_final_output_minus = torch.abs(pooled_output3-pooled_output4)
-        ocop_final_output_mult = torch.mul(pooled_output3, pooled_output4)
+        ocop_final_output_cat = torch.cat((pooled_output4, pooled_output3),1)
+        ocop_final_output_minus = torch.abs(pooled_output4-pooled_output3)
+        ocop_final_output_mult = torch.mul(pooled_output4, pooled_output3)
 #         final_output_mimu = torch.cat((final_output_minus, final_output_mult),1)
 #         final_output_camu = torch.cat((final_output_cat, final_output_mult),1)
 #         final_output_cami = torch.cat((final_output_cat, final_output_minus),1)
         ocop_final_output_camimu = torch.cat((ocop_final_output_cat, ocop_final_output_minus, ocop_final_output_mult),1)
-        ocop_cos_pooled_outputs = torch.cosine_similarity(pooled_output3, pooled_output4, dim=1)
+        ocop_cos_pooled_outputs = torch.cosine_similarity(pooled_output4, pooled_output3, dim=1)
         
         
 #         1
@@ -243,9 +243,9 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
         hidden_size = list(pooled_output.size())[1]
         
         final_output_all = torch.cat((final_output_camimu, cos_pooled_outputs.unsqueeze(1)),1)
-        cop_final_output_all = torch.cat((final_output_camimu, cos_pooled_outputs.unsqueeze(1)),1)
-        ocp_final_output_all = torch.cat((final_output_camimu, cos_pooled_outputs.unsqueeze(1)),1)
-        ocop_final_output_all = torch.cat((final_output_camimu, cos_pooled_outputs.unsqueeze(1)),1)
+        cop_final_output_all = torch.cat((cop_final_output_camimu, cop_cos_pooled_outputs.unsqueeze(1)),1)
+        ocp_final_output_all = torch.cat((ocp_final_output_camimu, ocp_cos_pooled_outputs.unsqueeze(1)),1)
+        ocop_final_output_all = torch.cat((ocop_final_output_camimu, ocop_cos_pooled_outputs.unsqueeze(1)),1)
         
         logits_ce = self.classifier(final_output_all)
         cop_logits_ce = self.classifier(final_output_all)
