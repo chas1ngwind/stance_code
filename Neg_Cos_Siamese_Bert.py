@@ -518,7 +518,9 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 
         claim_features = convert_claims_to_features(train_examples, label_list, max_seq_length, tokenizer)
         train_features = convert_pers_to_features(train_examples, label_list, max_seq_length, tokenizer)
+        logger.info("perspective features done")
         opposite_claim_features = convert_opp_claims_to_features(train_examples, label_list, max_seq_length, tokenizer)
+        logger.info("opposite claim features done")
         opposite_perspective_features = convert_opp_pers_to_features(train_examples, label_list, max_seq_length, tokenizer)
 
         logger.info("***** Running training *****")

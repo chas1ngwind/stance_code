@@ -1046,10 +1046,14 @@ def convert_opp_pers_to_features(examples, label_list, max_seq_length, tokenizer
         opp_perspect = generate_opposite(example.text_b)
         if opp_perspect:
             tokens_a = tokenizer.tokenize(str(generate_opposite(example.text_b)))
-            logger.info("tokens_a:")
-            logger.info(tokens_a)
+#             logger.info("tokens_a:")
+#             logger.info(tokens_a)
         else:
-            return None
+            features.append(
+                InputFeatures(input_ids=None,
+                              input_mask=None,
+                              segment_ids=None,
+                              label_id=None))
         tokens_b = None
 #         if example.text_b:
 #             tokens_b = tokenizer.tokenize(example.text_b)
@@ -1093,7 +1097,7 @@ def convert_opp_pers_to_features(examples, label_list, max_seq_length, tokenizer
                 segment_ids.append(0)
             
         else:
-            return None
+            pass
         tokens.append("[SEP]")
         segment_ids.append(0)
 
@@ -1132,12 +1136,12 @@ def convert_opp_pers_to_features(examples, label_list, max_seq_length, tokenizer
             logger.info(
                     "segment_ids: %s" % " ".join([str(x) for x in segment_ids]))
             logger.info("label: %s (id = %d)" % (example.label, label_id))
-        
-        features.append(
-                InputFeatures(input_ids=input_ids,
-                              input_mask=input_mask,
-                              segment_ids=segment_ids,
-                              label_id=label_id))
+        if tokens_a:
+            features.append(
+                    InputFeatures(input_ids=input_ids,
+                                  input_mask=input_mask,
+                                  segment_ids=segment_ids,
+                                  label_id=label_id))
 
     return features
 
@@ -1155,7 +1159,11 @@ def convert_opp_claims_to_features(examples, label_list, max_seq_length, tokeniz
 #         origin_a = tokenizer.tokenize(generate_opposite(example.text_b))
             tokens_a = tokenizer.tokenize(str(generate_opposite(example.text_a)))
         else:
-            return None
+            features.append(
+                InputFeatures(input_ids=None,
+                              input_mask=None,
+                              segment_ids=None,
+                              label_id=None))
 
         tokens_b = None
 #         if example.text_b:
@@ -1199,7 +1207,7 @@ def convert_opp_claims_to_features(examples, label_list, max_seq_length, tokeniz
                 segment_ids.append(0)
             
         else:
-            return None
+            pass
 #         for token in tokens_a:
 #             tokens.append(token)
 #             segment_ids.append(0)
@@ -1241,12 +1249,12 @@ def convert_opp_claims_to_features(examples, label_list, max_seq_length, tokeniz
             logger.info(
                     "segment_ids: %s" % " ".join([str(x) for x in segment_ids]))
             logger.info("label: %s (id = %d)" % (example.label, label_id))
-        
-        features.append(
-                InputFeatures(input_ids=input_ids,
-                              input_mask=input_mask,
-                              segment_ids=segment_ids,
-                              label_id=label_id))
+        if tokens_a:
+            features.append(
+                    InputFeatures(input_ids=input_ids,
+                                  input_mask=input_mask,
+                                  segment_ids=segment_ids,
+                                  label_id=label_id))
     return features
 
 
