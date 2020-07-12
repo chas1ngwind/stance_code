@@ -1147,7 +1147,7 @@ def convert_opp_claims_to_features(examples, label_list, max_seq_length, tokeniz
     label_map = {}
     for (i, label) in enumerate(label_list):
         label_map[label] = i
-
+    logger.info("into the opp claim loop")
     features = []
     for (ex_index, example) in enumerate(examples):
         
