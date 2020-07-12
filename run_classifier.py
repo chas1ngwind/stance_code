@@ -1033,6 +1033,7 @@ def convert_opp_pers_to_features(examples, label_list, max_seq_length, tokenizer
         label_map[label] = i
 
     features = []
+    logger.info("into the opp pers loop")
     for (ex_index, example) in enumerate(examples):
         
         ####TODO
@@ -1042,9 +1043,13 @@ def convert_opp_pers_to_features(examples, label_list, max_seq_length, tokenizer
 #         origin_a = tokenizer.tokenize(generate_opposite(example.text_b))
         logger.info("see")
         logger.info(generate_opposite(example.text_b))
-        tokens_a = tokenizer.tokenize(str(generate_opposite(example.text_b)))
-        logger.info("tokens_a:")
-        logger.info(tokens_a)
+        opp_perspect = generate_opposite(example.text_b)
+        if opp_perspect:
+            tokens_a = tokenizer.tokenize(str(generate_opposite(example.text_b)))
+            logger.info("tokens_a:")
+            logger.info(tokens_a)
+        else:
+            return None
         tokens_b = None
 #         if example.text_b:
 #             tokens_b = tokenizer.tokenize(example.text_b)
