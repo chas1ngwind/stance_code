@@ -1040,8 +1040,11 @@ def convert_opp_pers_to_features(examples, label_list, max_seq_length, tokenizer
 #         text_a = nlp(example.text_b)
 #         len_text = len(nlp(example.text_b))
 #         origin_a = tokenizer.tokenize(generate_opposite(example.text_b))
+        logging.info("see")
+        logging.info(generate_opposite(example.text_b))
         tokens_a = tokenizer.tokenize(str(generate_opposite(example.text_b)))
-
+        logging.info("tokens_a:")
+        logging.info(tokens_a)
         tokens_b = None
 #         if example.text_b:
 #             tokens_b = tokenizer.tokenize(example.text_b)
@@ -1078,8 +1081,7 @@ def convert_opp_pers_to_features(examples, label_list, max_seq_length, tokenizer
         segment_ids = []
         tokens.append("[CLS]")
         segment_ids.append(0)
-        print("tokens_a:")
-        print(tokens_a)
+        
         if tokens_a:
             for token in tokens_a:
                 tokens.append(token)
