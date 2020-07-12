@@ -1078,6 +1078,8 @@ def convert_opp_pers_to_features(examples, label_list, max_seq_length, tokenizer
         segment_ids = []
         tokens.append("[CLS]")
         segment_ids.append(0)
+        print("tokens_a:")
+        print(tokens_a)
         if tokens_a:
             for token in tokens_a:
                 tokens.append(token)
