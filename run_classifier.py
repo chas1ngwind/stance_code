@@ -1238,6 +1238,17 @@ def convert_opp_claims_to_features(examples, label_list, max_seq_length, tokeniz
                               input_mask=input_mask,
                               segment_ids=segment_ids,
                               label_id=label_id))
+            if ex_index < 5:
+            logger.info("*** Opposite Claim Example ***")
+            logger.info("guid: %s" % (example.guid))
+            logger.info("tokens: %s" % " ".join(
+                    [str(x) for x in tokens]))
+            logger.info("input_ids: %s" % " ".join([str(x) for x in input_ids]))
+            logger.info("input_mask: %s" % " ".join([str(x) for x in input_mask]))
+            logger.info(
+                    "segment_ids: %s" % " ".join([str(x) for x in segment_ids]))
+            logger.info("label: %s (id = %d)" % (example.label, label_id))
+            
         else:
             input_ids=None
             input_mask=None
@@ -1250,16 +1261,7 @@ def convert_opp_claims_to_features(examples, label_list, max_seq_length, tokeniz
                               label_id=label_id))
             
 
-        if ex_index < 5:
-            logger.info("*** Opposite Claim Example ***")
-            logger.info("guid: %s" % (example.guid))
-            logger.info("tokens: %s" % " ".join(
-                    [str(x) for x in tokens]))
-            logger.info("input_ids: %s" % " ".join([str(x) for x in input_ids]))
-            logger.info("input_mask: %s" % " ".join([str(x) for x in input_mask]))
-            logger.info(
-                    "segment_ids: %s" % " ".join([str(x) for x in segment_ids]))
-            logger.info("label: %s (id = %d)" % (example.label, label_id))
+        
     return features
 
 
