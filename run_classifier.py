@@ -1142,7 +1142,7 @@ def convert_opp_claims_to_features(examples, label_list, max_seq_length, tokeniz
     features = []
     for (ex_index, example) in enumerate(examples):
         
-        origin_a = tokenizer.tokenize(generate_opposite(example.text_b))
+#         origin_a = tokenizer.tokenize(generate_opposite(example.text_b))
         tokens_a = tokenizer.tokenize(str(generate_opposite(example.text_a)))
 
         tokens_b = None
