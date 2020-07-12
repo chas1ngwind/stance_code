@@ -1034,6 +1034,12 @@ def convert_opp_pers_to_features(examples, label_list, max_seq_length, tokenizer
 
     features = []
     for (ex_index, example) in enumerate(examples):
+        
+        ####TODO
+        
+#         text_a = nlp(example.text_b)
+#         len_text = len(nlp(example.text_b))
+        origin_a = tokenizer.tokenize(generate_opposite(example.text_b))
         tokens_a = tokenizer.tokenize(str(generate_opposite(example.text_b)))
 
         tokens_b = None
@@ -1072,9 +1078,13 @@ def convert_opp_pers_to_features(examples, label_list, max_seq_length, tokenizer
         segment_ids = []
         tokens.append("[CLS]")
         segment_ids.append(0)
-        for token in tokens_a:
-            tokens.append(token)
-            segment_ids.append(0)
+        if tokens_a:
+            for token in tokens_a:
+                tokens.append(token)
+                segment_ids.append(0)
+            
+        else:
+            return None
         tokens.append("[SEP]")
         segment_ids.append(0)
 
@@ -1119,8 +1129,7 @@ def convert_opp_pers_to_features(examples, label_list, max_seq_length, tokenizer
                               input_mask=input_mask,
                               segment_ids=segment_ids,
                               label_id=label_id))
-    logger.info("why not continue")
-    logger.info(features)
+
     return features
 
 def convert_opp_claims_to_features(examples, label_list, max_seq_length, tokenizer):
@@ -1132,6 +1141,8 @@ def convert_opp_claims_to_features(examples, label_list, max_seq_length, tokeniz
 
     features = []
     for (ex_index, example) in enumerate(examples):
+        
+        origin_a = tokenizer.tokenize(generate_opposite(example.text_b))
         tokens_a = tokenizer.tokenize(str(generate_opposite(example.text_a)))
 
         tokens_b = None
@@ -1170,9 +1181,16 @@ def convert_opp_claims_to_features(examples, label_list, max_seq_length, tokeniz
         segment_ids = []
         tokens.append("[CLS]")
         segment_ids.append(0)
-        for token in tokens_a:
-            tokens.append(token)
-            segment_ids.append(0)
+        if tokens_a:
+            for token in tokens_a:
+                tokens.append(token)
+                segment_ids.append(0)
+            
+        else:
+            return None
+#         for token in tokens_a:
+#             tokens.append(token)
+#             segment_ids.append(0)
         tokens.append("[SEP]")
         segment_ids.append(0)
 

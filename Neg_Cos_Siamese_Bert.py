@@ -195,6 +195,17 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
         cos_pooled_outputs = torch.cosine_similarity(pooled_output2, pooled_output, dim=1)
         
         
+        
+        ocop_final_output_cat = torch.cat((pooled_output4, pooled_output3),1)
+        ocop_final_output_minus = torch.abs(pooled_output4-pooled_output3)
+        ocop_final_output_mult = torch.mul(pooled_output4, pooled_output3)
+#         final_output_mimu = torch.cat((final_output_minus, final_output_mult),1)
+#         final_output_camu = torch.cat((final_output_cat, final_output_mult),1)
+#         final_output_cami = torch.cat((final_output_cat, final_output_minus),1)
+        ocop_final_output_camimu = torch.cat((ocop_final_output_cat, ocop_final_output_minus, ocop_final_output_mult),1)
+        ocop_cos_pooled_outputs = torch.cosine_similarity(pooled_output4, pooled_output3, dim=1)
+        
+
         cop_final_output_cat = torch.cat((pooled_output2, pooled_output3),1)
         cop_final_output_minus = torch.abs(pooled_output2-pooled_output3)
         cop_final_output_mult = torch.mul(pooled_output2, pooled_output3)
@@ -204,7 +215,7 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
         cop_final_output_camimu = torch.cat((cop_final_output_cat, cop_final_output_minus, cop_final_output_mult),1)
         cop_cos_pooled_outputs = torch.cosine_similarity(pooled_output2, pooled_output3, dim=1)
         
-        
+
         ocp_final_output_cat = torch.cat((pooled_output4, pooled_output1),1)
         ocp_final_output_minus = torch.abs(pooled_output4-pooled_output1)
         ocp_final_output_mult = torch.mul(pooled_output4, pooled_output1)
@@ -215,14 +226,6 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
         ocp_cos_pooled_outputs = torch.cosine_similarity(pooled_output4, pooled_output1, dim=1)
         
         
-        ocop_final_output_cat = torch.cat((pooled_output4, pooled_output3),1)
-        ocop_final_output_minus = torch.abs(pooled_output4-pooled_output3)
-        ocop_final_output_mult = torch.mul(pooled_output4, pooled_output3)
-#         final_output_mimu = torch.cat((final_output_minus, final_output_mult),1)
-#         final_output_camu = torch.cat((final_output_cat, final_output_mult),1)
-#         final_output_cami = torch.cat((final_output_cat, final_output_minus),1)
-        ocop_final_output_camimu = torch.cat((ocop_final_output_cat, ocop_final_output_minus, ocop_final_output_mult),1)
-        ocop_cos_pooled_outputs = torch.cosine_similarity(pooled_output4, pooled_output3, dim=1)
         
         
 #         1
@@ -249,11 +252,21 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
         ocop_final_output_all = torch.cat((ocop_final_output_camimu, ocop_cos_pooled_outputs.unsqueeze(1)),1)
         
         logits_ce = self.classifier(final_output_all)
-        cop_logits_ce = self.classifier(final_output_all)
-        ocp_logits_ce = self.classifier(final_output_all)
-        ocop_logits_ce = self.classifier(final_output_all)
         
-        final_logits = logits_ce-0.33*cop_logits_ce-0.33*ocp_logits_ce+0.33*ocop_logits_ce
+        ocop_logits_ce = self.classifier(ocop_final_output_all)
+        cop_logits_ce = self.classifier(cop_final_output_all)
+        cop_logits_ce = self.classifier(cop_final_output_all)
+        ocp_logits_ce = self.classifier(ocp_final_output_all)
+        
+        
+        if input_ids4 and input_ids3:
+            final_logits = logits_ce-(0.33*cop_logits_ce)-(0.33*ocp_logits_ce)+(0.33*ocop_logits_ce)
+        elif input_ids3:
+            final_logits = logits_ce-(0.33*cop_logits_ce)
+        elif input_ids4:
+            final_logits = logits_ce-(0.33*ocp_logits_ce)
+        else:
+            final_logits = logits_ce
 #         print('logits_ce:')
 #         print(logits_ce)
         
@@ -502,36 +515,100 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 
     global_step = 0
     if do_train:
-        logger.info("aaa aaa")
+
         claim_features = convert_claims_to_features(train_examples, label_list, max_seq_length, tokenizer)
         train_features = convert_pers_to_features(train_examples, label_list, max_seq_length, tokenizer)
         opposite_claim_features = convert_opp_claims_to_features(train_examples, label_list, max_seq_length, tokenizer)
         opposite_perspective_features = convert_opp_pers_to_features(train_examples, label_list, max_seq_length, tokenizer)
-        logger.info("bbb bbb")
+
         logger.info("***** Running training *****")
         logger.info("  Num examples = %d", len(train_examples))
         logger.info("  Batch size = %d", train_batch_size)
         logger.info("  Num steps = %d", num_train_steps)
         
-        pers_input_ids = torch.tensor([f.input_ids for f in train_features], dtype=torch.long)
-        pers_input_mask = torch.tensor([f.input_mask for f in train_features], dtype=torch.long)
-        pers_segment_ids = torch.tensor([f.segment_ids for f in train_features], dtype=torch.long)
-        pers_label_ids = torch.tensor([f.label_id for f in train_features], dtype=torch.long)
+        if opposite_claim_features and opposite_perspective_features:
+            
+            pers_input_ids = torch.tensor([f.input_ids for f in train_features], dtype=torch.long)
+            pers_input_mask = torch.tensor([f.input_mask for f in train_features], dtype=torch.long)
+            pers_segment_ids = torch.tensor([f.segment_ids for f in train_features], dtype=torch.long)
+            pers_label_ids = torch.tensor([f.label_id for f in train_features], dtype=torch.long)
 
-        claims_input_ids = torch.tensor([f.input_ids for f in claim_features], dtype=torch.long)
-        claims_input_mask = torch.tensor([f.input_mask for f in claim_features], dtype=torch.long)
-        claims_segment_ids = torch.tensor([f.segment_ids for f in claim_features], dtype=torch.long)
-        claims_label_ids = torch.tensor([f.label_id for f in claim_features], dtype=torch.long)
-        
-        opp_pers_input_ids = torch.tensor([f.input_ids for f in opposite_perspective_features], dtype=torch.long)
-        opp_pers_input_mask = torch.tensor([f.input_mask for f in opposite_perspective_features], dtype=torch.long)
-        opp_pers_segment_ids = torch.tensor([f.segment_ids for f in opposite_perspective_features], dtype=torch.long)
-        opp_pers_label_ids = torch.tensor([f.label_id for f in opposite_perspective_features], dtype=torch.long)
-        
-        opp_claims_input_ids = torch.tensor([f.input_ids for f in opposite_claim_features], dtype=torch.long)
-        opp_claims_input_mask = torch.tensor([f.input_mask for f in opposite_claim_features], dtype=torch.long)
-        opp_claims_segment_ids = torch.tensor([f.segment_ids for f in opposite_claim_features], dtype=torch.long)
-        opp_claims_label_ids = torch.tensor([f.label_id for f in opposite_claim_features], dtype=torch.long)
+            claims_input_ids = torch.tensor([f.input_ids for f in claim_features], dtype=torch.long)
+            claims_input_mask = torch.tensor([f.input_mask for f in claim_features], dtype=torch.long)
+            claims_segment_ids = torch.tensor([f.segment_ids for f in claim_features], dtype=torch.long)
+            claims_label_ids = torch.tensor([f.label_id for f in claim_features], dtype=torch.long)
+
+            opp_pers_input_ids = torch.tensor([f.input_ids for f in opposite_perspective_features], dtype=torch.long)
+            opp_pers_input_mask = torch.tensor([f.input_mask for f in opposite_perspective_features], dtype=torch.long)
+            opp_pers_segment_ids = torch.tensor([f.segment_ids for f in opposite_perspective_features], dtype=torch.long)
+            opp_pers_label_ids = torch.tensor([f.label_id for f in opposite_perspective_features], dtype=torch.long)
+
+            opp_claims_input_ids = torch.tensor([f.input_ids for f in opposite_claim_features], dtype=torch.long)
+            opp_claims_input_mask = torch.tensor([f.input_mask for f in opposite_claim_features], dtype=torch.long)
+            opp_claims_segment_ids = torch.tensor([f.segment_ids for f in opposite_claim_features], dtype=torch.long)
+            opp_claims_label_ids = torch.tensor([f.label_id for f in opposite_claim_features], dtype=torch.long)
+            
+        elif opposite_claim_features:
+            pers_input_ids = torch.tensor([f.input_ids for f in train_features], dtype=torch.long)
+            pers_input_mask = torch.tensor([f.input_mask for f in train_features], dtype=torch.long)
+            pers_segment_ids = torch.tensor([f.segment_ids for f in train_features], dtype=torch.long)
+            pers_label_ids = torch.tensor([f.label_id for f in train_features], dtype=torch.long)
+
+            claims_input_ids = torch.tensor([f.input_ids for f in claim_features], dtype=torch.long)
+            claims_input_mask = torch.tensor([f.input_mask for f in claim_features], dtype=torch.long)
+            claims_segment_ids = torch.tensor([f.segment_ids for f in claim_features], dtype=torch.long)
+            claims_label_ids = torch.tensor([f.label_id for f in claim_features], dtype=torch.long)
+            
+            opp_pers_input_ids = None
+            opp_pers_input_mask = None
+            opp_pers_segment_ids = None
+            opp_pers_label_ids = None
+            
+            opp_claims_input_ids = torch.tensor([f.input_ids for f in opposite_claim_features], dtype=torch.long)
+            opp_claims_input_mask = torch.tensor([f.input_mask for f in opposite_claim_features], dtype=torch.long)
+            opp_claims_segment_ids = torch.tensor([f.segment_ids for f in opposite_claim_features], dtype=torch.long)
+            opp_claims_label_ids = torch.tensor([f.label_id for f in opposite_claim_features], dtype=torch.long)
+            
+        elif opposite_perspective_features:
+            pers_input_ids = torch.tensor([f.input_ids for f in train_features], dtype=torch.long)
+            pers_input_mask = torch.tensor([f.input_mask for f in train_features], dtype=torch.long)
+            pers_segment_ids = torch.tensor([f.segment_ids for f in train_features], dtype=torch.long)
+            pers_label_ids = torch.tensor([f.label_id for f in train_features], dtype=torch.long)
+
+            claims_input_ids = torch.tensor([f.input_ids for f in claim_features], dtype=torch.long)
+            claims_input_mask = torch.tensor([f.input_mask for f in claim_features], dtype=torch.long)
+            claims_segment_ids = torch.tensor([f.segment_ids for f in claim_features], dtype=torch.long)
+            claims_label_ids = torch.tensor([f.label_id for f in claim_features], dtype=torch.long)
+            
+            opp_pers_input_ids = torch.tensor([f.input_ids for f in opposite_perspective_features], dtype=torch.long)
+            opp_pers_input_mask = torch.tensor([f.input_mask for f in opposite_perspective_features], dtype=torch.long)
+            opp_pers_segment_ids = torch.tensor([f.segment_ids for f in opposite_perspective_features], dtype=torch.long)
+            opp_pers_label_ids = torch.tensor([f.label_id for f in opposite_perspective_features], dtype=torch.long)
+            
+            opp_claims_input_ids = None
+            opp_claims_input_mask = None
+            opp_claims_segment_ids = None
+            opp_claims_label_ids = None
+        else:
+            pers_input_ids = torch.tensor([f.input_ids for f in train_features], dtype=torch.long)
+            pers_input_mask = torch.tensor([f.input_mask for f in train_features], dtype=torch.long)
+            pers_segment_ids = torch.tensor([f.segment_ids for f in train_features], dtype=torch.long)
+            pers_label_ids = torch.tensor([f.label_id for f in train_features], dtype=torch.long)
+
+            claims_input_ids = torch.tensor([f.input_ids for f in claim_features], dtype=torch.long)
+            claims_input_mask = torch.tensor([f.input_mask for f in claim_features], dtype=torch.long)
+            claims_segment_ids = torch.tensor([f.segment_ids for f in claim_features], dtype=torch.long)
+            claims_label_ids = torch.tensor([f.label_id for f in claim_features], dtype=torch.long)
+            
+            opp_pers_input_ids = None
+            opp_pers_input_mask = None
+            opp_pers_segment_ids = None
+            opp_pers_label_ids = None
+            
+            opp_claims_input_ids = None
+            opp_claims_input_mask = None
+            opp_claims_segment_ids = None
+            opp_claims_label_ids = None
 
         train_data = TensorDataset(pers_input_ids, pers_input_mask, pers_segment_ids, pers_label_ids, claims_input_ids, claims_input_mask, claims_segment_ids, claims_label_ids, opp_pers_input_ids, opp_pers_input_mask, opp_pers_segment_ids, opp_pers_label_ids, opp_claims_input_ids, opp_claims_input_mask, opp_claims_segment_ids, opp_claims_label_ids)
 
@@ -542,7 +619,7 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
         train_dataloader = DataLoader(train_data, sampler=train_sampler, batch_size=train_batch_size)
 
         model.train()
-        logging.info("xxx xxx")
+
         for _ in trange(int(num_train_epochs), desc="Epoch"):
             tr_loss = 0
             nb_tr_examples, nb_tr_steps = 0, 0
