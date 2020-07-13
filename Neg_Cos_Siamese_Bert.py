@@ -18,7 +18,7 @@ from pytorch_pretrained_bert.optimization import BertAdam
 # In[10]:
 
 
-from run_classifier import NegProcessor, generate_opp_dataset, generate_opposite, convert_opp_pers_to_features, convert_opp_claims_to_features, StanceProcessor, MrpcProcessor, logger, convert_examples_to_features,    set_optimizer_params_grad, copy_optimizer_params_to_model, accuracy, p_r_f1, tp_pcount_gcount, convert_claims_to_features, convert_pers_to_features
+from run_classifier import NegProcessor, generate_opp_dataset, convert_opp_pers_to_features, convert_opp_claims_to_features, StanceProcessor, MrpcProcessor, logger, convert_examples_to_features,    set_optimizer_params_grad, copy_optimizer_params_to_model, accuracy, p_r_f1, tp_pcount_gcount, convert_claims_to_features, convert_pers_to_features
 
 
 # In[11]:
