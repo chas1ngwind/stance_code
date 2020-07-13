@@ -18,7 +18,7 @@ from pytorch_pretrained_bert.optimization import BertAdam
 # In[10]:
 
 
-from run_classifier import NegProcessor, generate_opp_dataset, convert_opp_pers_to_features, convert_opp_claims_to_features, StanceProcessor, MrpcProcessor, logger, convert_examples_to_features,    set_optimizer_params_grad, copy_optimizer_params_to_model, accuracy, p_r_f1, tp_pcount_gcount, convert_claims_to_features, convert_pers_to_features
+from run_classifier import NegProcessor, generate_opp_dataset, convert_opp_pers_to_features, convert_opp_claims_to_features, StanceProcessor, MrpcProcessor, logger, convert_examples_to_features,   set_optimizer_params_grad, copy_optimizer_params_to_model, accuracy, p_r_f1, tp_pcount_gcount, convert_claims_to_features, convert_pers_to_features
 
 
 # In[11]:
@@ -523,7 +523,7 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
     global_step = 0
     if do_train:
 
-        claim_features = (train_examples, label_list, max_seq_length, tokenizer)
+        claim_features = convert_claims_to_features(train_examples, label_list, max_seq_length, tokenizer)
         train_features = convert_pers_to_features(train_examples, label_list, max_seq_length, tokenizer)
         logger.info("perspective features done")
         opposite_claim_features = convert_opp_claims_to_features(train_examples, label_list, max_seq_length, tokenizer)
