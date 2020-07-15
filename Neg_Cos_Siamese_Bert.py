@@ -558,10 +558,10 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 #         opp_pers_segment_ids = torch.tensor([f.segment_ids for f in opposite_perspective_features if f.segment_ids], dtype=torch.long)
 #         opp_pers_label_ids = torch.tensor([f.label_id for f in opposite_perspective_features if f.label_id], dtype=torch.long)
 
-        opp_claims_input_ids = torch.tensor([f.input_ids for f in opposite_claim_features if f.input_ids], dtype=torch.long)
-        opp_claims_input_mask = torch.tensor([f.input_mask for f in opposite_claim_features if f.input_mask], dtype=torch.long)
-        opp_claims_segment_ids = torch.tensor([f.segment_ids for f in opposite_claim_features if f.segment_ids], dtype=torch.long)
-        opp_claims_label_ids = torch.tensor([f.label_id for f in opposite_claim_features if f.label_id ], dtype=torch.long)
+        opp_claims_input_ids = torch.tensor([f.input_ids for f in opposite_claim_features], dtype=torch.long)
+        opp_claims_input_mask = torch.tensor([f.input_mask for f in opposite_claim_features], dtype=torch.long)
+        opp_claims_segment_ids = torch.tensor([f.segment_ids for f in opposite_claim_features], dtype=torch.long)
+        opp_claims_label_ids = torch.tensor([f.label_id for f in opposite_claim_features], dtype=torch.long)
         
         logger.info("  opp pers id: %d, opp pers mask: %d, opp pers seg: %d, opp pers label: %d, opp calims label: %d, calims label: %d ", len(opp_pers_input_ids),len(opp_pers_input_mask),len(opp_pers_segment_ids),len(opp_pers_label_ids),len(opp_claims_label_ids),len(claims_label_ids))
         
