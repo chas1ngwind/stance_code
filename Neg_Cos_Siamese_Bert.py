@@ -313,7 +313,7 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
 import csv
 from pytorch_pretrained_bert.file_utils import PYTORCH_PRETRAINED_BERT_CACHE
 def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
-                   output_dir=None, max_seq_length=96, do_train=False, do_eval=False, do_lower_case=False,
+                   output_dir=None, max_seq_length=80, do_train=False, do_eval=False, do_lower_case=False,
                    train_batch_size=32, eval_batch_size=8, learning_rate=5e-5, num_train_epochs=5,
                    warmup_proportion=0.1,no_cuda=False, local_rank=-1, seed=42, gradient_accumulation_steps=1,
                    optimize_on_cpu=False, fp16=False, loss_scale=128, saved_model=""):
@@ -563,7 +563,7 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
         opp_claims_segment_ids = torch.tensor([f.segment_ids for f in opposite_claim_features], dtype=torch.long)
         opp_claims_label_ids = torch.tensor([f.label_id for f in opposite_claim_features], dtype=torch.long)
         
-        logger.info("  opp pers id: %d, opp pers mask: %d, opp pers seg: %d, opp pers label: %d, opp calims label: %d, calims label: %d ", len(opp_pers_input_ids),len(opp_pers_input_mask),len(opp_pers_segment_ids),len(opp_pers_label_ids),len(opp_claims_label_ids),len(claims_label_ids))
+#         logger.info("  opp pers id: %d, opp pers mask: %d, opp pers seg: %d, opp pers label: %d, opp calims label: %d, calims label: %d ", len(opp_pers_input_ids),len(opp_pers_input_mask),len(opp_pers_segment_ids),len(opp_pers_label_ids),len(opp_claims_label_ids),len(claims_label_ids))
         
         train_data = TensorDataset(pers_input_ids, pers_input_mask, pers_segment_ids, pers_label_ids, claims_input_ids, claims_input_mask, claims_segment_ids, claims_label_ids, opp_pers_input_ids, opp_pers_input_mask, opp_pers_segment_ids, opp_pers_label_ids, opp_claims_input_ids, opp_claims_input_mask, opp_claims_segment_ids, opp_claims_label_ids)
 
