@@ -626,7 +626,7 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
     if do_eval and (local_rank == -1 or torch.distributed.get_rank() == 0):
      
     
-        test_df = processor.get_test_df(data_dir)
+        test_df = processor.get_dev_df(data_dir)
         
         new_test_df = generate_opp_dataset(test_df)
         
