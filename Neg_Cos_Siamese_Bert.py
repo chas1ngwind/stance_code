@@ -216,14 +216,14 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
         cop_cos_pooled_outputs = torch.cosine_similarity(pooled_output2, pooled_output3, dim=1)
         
 
-        ocp_final_output_cat = torch.cat((pooled_output4, pooled_output1),1)
-        ocp_final_output_minus = torch.abs(pooled_output4-pooled_output1)
-        ocp_final_output_mult = torch.mul(pooled_output4, pooled_output1)
+        ocp_final_output_cat = torch.cat((pooled_output4, pooled_output),1)
+        ocp_final_output_minus = torch.abs(pooled_output4-pooled_output)
+        ocp_final_output_mult = torch.mul(pooled_output4, pooled_output)
 #         final_output_mimu = torch.cat((final_output_minus, final_output_mult),1)
 #         final_output_camu = torch.cat((final_output_cat, final_output_mult),1)
 #         final_output_cami = torch.cat((final_output_cat, final_output_minus),1)
         ocp_final_output_camimu = torch.cat((ocp_final_output_cat, ocp_final_output_minus, ocp_final_output_mult),1)
-        ocp_cos_pooled_outputs = torch.cosine_similarity(pooled_output4, pooled_output1, dim=1)
+        ocp_cos_pooled_outputs = torch.cosine_similarity(pooled_output4, pooled_output, dim=1)
         
         
         
