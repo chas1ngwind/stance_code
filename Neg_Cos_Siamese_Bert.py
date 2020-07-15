@@ -624,6 +624,14 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 
 
     if do_eval and (local_rank == -1 or torch.distributed.get_rank() == 0):
+     
+    
+        test_df = processor.get_test_df(data_dir)
+        
+        new_test_df = generate_opp_dataset(test_df)
+        
+        new_test_df.to_csv(os.path.join(data_dir, "new_test.tsv"),sep='\t',index=False)
+
         eval_examples = processor.get_test_examples(data_dir)
 #         eval_examples = processor.get_dev_examples(data_dir)
         claim_features = convert_claims_to_features(eval_examples, label_list, max_seq_length, tokenizer)
@@ -826,8 +834,8 @@ def evaluation_with_pretrained():
 
 
 if __name__ == "__main__":
-    experiments()
-#     evaluation_with_pretrained()
+#     experiments()
+    evaluation_with_pretrained()
 
 
 # In[ ]:
