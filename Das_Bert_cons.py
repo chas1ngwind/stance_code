@@ -172,7 +172,7 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
         pooled_output = self.dropout(pooled_output)
         pooled_outputC = self.dropout(pooled_outputC)
         
-        cos_pooled_outputs = torch.cosine_similarity(pooled_output, pooled_outputC, dim=-1)
+        cos_pooled_outputs = torch.cosine_similarity(pooled_output, pooled_outputC, dim=1)
         
 #         print('pooled_output size:')
 #         print(pooled_output.size())
@@ -196,6 +196,7 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
 #         print(torch.cat((pooled_output, cos_pooled_outputs.unsqueeze(1)),1))
 #         print((pooled_output*cos_pooled_outputs.unsqueeze(1)))
         logits_cos = self.classifier(torch.cat((pooled_output, cos_pooled_outputs.unsqueeze(1)),1))
+        logits_final = logits_ce+logits_cos
 #         logits_cos = self.classifier2((pooled_output*cos_pooled_outputs.unsqueeze(1)))
 #         self.classifier = torch.nn.Linear(hidden_size+batch_size, 2).to(device)
 #         logits_cos = self.classifier(torch.cat((pooled_output, cos_pooled_outputs.repeat(batch_size,1)),1))
@@ -258,7 +259,7 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
                 outputs = loss
                 return outputs
         else:
-            return logits_cos
+            return logits_final
         
           # (loss), logits, (hidden_states), (attentions)
 
