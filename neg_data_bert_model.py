@@ -807,7 +807,7 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 
 
 def experiments():
-    data_dir = "/var/scratch/syg340/project/stance_code/Dataset"
+    data_dir = "/var/scratch/syg340/project/stance_code/Dataset/"
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset/stancy/"
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset/ibmcs/"
     

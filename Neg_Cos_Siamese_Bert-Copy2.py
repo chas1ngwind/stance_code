@@ -626,13 +626,13 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
     if do_eval and (local_rank == -1 or torch.distributed.get_rank() == 0):
      
     
-        test_df = processor.get_test_df(data_dir)
+        test_df = processor.get_dev_df(data_dir)
         
         new_test_df = generate_opp_dataset(test_df)
         
-        new_test_df.to_csv(os.path.join(data_dir, "new_test.tsv"),sep='\t',index=False)
+        new_test_df.to_csv(os.path.join(data_dir, "new_dev.tsv"),sep='\t',index=False)
 
-        eval_examples = processor.get_test_examples(data_dir)
+        eval_examples = processor.get_dev_examples(data_dir)
 #         eval_examples = processor.get_dev_examples(data_dir)
         claim_features = convert_claims_to_features(eval_examples, label_list, max_seq_length, tokenizer)
         eval_features = convert_pers_to_features(eval_examples, label_list, max_seq_length, tokenizer)
@@ -823,7 +823,7 @@ def experiments():
 def evaluation_with_pretrained():
 #     bert_model = "/var/scratch/syg340/project/cos_siamese_models/319cos/319_cos_camimu_siamese_bert_epoch5.pth"
     bert_model = "/var/scratch/syg340/project/stance_code/Evaluation/319/neg_siamese_bert_epoch5.pth"
-    data_dir = "/var/scratch/syg340/project/stance_code/Dataset/stancy/"
+    data_dir = "/var/scratch/syg340/project/stance_code/Dataset"
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset/ibmcs/"
 
     data_dir_output = "/var/scratch/syg340/project/stance_code/Evaluation/bert_dummy_output/"
