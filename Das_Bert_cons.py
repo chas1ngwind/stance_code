@@ -183,7 +183,7 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
         batch_size = list(pooled_output.size())[0]
         hidden_size = list(pooled_output.size())[1]
 
-        logits_ce = self.classifier2(pooled_output)
+        logits_ce = self.classifier2(pooled_outputC)
 #         print('logits_ce:')
 #         print(logits_ce)
         
@@ -259,7 +259,7 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
                 outputs = loss
                 return outputs
         else:
-            return logits_ce
+            return logits_final
         
           # (loss), logits, (hidden_states), (attentions)
 
