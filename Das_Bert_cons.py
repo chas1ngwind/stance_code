@@ -244,8 +244,8 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
 # #                loss_cos = loss_fct_cos(pooled_output, pooled_outputC, labels2)
         
         
-# #                 loss_cos = loss_fct_cos(logits_ce, logits_cos, labels2)
-                loss_cos = loss_fct_ce(logits_cos.view(-1, self.num_labels), labels2.view(-1))
+                loss_cos = loss_fct_cos(logits_ce, logits_cos, labels2)
+#                 loss_cos = loss_fct_ce(logits_cos.view(-1, self.num_labels), labels2.view(-1))
 #                 print('loss_cos:')
 #                 print(loss_cos)
             
@@ -950,7 +950,9 @@ def experiments():
 
 
 def evaluation_with_pretrained():
-    bert_model = "/var/scratch/syg340/project/cos_siamese_models/319stancy/319_bertcons_epoch5.pth"
+#     bert_model = "/var/scratch/syg340/project/cos_siamese_models/319stancy/319_bertcons_epoch5.pth"
+    bert_model = "/var/scratch/syg340/project/cos_siamese_models/bertcons_epoch5.pth"
+#     bertcons_epoch5.pth
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset"
     data_dir = "/var/scratch/syg340/project/stance_code/Dataset/neg/"
 
