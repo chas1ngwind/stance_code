@@ -259,7 +259,7 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
                 outputs = loss
                 return outputs
         else:
-            return logits_final
+            return logits_ce
         
           # (loss), logits, (hidden_states), (attentions)
 
