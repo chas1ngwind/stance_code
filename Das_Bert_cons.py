@@ -950,7 +950,7 @@ def experiments():
 
 
 def evaluation_with_pretrained():
-    bert_model = "/var/scratch/syg340/project/cos_siamese_models/bertcons_epoch5.pth"
+    bert_model = "/var/scratch/syg340/project/cos_siamese_models/319stancy/319_bertcons_epoch5.pth"
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset"
     data_dir = "/var/scratch/syg340/project/stance_code/Dataset/neg/"
 
