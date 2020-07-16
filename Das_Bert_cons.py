@@ -907,8 +907,8 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 #                   'loss': tr_loss/nb_tr_steps
                   }
 
-        output_eval_file = os.path.join(output_dir, "on319_bert_cons_epoch5_eval_results.txt")
-        output_raw_score = os.path.join(output_dir, "on319_bert_cons_epoch5_raw_score.csv")
+        output_eval_file = os.path.join(output_dir, "neg_bert_cons_epoch5_eval_results.txt")
+        output_raw_score = os.path.join(output_dir, "neg_bert_cons_epoch5_raw_score.csv")
         with open(output_eval_file, "w") as writer:
             logger.info("***** Eval results *****")
             for key in sorted(result.keys()):
@@ -952,7 +952,7 @@ def experiments():
 def evaluation_with_pretrained():
     bert_model = "/var/scratch/syg340/project/cos_siamese_models/bertcons_epoch5.pth"
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset"
-    data_dir = "/var/scratch/syg340/project/stance_code/Dataset/stancy/"
+    data_dir = "/var/scratch/syg340/project/stance_code/Dataset/neg/"
 
     data_dir_output = "/var/scratch/syg340/project/stance_code/Evaluation/bert_dummy_output/"
     train_and_test(data_dir=data_dir, do_train=False, do_eval=True, output_dir=data_dir_output,task_name="stance",saved_model=bert_model)
