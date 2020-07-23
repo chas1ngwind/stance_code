@@ -1,0 +1,7 @@
+eval_loss = 1.8524512621072622
+eval_macro_f1 = 0.6077986812171192
+eval_macro_p = 0.677628205128205
+eval_macro_r = 0.5510164835164835
+eval_micro_f1 = 0.6000000000000001
+eval_micro_p = 0.6571428571428571
+eval_micro_r = 0.552
