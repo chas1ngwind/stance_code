@@ -258,13 +258,13 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
         ocp_logits_ce = self.classifier(ocp_final_output_all)
         
 
-        best_score = 0
-        logits_grid = []
-        for ori in (list(np.arange(0,2.5,0.5))+[10,100,1000]):
-            for cop in (list(np.arange(0,2.5,0.5))+[10,100,1000]):
-                for ocp in (list(np.arange(0,2.5,0.5))+[10,100,1000]):
-                    for ocop in (list(np.arange(0,2.5,0.5))+[10,100,1000]):
-                        logits_grid = logits_grid.append((ori*logits_ce)-(cop*cop_logits_ce)-(ocp*ocp_logits_ce)+(ocop*ocop_logits_ce))
+#         best_score = 0
+#         logits_grid = []
+#         for ori in (list(np.arange(0,2.5,0.5))+[10,100,1000]):
+#             for cop in (list(np.arange(0,2.5,0.5))+[10,100,1000]):
+#                 for ocp in (list(np.arange(0,2.5,0.5))+[10,100,1000]):
+#                     for ocop in (list(np.arange(0,2.5,0.5))+[10,100,1000]):
+#                         logits_grid.append((ori*logits_ce)-(cop*cop_logits_ce)-(ocp*ocp_logits_ce)+(ocop*ocop_logits_ce))
 
         ####   grid search end
 #         if input_ids4 and input_ids3:
