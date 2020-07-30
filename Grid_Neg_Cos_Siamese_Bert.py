@@ -258,7 +258,7 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
         ocp_logits_ce = self.classifier(ocp_final_output_all)
         
 
-        best_score = 0
+        
         logits_grid = []
         for ori in (list(np.arange(0,2.5,0.5))+[10,100,1000]):
             for cop in (list(np.arange(0,2.5,0.5))+[10,100,1000]):
@@ -268,7 +268,7 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
 
         ####   grid search end
 #         if input_ids4 and input_ids3:
-        final_logits = logits_ce-(0.5*cop_logits_ce)-(0.5*ocp_logits_ce)+(0.5*ocop_logits_ce)
+        final_logits = logits_ce-(0.33*cop_logits_ce)-(0.33*ocp_logits_ce)+(0.33*ocop_logits_ce)
 #         elif input_ids3:
 #             final_logits = logits_ce-(0.33*cop_logits_ce)
 #         elif input_ids4:
@@ -739,61 +739,63 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
             with torch.no_grad():
                 tmp_eval_loss = model(input_ids=input_ids, token_type_ids=segment_ids, attention_mask=input_mask, labels=label_ids, input_ids2=claim_input_ids, token_type_ids2=claim_segment_ids, attention_mask2=claim_input_mask, labels2=claim_label_ids, input_ids3=opp_input_ids, token_type_ids3=opp_segment_ids, attention_mask3=opp_input_mask, labels3=opp_label_ids, input_ids4=opp_claim_input_ids, token_type_ids4=opp_claim_segment_ids, attention_mask4=opp_claim_input_mask, labels4=opp_claim_label_ids)
                 
-                logits = model(input_ids=input_ids, token_type_ids=segment_ids, attention_mask=input_mask, input_ids2=claim_input_ids, token_type_ids2=claim_segment_ids, attention_mask2=claim_input_mask, input_ids3=opp_input_ids, token_type_ids3=opp_segment_ids, attention_mask3=opp_input_mask, input_ids4=opp_claim_input_ids, token_type_ids4=opp_claim_segment_ids, attention_mask4=opp_claim_input_mask)
-#                 logits_grid = model(input_ids=input_ids, token_type_ids=segment_ids, attention_mask=input_mask, input_ids2=claim_input_ids, token_type_ids2=claim_segment_ids, attention_mask2=claim_input_mask, input_ids3=opp_input_ids, token_type_ids3=opp_segment_ids, attention_mask3=opp_input_mask, input_ids4=opp_claim_input_ids, token_type_ids4=opp_claim_segment_ids, attention_mask4=opp_claim_input_mask)
+#                 logits = model(input_ids=input_ids, token_type_ids=segment_ids, attention_mask=input_mask, input_ids2=claim_input_ids, token_type_ids2=claim_segment_ids, attention_mask2=claim_input_mask, input_ids3=opp_input_ids, token_type_ids3=opp_segment_ids, attention_mask3=opp_input_mask, input_ids4=opp_claim_input_ids, token_type_ids4=opp_claim_segment_ids, attention_mask4=opp_claim_input_mask)
+                logits_grid = model(input_ids=input_ids, token_type_ids=segment_ids, attention_mask=input_mask, input_ids2=claim_input_ids, token_type_ids2=claim_segment_ids, attention_mask2=claim_input_mask, input_ids3=opp_input_ids, token_type_ids3=opp_segment_ids, attention_mask3=opp_input_mask, input_ids4=opp_claim_input_ids, token_type_ids4=opp_claim_segment_ids, attention_mask4=opp_claim_input_mask)
             
+            best_score = 0
+            for logits in logits_grid:
+                
 #             print(logits)
 #             print(logits[0])
-            logits = logits.detach().cpu().numpy()
+                logits = logits.detach().cpu().numpy()
 #             print(logits)
-            label_ids = label_ids.to('cpu').numpy()
+                label_ids = label_ids.to('cpu').numpy()
 #             print(label_ids)
 
             # Micro F1 (aggregated tp, fp, fn counts across all examples)
-            tmp_tp, tmp_pred_c, tmp_gold_c = tp_pcount_gcount(logits, label_ids)
-            eval_tp += tmp_tp
-            eval_pred_c += tmp_pred_c
-            eval_gold_c += tmp_gold_c
-            
-            pred_label = np.argmax(logits, axis=1)
-            raw_score += zip(logits, pred_label, label_ids)
+                tmp_tp, tmp_pred_c, tmp_gold_c = tp_pcount_gcount(logits, label_ids)
+                eval_tp += tmp_tp
+                eval_pred_c += tmp_pred_c
+                eval_gold_c += tmp_gold_c
+
+                pred_label = np.argmax(logits, axis=1)
+                raw_score += zip(logits, pred_label, label_ids)
             
             # Macro F1 (averaged P, R across mini batches)
-            tmp_eval_p, tmp_eval_r, tmp_eval_f1 = p_r_f1(logits, label_ids)
+                tmp_eval_p, tmp_eval_r, tmp_eval_f1 = p_r_f1(logits, label_ids)
 
-            eval_macro_p += tmp_eval_p
-            eval_macro_r += tmp_eval_r
+                eval_macro_p += tmp_eval_p
+                eval_macro_r += tmp_eval_r
 
-            eval_loss += tmp_eval_loss.mean().item()
-            nb_eval_examples += input_ids.size(0)
-            nb_eval_steps += 1
-
+                eval_loss += tmp_eval_loss.mean().item()
+                nb_eval_examples += input_ids.size(0)
+                nb_eval_steps += 1
 
         # Micro F1 (aggregated tp, fp, fn counts across all examples)
-        eval_micro_p = eval_tp / eval_pred_c
-        eval_micro_r = eval_tp / eval_gold_c
-        eval_micro_f1 = 2 * eval_micro_p * eval_micro_r / (eval_micro_p + eval_micro_r)
+            eval_micro_p = eval_tp / eval_pred_c
+            eval_micro_r = eval_tp / eval_gold_c
+            eval_micro_f1 = 2 * eval_micro_p * eval_micro_r / (eval_micro_p + eval_micro_r)
 
-        # Macro F1 (averaged P, R across mini batches)
-        eval_macro_p = eval_macro_p / nb_eval_steps
-        eval_macro_r = eval_macro_r / nb_eval_steps
-        eval_macro_f1 = 2 * eval_macro_p * eval_macro_r / (eval_macro_p + eval_macro_r)
+            # Macro F1 (averaged P, R across mini batches)
+            eval_macro_p = eval_macro_p / nb_eval_steps
+            eval_macro_r = eval_macro_r / nb_eval_steps
+            eval_macro_f1 = 2 * eval_macro_p * eval_macro_r / (eval_macro_p + eval_macro_r)
 
-        eval_loss = eval_loss / nb_eval_steps
-        result = {
-                  'eval_loss': eval_loss,
-                  'eval_micro_p': eval_micro_p,
-                  'eval_micro_r': eval_micro_r,
-                  'eval_micro_f1': eval_micro_f1,
-                  'eval_macro_p': eval_macro_p,
-                  'eval_macro_r': eval_macro_r,
-                  'eval_macro_f1': eval_macro_f1,
-#                   'global_step': global_step,
-#                   'loss': tr_loss/nb_tr_steps
-                  }
+            eval_loss = eval_loss / nb_eval_steps
+            result = {
+                      'eval_loss': eval_loss,
+                      'eval_micro_p': eval_micro_p,
+                      'eval_micro_r': eval_micro_r,
+                      'eval_micro_f1': eval_micro_f1,
+                      'eval_macro_p': eval_macro_p,
+                      'eval_macro_r': eval_macro_r,
+                      'eval_macro_f1': eval_macro_f1,
+    #                   'global_step': global_step,
+    #                   'loss': tr_loss/nb_tr_steps
+                      }
 
-        output_eval_file = os.path.join(output_dir, "neg1050505_siamese_bert_epoch5_eval_results.txt")
-        output_raw_score = os.path.join(output_dir, "neg1050505_siamese_bert_epoch5_raw_score.csv")
+        output_eval_file = os.path.join(output_dir, "neg_siamese_bert_epoch5_eval_results.txt")
+        output_raw_score = os.path.join(output_dir, "neg_siamese_bert_epoch5_raw_score.csv")
         with open(output_eval_file, "w") as writer:
             logger.info("***** Eval results *****")
             for key in sorted(result.keys()):
