@@ -680,26 +680,31 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
         opp_claims_segment_ids = torch.tensor([f.segment_ids for f in opposite_claim_features], dtype=torch.long)
         opp_claims_label_ids = torch.tensor([f.label_id for f in opposite_claim_features], dtype=torch.long)
         
-        logger.info("%d%d%d%d", len(pers_input_ids),len(claims_input_ids),len(opp_pers_input_ids),len(opp_claims_input_ids))
+#         logger.info("%d%d%d%d", len(pers_input_ids),len(claims_input_ids),len(opp_pers_input_ids),len(opp_claims_input_ids))
         
         eval_data = TensorDataset(pers_input_ids, pers_input_mask, pers_segment_ids, pers_label_ids, claims_input_ids, claims_input_mask, claims_segment_ids, claims_label_ids, opp_pers_input_ids, opp_pers_input_mask, opp_pers_segment_ids, opp_pers_label_ids, opp_claims_input_ids, opp_claims_input_mask, opp_claims_segment_ids, opp_claims_label_ids)
         
-        logger.info(eval_data)
+#         logger.info(eval_data)
         # Run prediction for full data
 #         eval_sampler = SequentialSampler(eval_data)
         eval_sampler = SequentialSampler(eval_data)
+        logger.info("1")
         eval_dataloader = DataLoader(eval_data, sampler=eval_sampler, batch_size=eval_batch_size)
 #         print('all_input_ids:')
 #         print(all_input_ids)
-        
+        logger.info("2")
         
 
 #         model.load_state_dict(torch.load(saved_model))
         model_state_dict = torch.load(saved_model)
+        logger.info("3")
         model = BertForConsistencyCueClassification.from_pretrained('bert-base-uncased', num_labels=2, state_dict=model_state_dict)
+        logger.info("4")
         model.to(device)
+        logger.info("5")
         
         model.eval()
+        logger.info("6")
         # eval_loss, eval_accuracy = 0, 0
 
         eval_tp, eval_pred_c, eval_gold_c = 0, 0, 0
