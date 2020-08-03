@@ -268,7 +268,7 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
 
         ####   grid search end
 #         if input_ids4 and input_ids3:
-        final_logits = (1*logits_ce)-(0.25*cop_logits_ce)-(0.25*ocp_logits_ce)+(1*ocop_logits_ce)
+        final_logits = (1*logits_ce)-(0.33*cop_logits_ce)-(0.33*ocp_logits_ce)+(0.33*ocop_logits_ce)
 #         elif input_ids3:
 #             final_logits = logits_ce-(0.33*cop_logits_ce)
 #         elif input_ids4:
@@ -792,8 +792,8 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 #                   'loss': tr_loss/nb_tr_steps
                   }
 
-        output_eval_file = os.path.join(output_dir, "neg10250251_siamese_bert_epoch5_eval_results.txt")
-        output_raw_score = os.path.join(output_dir, "neg10250251_siamese_bert_epoch5_raw_score.csv")
+        output_eval_file = os.path.join(output_dir, "onnew_neg_siamese_bert_epoch5_eval_results.txt")
+        output_raw_score = os.path.join(output_dir, "onnew_neg_siamese_bert_epoch5_raw_score.csv")
         with open(output_eval_file, "w") as writer:
             logger.info("***** Eval results *****")
             for key in sorted(result.keys()):
@@ -839,7 +839,7 @@ def experiments():
 def evaluation_with_pretrained():
 #     bert_model = "/var/scratch/syg340/project/cos_siamese_models/319cos/319_cos_camimu_siamese_bert_epoch5.pth"
     bert_model = "/var/scratch/syg340/project/neg_models/neg_siamese_bert_epoch5.pth"
-    data_dir = "/var/scratch/syg340/project/stance_code/Dataset/stancy/"
+    data_dir = "/var/scratch/syg340/project/stance_code/Dataset/"
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset/ibmcs/"
 
     data_dir_output = "/var/scratch/syg340/project/stance_code/Evaluation/bert_dummy_output/"
