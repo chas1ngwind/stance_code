@@ -637,21 +637,21 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
     
         test_df = processor.get_test_df(data_dir)
         
-        new_test_df = generate_opp_dataset(test_df)
+#         new_test_df = generate_opp_dataset(test_df)
         
-        new_test_df.to_csv(os.path.join(data_dir, "new_test.tsv"),sep='\t',index=False)
+#         new_test_df.to_csv(os.path.join(data_dir, "new_test.tsv"),sep='\t',index=False)
         
         train_df = processor.get_train_df(data_dir)
         
-        new_train_df = generate_opp_dataset(train_df)
+#         new_train_df = generate_opp_dataset(train_df)
         
-        new_train_df.to_csv(os.path.join(data_dir, "new_train.tsv"),sep='\t',index=False)
+#         new_train_df.to_csv(os.path.join(data_dir, "new_train.tsv"),sep='\t',index=False)
         
         dev_df = processor.get_dev_df(data_dir)
         
-        new_dev_df = generate_opp_dataset(dev_df)
+#         new_dev_df = generate_opp_dataset(dev_df)
         
-        new_dev_df.to_csv(os.path.join(data_dir, "new_dev.tsv"),sep='\t',index=False)
+#         new_dev_df.to_csv(os.path.join(data_dir, "new_dev.tsv"),sep='\t',index=False)
 
         eval_examples = processor.get_test_examples(data_dir)
 #         eval_examples = processor.get_dev_examples(data_dir)
