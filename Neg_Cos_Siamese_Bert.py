@@ -268,7 +268,7 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
 
         ####   grid search end
 #         if input_ids4 and input_ids3:
-        final_logits = (1*logits_ce)-(0.33*cop_logits_ce)-(0.33*ocp_logits_ce)+(0.33*ocop_logits_ce)
+        final_logits = (1*logits_ce)-(0.2*cop_logits_ce)-(0.2*ocp_logits_ce)+(0.4*ocop_logits_ce)
 #         elif input_ids3:
 #             final_logits = logits_ce-(0.33*cop_logits_ce)
 #         elif input_ids4:

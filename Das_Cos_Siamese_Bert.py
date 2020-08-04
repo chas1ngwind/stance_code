@@ -663,7 +663,7 @@ def evaluation_with_pretrained():
     bert_model = "/var/scratch/syg340/project/cos_siamese_models/cosloss_camimu_siamese_bert_epoch5.pth"
 #     bert_model = "/var/scratch/syg340/project/cos_siamese_models/siamese_ibmcs/ibmcs_siamese_bert_epoch5.pth"
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset"
-    data_dir = "/var/scratch/syg340/project/stance_code/Dataset/new_neg/"
+    data_dir = "/var/scratch/syg340/project/stance_code/Dataset/neg/"
 
     data_dir_output = "/var/scratch/syg340/project/stance_code/Evaluation/bert_dummy_output/"
     train_and_test(data_dir=data_dir, do_train=False, do_eval=True, output_dir=data_dir_output,task_name="stance",saved_model=bert_model)
