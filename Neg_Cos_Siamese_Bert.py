@@ -268,7 +268,7 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
 
         ####   grid search end
 #         if input_ids4 and input_ids3:
-        final_logits = (1*logits_ce)-(0.2*cop_logits_ce)-(0.2*ocp_logits_ce)+(0.4*ocop_logits_ce)
+        final_logits = (0.25*logits_ce)-(1*cop_logits_ce)-(1*ocp_logits_ce)+(0.25*ocop_logits_ce)
 #         elif input_ids3:
 #             final_logits = logits_ce-(0.33*cop_logits_ce)
 #         elif input_ids4:
@@ -807,8 +807,8 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 #                   'loss': tr_loss/nb_tr_steps
                   }
 
-        output_eval_file = os.path.join(output_dir, "onnew_neg_siamese_bert_epoch5_eval_results.txt")
-        output_raw_score = os.path.join(output_dir, "onnew_neg_siamese_bert_epoch5_raw_score.csv")
+        output_eval_file = os.path.join(output_dir, "02511025_onnew_neg_siamese_bert_epoch5_eval_results.txt")
+        output_raw_score = os.path.join(output_dir, "02511025_onnew_neg_siamese_bert_epoch5_raw_score.csv")
         with open(output_eval_file, "w") as writer:
             logger.info("***** Eval results *****")
             for key in sorted(result.keys()):
