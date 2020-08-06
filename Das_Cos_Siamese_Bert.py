@@ -199,13 +199,19 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
 #                 print(loss_ori)
                 loss_fct_cos = CosineEmbeddingLoss()
 
-                labels2[labels2==0] = -1
+#                 labels2[labels2==0] = -1
+#                 loss_cos = loss_fct_cos(pooled_output, pooled_output2, labels2)
+#                 labels2[labels2==-1] = 0
+                
+                labels2[labels2==1] = -1
+                labels2[labels2==0] = 1
                 loss_cos = loss_fct_cos(pooled_output, pooled_output2, labels2)
-                labels2[labels2==-1] = 0
+                labels2[labels2== 1] = 0
+                labels2[labels2==-1] = 1
 #                 logger.info('loss_cos:')
 #                 logger.info(loss_cos)
             
-                loss = loss_ce
+                loss = loss_ce+loss_cos
 #                 logger.info('final loss:')
 #                 logger.info(loss)
                 
@@ -356,8 +362,8 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
         raise ValueError("At least one of `do_train` or `do_eval` must be True.")
 
     if do_train:
-        if os.path.exists(output_dir) and os.listdir(output_dir):
-            raise ValueError("Output directory ({}) already exists and is not empty.".format(output_dir))
+#         if os.path.exists(output_dir) and os.listdir(output_dir):
+#             raise ValueError("Output directory ({}) already exists and is not empty.".format(output_dir))
         os.makedirs(output_dir, exist_ok=True)
 
     task_name = task_name.lower()
@@ -490,7 +496,7 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
                     model.zero_grad()
                     global_step += 1
 
-        torch.save(model.state_dict(), output_dir + "ibmcs_siamese_bert_epoch5.pth")
+        torch.save(model.state_dict(), output_dir + "reverse_cos_siamese_bert_epoch5.pth")
 
 
     if do_eval and (local_rank == -1 or torch.distributed.get_rank() == 0):
@@ -646,10 +652,10 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 def experiments():
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset"
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset/stancy/"
-    data_dir = "/var/scratch/syg340/project/stance_code/Dataset/ibmcs/"
+    data_dir = "/var/scratch/syg340/project/stance_code/Dataset/"
     
     
-    data_dir_output = "/var/scratch/syg340/project/cos_siamese_models/siamese_ibmcs/"
+    data_dir_output = "/var/scratch/syg340/project/cos_siamese_models/"
 #     data_dir_output = "/var/scratch/syg340/project/stance_code/Evaluation/319/"
     train_and_test(data_dir=data_dir, do_train=True, do_eval=False, output_dir=data_dir_output,task_name="stance")
 
@@ -660,10 +666,10 @@ def experiments():
 def evaluation_with_pretrained():
 #     bert_model = "/var/scratch/syg340/project/cos_siamese_models/319cos/319_cos_camimu_siamese_bert_epoch5.pth"
 #     bert_model = "/var/scratch/syg340/project/cos_siamese_models/siamese/cos_camimu_siamese_bert_epoch5.pth"
-    bert_model = "/var/scratch/syg340/project/cos_siamese_models/siamese/cos_camimu_siamese_bert_epoch5.pth"
+    bert_model = "/var/scratch/syg340/project/cos_siamese_models/siamese/reverse_cos_siamese_bert_epoch5.pth"
 #     bert_model = "/var/scratch/syg340/project/cos_siamese_models/siamese_ibmcs/ibmcs_siamese_bert_epoch5.pth"
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset"
-    data_dir = "/var/scratch/syg340/project/stance_code/Dataset/neg/"
+    data_dir = "/var/scratch/syg340/project/stance_code/Dataset/"
 
     data_dir_output = "/var/scratch/syg340/project/stance_code/Evaluation/bert_dummy_output/"
     train_and_test(data_dir=data_dir, do_train=False, do_eval=True, output_dir=data_dir_output,task_name="stance",saved_model=bert_model)
