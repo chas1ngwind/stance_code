@@ -229,7 +229,7 @@ import csv
 from pytorch_pretrained_bert.file_utils import PYTORCH_PRETRAINED_BERT_CACHE
 def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
                    output_dir=None, max_seq_length=96, do_train=False, do_eval=False, do_lower_case=False,
-                   train_batch_size=32, eval_batch_size=8, learning_rate=5e-5, num_train_epochs=5,
+                   train_batch_size=32, eval_batch_size=8, learning_rate=5e-5, num_train_epochs=15,
                    warmup_proportion=0.1,no_cuda=False, local_rank=-1, seed=42, gradient_accumulation_steps=1,
                    optimize_on_cpu=False, fp16=False, loss_scale=128, saved_model=""):
     
@@ -496,7 +496,7 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
                     model.zero_grad()
                     global_step += 1
 
-        torch.save(model.state_dict(), output_dir + "reverse_cos_siamese_bert_epoch5.pth")
+        torch.save(model.state_dict(), output_dir + "reverse_cos_siamese_bert_epoch15.pth")
 
 
     if do_eval and (local_rank == -1 or torch.distributed.get_rank() == 0):
@@ -619,8 +619,8 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 #                   'loss': tr_loss/nb_tr_steps
                   }
 
-        output_eval_file = os.path.join(output_dir, "onnew_negdataset_siamese_bert_epoch5_eval_results.txt")
-        output_raw_score = os.path.join(output_dir, "onnew_negdataset_siamese_bert_epoch5_raw_score.csv")
+        output_eval_file = os.path.join(output_dir, "reverse_cos_siamese_bert_epoch15_eval_results.txt")
+        output_raw_score = os.path.join(output_dir, "reverse_cos_siamese_bert_epoch15_raw_score.csv")
         with open(output_eval_file, "w") as writer:
             logger.info("***** Eval results *****")
             for key in sorted(result.keys()):
@@ -679,8 +679,8 @@ def evaluation_with_pretrained():
 
 
 if __name__ == "__main__":
-#     experiments()
-    evaluation_with_pretrained()
+    experiments()
+#     evaluation_with_pretrained()
 
 
 # In[ ]:
