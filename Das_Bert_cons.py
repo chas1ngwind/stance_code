@@ -310,17 +310,17 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
 # In[11]:
 
 
-# tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 
 
-# # In[12]:
+# In[12]:
 
 
-# # Prepare model 
-# model = BertForConsistencyCueClassification.from_pretrained('bert-base-uncased', num_labels=2)
-# model.to(device)
+# Prepare model 
+model = BertForConsistencyCueClassification.from_pretrained('bert-base-uncased', num_labels=2)
+model.to(device)
 
-# # model = BertModel.from_pretrained('bert-base-uncased')
+# model = BertModel.from_pretrained('bert-base-uncased')
 
 
 # # In[13]:
