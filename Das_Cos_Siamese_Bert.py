@@ -9,6 +9,7 @@ import random
 import numpy as np
 import os
 
+from sklearn.metrics import classification_report
 from tqdm import tqdm, trange
 # torch.cuda.empty_cache()
 from torch.utils.data import TensorDataset, DataLoader, RandomSampler, SequentialSampler
@@ -213,8 +214,8 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
 #                 logger.info(loss_cos)
             
                 loss = loss_ce+loss_cos
-                logger.info('final loss:')
-                logger.info(loss)
+#                 logger.info('final loss:')
+#                 logger.info(loss)
                 
 #             outputs = (loss,) + outputs
 #             outputs = (loss,) + logits_cos 
