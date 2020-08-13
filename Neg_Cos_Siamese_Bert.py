@@ -9,6 +9,7 @@ import random
 import numpy as np
 import os
 
+from sklearn.metrics import classification_report
 from tqdm import tqdm, trange
 # torch.cuda.empty_cache()
 from torch.utils.data import TensorDataset, DataLoader, RandomSampler, SequentialSampler
@@ -815,6 +816,7 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 
         output_eval_file = os.path.join(output_dir, "10505025_1e5_neg_siamese_bert_epoch15_eval_results.txt")
         output_raw_score = os.path.join(output_dir, "10505025_1e5_neg_siamese_bert_epoch15_raw_score.csv")
+        logger.info(classification_report(label_ids, pred_label, target_names=label_list, digits=4))
         with open(output_eval_file, "w") as writer:
             logger.info("***** Eval results *****")
             for key in sorted(result.keys()):
