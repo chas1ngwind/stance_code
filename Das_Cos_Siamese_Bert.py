@@ -537,12 +537,16 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
         model.to(device)
         
         model.eval()
-        # eval_loss, eval_accuracy = 0, 0
+        eval_accuracy = 0
 
         eval_tp, eval_pred_c, eval_gold_c = 0, 0, 0
         eval_loss, eval_macro_p, eval_macro_r = 0, 0, 0
 
         raw_score = []
+        predicted_labels = []
+        predicted_prob = []
+        gold_labels = []
+
 
         nb_eval_steps, nb_eval_examples = 0, 0
         for input_ids, input_mask, segment_ids, label_ids, claim_input_ids, claim_input_mask, claim_segment_ids, claim_label_ids in eval_dataloader:
@@ -577,6 +581,13 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
             label_ids = label_ids.to('cpu').numpy()
 #             print(label_ids)
 
+
+            tmp_eval_accuracy = accuracy(logits, label_ids)
+            
+            tmp_predicted = np.argmax(logits, axis=1)
+            predicted_labels.extend(tmp_predicted.tolist())
+            gold_labels.extend(label_ids.tolist())
+            
             # Micro F1 (aggregated tp, fp, fn counts across all examples)
             tmp_tp, tmp_pred_c, tmp_gold_c = tp_pcount_gcount(logits, label_ids)
             eval_tp += tmp_tp
@@ -593,6 +604,8 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
             eval_macro_r += tmp_eval_r
 
             eval_loss += tmp_eval_loss.mean().item()
+            eval_accuracy += tmp_eval_accuracy
+            
             nb_eval_examples += input_ids.size(0)
             nb_eval_steps += 1
 
@@ -608,6 +621,7 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
         eval_macro_f1 = 2 * eval_macro_p * eval_macro_r / (eval_macro_p + eval_macro_r)
 
         eval_loss = eval_loss / nb_eval_steps
+        eval_accuracy = eval_accuracy / nb_eval_examples
         result = {
                   'eval_loss': eval_loss,
                   'eval_micro_p': eval_micro_p,
@@ -622,6 +636,7 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 
         output_eval_file = os.path.join(output_dir, "non_reverse_cos_siamese_bert_epoch15_eval_results.txt")
         output_raw_score = os.path.join(output_dir, "non_reverse_cos_siamese_bert_epoch15_raw_score.csv")
+        logger.info(classification_report(gold_labels, predicted_labels, target_names=label_list, digits=4))
         with open(output_eval_file, "w") as writer:
             logger.info("***** Eval results *****")
             for key in sorted(result.keys()):
