@@ -724,6 +724,9 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
         eval_loss, eval_macro_p, eval_macro_r = 0, 0, 0
 
         raw_score = []
+        predicted_labels = []
+        predicted_prob = []
+        gold_labels = []
 
         nb_eval_steps, nb_eval_examples = 0, 0
         for input_ids, input_mask, segment_ids, label_ids, claim_input_ids, claim_input_mask, claim_segment_ids, claim_label_ids, opp_input_ids, opp_input_mask, opp_segment_ids, opp_label_ids, opp_claim_input_ids, opp_claim_input_mask, opp_claim_segment_ids, opp_claim_label_ids in eval_dataloader:
@@ -762,6 +765,8 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
                 tmp_eval_loss = model(input_ids=input_ids, token_type_ids=segment_ids, attention_mask=input_mask, labels=label_ids, input_ids2=claim_input_ids, token_type_ids2=claim_segment_ids, attention_mask2=claim_input_mask, labels2=claim_label_ids, input_ids3=opp_input_ids, token_type_ids3=opp_segment_ids, attention_mask3=opp_input_mask, labels3=opp_label_ids, input_ids4=opp_claim_input_ids, token_type_ids4=opp_claim_segment_ids, attention_mask4=opp_claim_input_mask, labels4=opp_claim_label_ids)
                 
                 logits = model(input_ids=input_ids, token_type_ids=segment_ids, attention_mask=input_mask, input_ids2=claim_input_ids, token_type_ids2=claim_segment_ids, attention_mask2=claim_input_mask, input_ids3=opp_input_ids, token_type_ids3=opp_segment_ids, attention_mask3=opp_input_mask, input_ids4=opp_claim_input_ids, token_type_ids4=opp_claim_segment_ids, attention_mask4=opp_claim_input_mask)
+                
+                predicted_prob.extend(torch.nn.functional.softmax(logits, dim=1))
 #                 logits_grid = model(input_ids=input_ids, token_type_ids=segment_ids, attention_mask=input_mask, input_ids2=claim_input_ids, token_type_ids2=claim_segment_ids, attention_mask2=claim_input_mask, input_ids3=opp_input_ids, token_type_ids3=opp_segment_ids, attention_mask3=opp_input_mask, input_ids4=opp_claim_input_ids, token_type_ids4=opp_claim_segment_ids, attention_mask4=opp_claim_input_mask)
             
 #             print(logits)
@@ -771,6 +776,12 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
             label_ids = label_ids.to('cpu').numpy()
 #             print(label_ids)
 
+            tmp_eval_accuracy = accuracy(logits, label_ids)
+            
+            tmp_predicted = np.argmax(logits, axis=1)
+            predicted_labels.extend(tmp_predicted.tolist())
+            gold_labels.extend(label_ids.tolist())
+            
             # Micro F1 (aggregated tp, fp, fn counts across all examples)
             tmp_tp, tmp_pred_c, tmp_gold_c = tp_pcount_gcount(logits, label_ids)
             eval_tp += tmp_tp
@@ -778,6 +789,9 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
             eval_gold_c += tmp_gold_c
             
             pred_label = np.argmax(logits, axis=1)
+            predicted_labels.extend(tmp_predicted.tolist())
+            gold_labels.extend(label_ids.tolist())
+            
             raw_score += zip(logits, pred_label, label_ids)
             
             # Macro F1 (averaged P, R across mini batches)
@@ -787,6 +801,8 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
             eval_macro_r += tmp_eval_r
 
             eval_loss += tmp_eval_loss.mean().item()
+            eval_accuracy += tmp_eval_accuracy
+            
             nb_eval_examples += input_ids.size(0)
             nb_eval_steps += 1
 
@@ -802,8 +818,10 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
         eval_macro_f1 = 2 * eval_macro_p * eval_macro_r / (eval_macro_p + eval_macro_r)
 
         eval_loss = eval_loss / nb_eval_steps
+        eval_accuracy = eval_accuracy / nb_eval_examples
         result = {
                   'eval_loss': eval_loss,
+                  'eval_accuracy':eval_accuracy,
                   'eval_micro_p': eval_micro_p,
                   'eval_micro_r': eval_micro_r,
                   'eval_micro_f1': eval_micro_f1,
@@ -816,12 +834,15 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 
         output_eval_file = os.path.join(output_dir, "10505025_1e5_neg_siamese_bert_epoch15_eval_results.txt")
         output_raw_score = os.path.join(output_dir, "10505025_1e5_neg_siamese_bert_epoch15_raw_score.csv")
+        
         logger.info(classification_report(label_ids, pred_label, target_names=label_list, digits=4))
         with open(output_eval_file, "w") as writer:
             logger.info("***** Eval results *****")
             for key in sorted(result.keys()):
                 logger.info("  %s = %s", key, str(result[key]))
                 writer.write("%s = %s\n" % (key, str(result[key])))
+            writer.write(classification_report(gold_labels, predicted_labels, target_names=label_list, digits=4))
+
 
         with open(output_raw_score, 'w') as fout:
             fields = ["undermine_score", "support_score","predict_label", "gold"]
@@ -834,7 +855,12 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
                     "predict_label": str(pred),
                     "gold": str(gold)
                 })
+                
+        writer = open(output_raw_score, "w")
+        for prob, pred_label, gold_label in zip(predicted_prob, predicted_labels, gold_labels):
+            writer.write("{}\t{}\t{}\n".format(prob.cpu().tolist(), pred_label, gold_label))
 
+        writer.close()
 
 # In[ ]:
 
