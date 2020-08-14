@@ -560,7 +560,7 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
                     model.zero_grad()
                     global_step += 1
 
-        torch.save(model.state_dict(), output_dir +"10505025_1e5_neg_siamese_bert_epoch5.pth")
+        torch.save(model.state_dict(), output_dir +"10505025_1e5_neg_siamese_bert_epoch15.pth")
 
 
     if do_eval and (local_rank == -1 or torch.distributed.get_rank() == 0):
@@ -775,7 +775,7 @@ def experiments():
 
 def evaluation_with_pretrained():
 #     bert_model = "/var/scratch/syg340/project/cos_siamese_models/319cos/319_cos_camimu_siamese_bert_epoch5.pth"
-    bert_model = "/var/scratch/syg340/project/cos_siamese_models/10505025_1e5_neg_siamese_bert_epoch5.pth"
+    bert_model = "/var/scratch/syg340/project/cos_siamese_models/10505025_1e5_neg_siamese_bert_epoch15.pth"
     data_dir = "/var/scratch/syg340/project/stance_code/Dataset/"
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset/ibmcs/"
 
