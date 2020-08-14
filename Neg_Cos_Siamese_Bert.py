@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[9]:
-
-
 import torch
 import random
 import numpy as np
@@ -15,14 +9,7 @@ from tqdm import tqdm, trange
 from torch.utils.data import TensorDataset, DataLoader, RandomSampler, SequentialSampler
 from pytorch_pretrained_bert.optimization import BertAdam
 
-
-# In[10]:
-
-
 from run_classifier import NegProcessor, generate_opp_dataset, convert_opp_pers_to_features, convert_opp_claims_to_features, StanceProcessor, MrpcProcessor, logger, convert_examples_to_features,   set_optimizer_params_grad, copy_optimizer_params_to_model, accuracy, p_r_f1, tp_pcount_gcount, convert_claims_to_features, convert_pers_to_features
-
-
-# In[11]:
 
 
 if torch.cuda.is_available():    
@@ -39,16 +26,9 @@ else:
     logger.info('No GPU available, using the CPU instead.')
     device = torch.device("cpu")
 
-
-# In[12]:
-
-
 from transformers import BertTokenizer, AdamW, get_linear_schedule_with_warmup
 from pytorch_pretrained_bert.modeling import BertForSequenceClassification, BertPreTrainedModel, BertModel, BertConfig
 from torch.nn import BCEWithLogitsLoss, CosineEmbeddingLoss,CrossEntropyLoss, MSELoss
-
-
-# In[13]:
 
 
 class BertForConsistencyCueClassification(BertPreTrainedModel):
@@ -143,36 +123,24 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
             input_ids,
             attention_mask=attention_mask,
             token_type_ids=token_type_ids,
-#             position_ids=position_ids,
-#             head_mask=head_mask,
-#             inputs_embeds=inputs_embeds,
         )
 # Claim rep
         _, outputs2 = self.bert(
             input_ids2,
             attention_mask=attention_mask2,
             token_type_ids=token_type_ids2,
-#             position_ids=position_ids2,
-#             head_mask=head_mask2,
-#             inputs_embeds=inputs_embeds2,
         )
 # Opp Pers rep        
         _, outputs3 = self.bert(
             input_ids3,
             attention_mask=attention_mask3,
             token_type_ids=token_type_ids3,
-#             position_ids=position_ids2,
-#             head_mask=head_mask2,
-#             inputs_embeds=inputs_embeds2,
         )
 # Opp Claim rep 
         _, outputs4 = self.bert(
             input_ids4,
             attention_mask=attention_mask4,
             token_type_ids=token_type_ids4,
-#             position_ids=position_ids2,
-#             head_mask=head_mask2,
-#             inputs_embeds=inputs_embeds2,
         )
     
         pooled_output = outputs
@@ -258,30 +226,7 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
         cop_logits_ce = self.classifier(cop_final_output_all)
         ocp_logits_ce = self.classifier(ocp_final_output_all)
         
-
-#         best_score = 0
-#         logits_grid = []
-#         for ori in (list(np.arange(0,2.5,0.5))+[10,100,1000]):
-#             for cop in (list(np.arange(0,2.5,0.5))+[10,100,1000]):
-#                 for ocp in (list(np.arange(0,2.5,0.5))+[10,100,1000]):
-#                     for ocop in (list(np.arange(0,2.5,0.5))+[10,100,1000]):
-#                         logits_grid.append((ori*logits_ce)-(cop*cop_logits_ce)-(ocp*ocp_logits_ce)+(ocop*ocop_logits_ce))
-
-        ####   grid search end
-#         if input_ids4 and input_ids3:
         final_logits = (1*logits_ce)-(0.5*cop_logits_ce)-(0.5*ocp_logits_ce)+(0.25*ocop_logits_ce)
-#         elif input_ids3:
-#             final_logits = logits_ce-(0.33*cop_logits_ce)
-#         elif input_ids4:
-#             final_logits = logits_ce-(0.33*ocp_logits_ce)
-#         else:
-#             final_logits = logits_ce
-#         print('logits_ce:')
-#         print(logits_ce)
-        
-#         logits_ori = self.classifier2(final_output_camimu)
-#         print('logits_ori:')
-#         print(logits_ori)
 
         #Calculate loss during training process
         if labels is not None:
@@ -292,38 +237,26 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
             else:
                 loss_fct_ce = CrossEntropyLoss()
                 loss_ce = loss_fct_ce(final_logits.view(-1, self.num_labels), labels.view(-1))
-#                 logger.info('loss_ce:')
-#                 logger.info(loss_ce)
-
-#                 loss_ori = loss_fct_ce(logits_ori.view(-1, self.num_labels), labels.view(-1))
-#                 print('loss_ori:')
-#                 print(loss_ori)
-                loss_fct_cos = CosineEmbeddingLoss()
-
-#                 labels2[labels2==0] = -1
-#                 loss_cos = loss_fct_cos(pooled_output, pooled_output2, labels2)
-#                 labels2[labels2==-1] = 0
                 
-                labels2[labels2==1] = -1
-                labels2[labels2==0] = 1
+                loss_fct_cos = CosineEmbeddingLoss()
+                
+                labels2[labels2==0] = -1
                 loss_cos = loss_fct_cos(pooled_output, pooled_output2, labels2)
-                labels2[labels2== 1] = 0
-                labels2[labels2==-1] = 1
-#                 logger.info('loss_cos:')
-#                 logger.info(loss_cos)
+                labels2[labels2==-1] = 0
+
+#                 labels2[labels2==1] = -1
+#                 labels2[labels2==0] = 1
+#                 loss_cos = loss_fct_cos(pooled_output, pooled_output2, labels2)
+#                 labels2[labels2== 1] = 0
+#                 labels2[labels2==-1] = 1
           
                 loss = loss_ce+loss_cos
-#                 logger.info('final loss:')
-#                 logger.info(loss)
-                
-#             outputs = (loss,) + outputs
-#             outputs = (loss,) + logits_cos 
+
                 outputs = loss
                 return outputs
         else:
             #Get predictions when doing evaluation
-            return final_logits
-        
+            return final_logits        
           # (loss), logits, (hidden_states), (attentions)
 
 import csv
@@ -428,8 +361,6 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 
     
     processors = {
-#         "cola": ColaProcessor,
-#         "mnli": MnliProcessor,
         "mrpc": MrpcProcessor,
         "stance":StanceProcessor,
         "neg":NegProcessor
@@ -527,7 +458,7 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
             {'params': [p for n, p in param_optimizer if any(nd in n for nd in no_decay)], 'weight_decay_rate': 0.0}
             ]
         t_total = num_train_steps
-#     print(t_total)
+
     if local_rank != -1:
         t_total = t_total // torch.distributed.get_world_size()
     if do_train:
@@ -568,11 +499,6 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
         opp_pers_segment_ids = torch.tensor([f.segment_ids for f in opposite_perspective_features], dtype=torch.long)
         opp_pers_label_ids = torch.tensor([f.label_id for f in opposite_perspective_features], dtype=torch.long)
         
-        
-#         opp_pers_input_ids = torch.tensor([f.input_ids for f in opposite_perspective_features if f.input_ids], dtype=torch.long)
-#         opp_pers_input_mask = torch.tensor([f.input_mask for f in opposite_perspective_features if f.input_mask], dtype=torch.long)
-#         opp_pers_segment_ids = torch.tensor([f.segment_ids for f in opposite_perspective_features if f.segment_ids], dtype=torch.long)
-#         opp_pers_label_ids = torch.tensor([f.label_id for f in opposite_perspective_features if f.label_id], dtype=torch.long)
 
         opp_claims_input_ids = torch.tensor([f.input_ids for f in opposite_claim_features], dtype=torch.long)
         opp_claims_input_mask = torch.tensor([f.input_mask for f in opposite_claim_features], dtype=torch.long)
@@ -599,9 +525,7 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
                 input_ids, input_mask, segment_ids, label_ids, claim_input_ids, claim_input_mask, claim_segment_ids, claim_label_ids, opp_input_ids, opp_input_mask, opp_segment_ids, opp_label_ids, opp_claim_input_ids, opp_claim_input_mask, opp_claim_segment_ids, opp_claim_label_ids = batch
                 
                 out_results = model(input_ids=input_ids, token_type_ids=segment_ids, attention_mask=input_mask, labels=label_ids, input_ids2=claim_input_ids, token_type_ids2=claim_segment_ids, attention_mask2=claim_input_mask, labels2=claim_label_ids, input_ids3=opp_input_ids, token_type_ids3=opp_segment_ids, attention_mask3=opp_input_mask, labels3=opp_label_ids, input_ids4=opp_claim_input_ids, token_type_ids4=opp_claim_segment_ids, attention_mask4=opp_claim_input_mask, labels4=opp_claim_label_ids)
-#                 loss = model(input_ids, segment_ids, input_mask, label_ids)
-#                 print("out_results:")
-#                 print(out_results)
+
                 loss = out_results
             
                 if n_gpu > 1:
@@ -693,31 +617,21 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
         opp_claims_segment_ids = torch.tensor([f.segment_ids for f in opposite_claim_features], dtype=torch.long)
         opp_claims_label_ids = torch.tensor([f.label_id for f in opposite_claim_features], dtype=torch.long)
         
-#         logger.info("%d%d%d%d", len(pers_input_ids),len(claims_input_ids),len(opp_pers_input_ids),len(opp_claims_input_ids))
         
         eval_data = TensorDataset(pers_input_ids, pers_input_mask, pers_segment_ids, pers_label_ids, claims_input_ids, claims_input_mask, claims_segment_ids, claims_label_ids, opp_pers_input_ids, opp_pers_input_mask, opp_pers_segment_ids, opp_pers_label_ids, opp_claims_input_ids, opp_claims_input_mask, opp_claims_segment_ids, opp_claims_label_ids)
         
-#         logger.info(eval_data)
+
         # Run prediction for full data
-#         eval_sampler = SequentialSampler(eval_data)
+
         eval_sampler = SequentialSampler(eval_data)
-        logger.info("1")
         eval_dataloader = DataLoader(eval_data, sampler=eval_sampler, batch_size=eval_batch_size)
-#         print('all_input_ids:')
-#         print(all_input_ids)
-        logger.info("2")
-        
 
 #         model.load_state_dict(torch.load(saved_model))
         model_state_dict = torch.load(saved_model)
-        logger.info("3")
         model = BertForConsistencyCueClassification.from_pretrained('bert-base-uncased', num_labels=2, state_dict=model_state_dict)
-        logger.info("4")
         model.to(device)
-        logger.info("5")
         
         model.eval()
-        logger.info("6")
         # eval_loss, eval_accuracy = 0, 0
 
         eval_tp, eval_pred_c, eval_gold_c = 0, 0, 0
@@ -751,30 +665,16 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
             opp_claim_segment_ids = opp_claim_segment_ids.to(device)
             opp_claim_label_ids = opp_claim_label_ids.to(device)
 
-#             print("start")
-#             print(input_ids)
-#             print(input_mask)
-#             print(segment_ids)
-#             print(label_ids)
-#             print(claim_input_ids)
-#             print(claim_input_mask)
-#             print(claim_segment_ids)
-#             print(claim_label_ids)
-#             print("end")
             with torch.no_grad():
                 tmp_eval_loss = model(input_ids=input_ids, token_type_ids=segment_ids, attention_mask=input_mask, labels=label_ids, input_ids2=claim_input_ids, token_type_ids2=claim_segment_ids, attention_mask2=claim_input_mask, labels2=claim_label_ids, input_ids3=opp_input_ids, token_type_ids3=opp_segment_ids, attention_mask3=opp_input_mask, labels3=opp_label_ids, input_ids4=opp_claim_input_ids, token_type_ids4=opp_claim_segment_ids, attention_mask4=opp_claim_input_mask, labels4=opp_claim_label_ids)
                 
                 logits = model(input_ids=input_ids, token_type_ids=segment_ids, attention_mask=input_mask, input_ids2=claim_input_ids, token_type_ids2=claim_segment_ids, attention_mask2=claim_input_mask, input_ids3=opp_input_ids, token_type_ids3=opp_segment_ids, attention_mask3=opp_input_mask, input_ids4=opp_claim_input_ids, token_type_ids4=opp_claim_segment_ids, attention_mask4=opp_claim_input_mask)
                 
                 predicted_prob.extend(torch.nn.functional.softmax(logits, dim=1))
-#                 logits_grid = model(input_ids=input_ids, token_type_ids=segment_ids, attention_mask=input_mask, input_ids2=claim_input_ids, token_type_ids2=claim_segment_ids, attention_mask2=claim_input_mask, input_ids3=opp_input_ids, token_type_ids3=opp_segment_ids, attention_mask3=opp_input_mask, input_ids4=opp_claim_input_ids, token_type_ids4=opp_claim_segment_ids, attention_mask4=opp_claim_input_mask)
-            
-#             print(logits)
-#             print(logits[0])
+                
             logits = logits.detach().cpu().numpy()
-#             print(logits)
+
             label_ids = label_ids.to('cpu').numpy()
-#             print(label_ids)
 
             tmp_eval_accuracy = accuracy(logits, label_ids)
             
@@ -860,14 +760,6 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 
         writer.close()
 
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
 
 def experiments():
     data_dir = "/var/scratch/syg340/project/stance_code/Dataset"
@@ -880,8 +772,6 @@ def experiments():
     train_and_test(data_dir=data_dir, do_train=True, do_eval=False, output_dir=data_dir_output,task_name="neg")
 
 
-# In[10]:
-
 
 def evaluation_with_pretrained():
 #     bert_model = "/var/scratch/syg340/project/cos_siamese_models/319cos/319_cos_camimu_siamese_bert_epoch5.pth"
@@ -893,15 +783,11 @@ def evaluation_with_pretrained():
     train_and_test(data_dir=data_dir, do_train=False, do_eval=True, output_dir=data_dir_output,task_name="neg",saved_model=bert_model)
 
 
-# In[11]:
-
 
 if __name__ == "__main__":
 #     experiments()
     evaluation_with_pretrained()
 
-
-# In[ ]:
 
 
 

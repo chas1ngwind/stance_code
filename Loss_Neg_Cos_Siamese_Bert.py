@@ -9,6 +9,7 @@ import random
 import numpy as np
 import os
 
+from sklearn.metrics import classification_report
 from tqdm import tqdm, trange
 # torch.cuda.empty_cache()
 from torch.utils.data import TensorDataset, DataLoader, RandomSampler, SequentialSampler
@@ -257,9 +258,18 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
         cop_logits_ce = self.classifier(cop_final_output_all)
         ocp_logits_ce = self.classifier(ocp_final_output_all)
         
-        
+
+#         best_score = 0
+#         logits_grid = []
+#         for ori in (list(np.arange(0,2.5,0.5))+[10,100,1000]):
+#             for cop in (list(np.arange(0,2.5,0.5))+[10,100,1000]):
+#                 for ocp in (list(np.arange(0,2.5,0.5))+[10,100,1000]):
+#                     for ocop in (list(np.arange(0,2.5,0.5))+[10,100,1000]):
+#                         logits_grid.append((ori*logits_ce)-(cop*cop_logits_ce)-(ocp*ocp_logits_ce)+(ocop*ocop_logits_ce))
+
+        ####   grid search end
 #         if input_ids4 and input_ids3:
-        final_logits = logits_ce-(0.33*cop_logits_ce)-(0.33*ocp_logits_ce)+(0.33*ocop_logits_ce)
+        final_logits = (1*logits_ce)-(0.5*cop_logits_ce)-(0.5*ocp_logits_ce)+(0.25*ocop_logits_ce)
 #         elif input_ids3:
 #             final_logits = logits_ce-(0.33*cop_logits_ce)
 #         elif input_ids4:
@@ -290,13 +300,31 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
 #                 print(loss_ori)
                 loss_fct_cos = CosineEmbeddingLoss()
 
-                labels2[labels2==0] = -1
-                loss_cos = loss_fct_cos(pooled_output, pooled_output2, labels2)
-                labels2[labels2==-1] = 0
+#                 labels2[labels2==0] = -1
+#                 loss_cos = loss_fct_cos(pooled_output, pooled_output2, labels2)
+#                 labels2[labels2==-1] = 0
+
+                #claim,opp perspective & opp claim,perspective
+                labels2[labels2==1] = -1
+                labels2[labels2==0] = 1
+                
+                loss_cos3 = loss_fct_cos(pooled_output2, pooled_output3, labels2)
+                loss_cos4 = loss_fct_cos(pooled_output4, pooled_output1, labels2)
+                
+                labels2[labels2== 1] = 0
+                labels2[labels2==-1] = 1
+                
+                
+                #claim, perspective & opp claim, opp perspective
+                labels3[labels3==0] = -1
+                loss_cos = loss_fct_cos(pooled_output, pooled_output2, labels3)
+                loss_cos2 = loss_fct_cos(pooled_output3, pooled_output4, labels3)
+                labels3[labels3== -1] = 0
+                
 #                 logger.info('loss_cos:')
 #                 logger.info(loss_cos)
-            
-                loss = loss_ce
+                loss_sim = loss_cos+(0.33*loss_cos2)+(0.33*loss_cos3)+(0.33*loss_cos4)
+                loss = loss_ce+loss_cos
 #                 logger.info('final loss:')
 #                 logger.info(loss)
                 
@@ -314,7 +342,7 @@ import csv
 from pytorch_pretrained_bert.file_utils import PYTORCH_PRETRAINED_BERT_CACHE
 def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
                    output_dir=None, max_seq_length=80, do_train=False, do_eval=False, do_lower_case=False,
-                   train_batch_size=24, eval_batch_size=8, learning_rate=5e-5, num_train_epochs=5,
+                   train_batch_size=24, eval_batch_size=8, learning_rate=1e-5, num_train_epochs=15,
                    warmup_proportion=0.1,no_cuda=False, local_rank=-1, seed=42, gradient_accumulation_steps=1,
                    optimize_on_cpu=False, fp16=False, loss_scale=128, saved_model=""):
     
@@ -620,19 +648,31 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
                     model.zero_grad()
                     global_step += 1
 
-        torch.save(model.state_dict(), output_dir +"neg_siamese_bert_epoch5.pth")
+        torch.save(model.state_dict(), output_dir +"10505025_1e5_neg_siamese_bert_epoch5.pth")
 
 
     if do_eval and (local_rank == -1 or torch.distributed.get_rank() == 0):
      
     
-        test_df = processor.get_dev_df(data_dir)
+        test_df = processor.get_test_df(data_dir)
         
-        new_test_df = generate_opp_dataset(test_df)
+#         new_test_df = generate_opp_dataset(test_df)
         
-        new_test_df.to_csv(os.path.join(data_dir, "new_dev.tsv"),sep='\t',index=False)
+#         new_test_df.to_csv(os.path.join(data_dir, "new_test.tsv"),sep='\t',index=False)
+        
+        train_df = processor.get_train_df(data_dir)
+        
+#         new_train_df = generate_opp_dataset(train_df)
+        
+#         new_train_df.to_csv(os.path.join(data_dir, "new_train.tsv"),sep='\t',index=False)
+        
+        dev_df = processor.get_dev_df(data_dir)
+        
+#         new_dev_df = generate_opp_dataset(dev_df)
+        
+#         new_dev_df.to_csv(os.path.join(data_dir, "new_dev.tsv"),sep='\t',index=False)
 
-        eval_examples = processor.get_dev_examples(data_dir)
+        eval_examples = processor.get_test_examples(data_dir)
 #         eval_examples = processor.get_dev_examples(data_dir)
         claim_features = convert_claims_to_features(eval_examples, label_list, max_seq_length, tokenizer)
         eval_features = convert_pers_to_features(eval_examples, label_list, max_seq_length, tokenizer)
@@ -665,28 +705,40 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
         opp_claims_segment_ids = torch.tensor([f.segment_ids for f in opposite_claim_features], dtype=torch.long)
         opp_claims_label_ids = torch.tensor([f.label_id for f in opposite_claim_features], dtype=torch.long)
         
+#         logger.info("%d%d%d%d", len(pers_input_ids),len(claims_input_ids),len(opp_pers_input_ids),len(opp_claims_input_ids))
+        
         eval_data = TensorDataset(pers_input_ids, pers_input_mask, pers_segment_ids, pers_label_ids, claims_input_ids, claims_input_mask, claims_segment_ids, claims_label_ids, opp_pers_input_ids, opp_pers_input_mask, opp_pers_segment_ids, opp_pers_label_ids, opp_claims_input_ids, opp_claims_input_mask, opp_claims_segment_ids, opp_claims_label_ids)
+        
+#         logger.info(eval_data)
         # Run prediction for full data
 #         eval_sampler = SequentialSampler(eval_data)
         eval_sampler = SequentialSampler(eval_data)
+        logger.info("1")
         eval_dataloader = DataLoader(eval_data, sampler=eval_sampler, batch_size=eval_batch_size)
 #         print('all_input_ids:')
 #         print(all_input_ids)
-        
+        logger.info("2")
         
 
 #         model.load_state_dict(torch.load(saved_model))
         model_state_dict = torch.load(saved_model)
+        logger.info("3")
         model = BertForConsistencyCueClassification.from_pretrained('bert-base-uncased', num_labels=2, state_dict=model_state_dict)
+        logger.info("4")
         model.to(device)
+        logger.info("5")
         
         model.eval()
+        logger.info("6")
         # eval_loss, eval_accuracy = 0, 0
 
         eval_tp, eval_pred_c, eval_gold_c = 0, 0, 0
-        eval_loss, eval_macro_p, eval_macro_r = 0, 0, 0
+        eval_loss, eval_accuracy, eval_macro_p, eval_macro_r = 0, 0, 0, 0
 
         raw_score = []
+        predicted_labels = []
+        predicted_prob = []
+        gold_labels = []
 
         nb_eval_steps, nb_eval_examples = 0, 0
         for input_ids, input_mask, segment_ids, label_ids, claim_input_ids, claim_input_mask, claim_segment_ids, claim_label_ids, opp_input_ids, opp_input_mask, opp_segment_ids, opp_label_ids, opp_claim_input_ids, opp_claim_input_mask, opp_claim_segment_ids, opp_claim_label_ids in eval_dataloader:
@@ -725,6 +777,9 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
                 tmp_eval_loss = model(input_ids=input_ids, token_type_ids=segment_ids, attention_mask=input_mask, labels=label_ids, input_ids2=claim_input_ids, token_type_ids2=claim_segment_ids, attention_mask2=claim_input_mask, labels2=claim_label_ids, input_ids3=opp_input_ids, token_type_ids3=opp_segment_ids, attention_mask3=opp_input_mask, labels3=opp_label_ids, input_ids4=opp_claim_input_ids, token_type_ids4=opp_claim_segment_ids, attention_mask4=opp_claim_input_mask, labels4=opp_claim_label_ids)
                 
                 logits = model(input_ids=input_ids, token_type_ids=segment_ids, attention_mask=input_mask, input_ids2=claim_input_ids, token_type_ids2=claim_segment_ids, attention_mask2=claim_input_mask, input_ids3=opp_input_ids, token_type_ids3=opp_segment_ids, attention_mask3=opp_input_mask, input_ids4=opp_claim_input_ids, token_type_ids4=opp_claim_segment_ids, attention_mask4=opp_claim_input_mask)
+                
+                predicted_prob.extend(torch.nn.functional.softmax(logits, dim=1))
+#                 logits_grid = model(input_ids=input_ids, token_type_ids=segment_ids, attention_mask=input_mask, input_ids2=claim_input_ids, token_type_ids2=claim_segment_ids, attention_mask2=claim_input_mask, input_ids3=opp_input_ids, token_type_ids3=opp_segment_ids, attention_mask3=opp_input_mask, input_ids4=opp_claim_input_ids, token_type_ids4=opp_claim_segment_ids, attention_mask4=opp_claim_input_mask)
             
 #             print(logits)
 #             print(logits[0])
@@ -733,6 +788,12 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
             label_ids = label_ids.to('cpu').numpy()
 #             print(label_ids)
 
+            tmp_eval_accuracy = accuracy(logits, label_ids)
+            
+            tmp_predicted = np.argmax(logits, axis=1)
+            predicted_labels.extend(tmp_predicted.tolist())
+            gold_labels.extend(label_ids.tolist())
+            
             # Micro F1 (aggregated tp, fp, fn counts across all examples)
             tmp_tp, tmp_pred_c, tmp_gold_c = tp_pcount_gcount(logits, label_ids)
             eval_tp += tmp_tp
@@ -740,6 +801,7 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
             eval_gold_c += tmp_gold_c
             
             pred_label = np.argmax(logits, axis=1)
+            
             raw_score += zip(logits, pred_label, label_ids)
             
             # Macro F1 (averaged P, R across mini batches)
@@ -749,6 +811,8 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
             eval_macro_r += tmp_eval_r
 
             eval_loss += tmp_eval_loss.mean().item()
+            eval_accuracy += tmp_eval_accuracy
+            
             nb_eval_examples += input_ids.size(0)
             nb_eval_steps += 1
 
@@ -764,8 +828,10 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
         eval_macro_f1 = 2 * eval_macro_p * eval_macro_r / (eval_macro_p + eval_macro_r)
 
         eval_loss = eval_loss / nb_eval_steps
+        eval_accuracy = eval_accuracy / nb_eval_examples
         result = {
                   'eval_loss': eval_loss,
+                  'eval_accuracy':eval_accuracy,
                   'eval_micro_p': eval_micro_p,
                   'eval_micro_r': eval_micro_r,
                   'eval_micro_f1': eval_micro_f1,
@@ -776,13 +842,17 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 #                   'loss': tr_loss/nb_tr_steps
                   }
 
-        output_eval_file = os.path.join(output_dir, "neg_siamese_bert_epoch5_eval_results.txt")
-        output_raw_score = os.path.join(output_dir, "neg_siamese_bert_epoch5_raw_score.csv")
+        output_eval_file = os.path.join(output_dir, "10505025_1e5_neg_siamese_bert_epoch15_eval_results.txt")
+        output_raw_score = os.path.join(output_dir, "10505025_1e5_neg_siamese_bert_epoch15_raw_score.csv")
+        
+        logger.info(classification_report(gold_labels, predicted_labels, target_names=label_list, digits=4))
         with open(output_eval_file, "w") as writer:
             logger.info("***** Eval results *****")
             for key in sorted(result.keys()):
                 logger.info("  %s = %s", key, str(result[key]))
                 writer.write("%s = %s\n" % (key, str(result[key])))
+            writer.write(classification_report(gold_labels, predicted_labels, target_names=label_list, digits=4))
+
 
         with open(output_raw_score, 'w') as fout:
             fields = ["undermine_score", "support_score","predict_label", "gold"]
@@ -795,7 +865,12 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
                     "predict_label": str(pred),
                     "gold": str(gold)
                 })
+                
+        writer = open(output_raw_score, "w")
+        for prob, pred_label, gold_label in zip(predicted_prob, predicted_labels, gold_labels):
+            writer.write("{}\t{}\t{}\n".format(prob.cpu().tolist(), pred_label, gold_label))
 
+        writer.close()
 
 # In[ ]:
 
@@ -812,8 +887,8 @@ def experiments():
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset/ibmcs/"
     
     
-#     data_dir_output = "/var/scratch/syg340/project/cos_siamese_models/siamese_ibmcs/"
-    data_dir_output = "/var/scratch/syg340/project/stance_code/Evaluation/319/"
+    data_dir_output = "/var/scratch/syg340/project/cos_siamese_models/"
+#     data_dir_output = "/var/scratch/syg340/project/stance_code/Evaluation/319/"
     train_and_test(data_dir=data_dir, do_train=True, do_eval=False, output_dir=data_dir_output,task_name="neg")
 
 
@@ -822,8 +897,8 @@ def experiments():
 
 def evaluation_with_pretrained():
 #     bert_model = "/var/scratch/syg340/project/cos_siamese_models/319cos/319_cos_camimu_siamese_bert_epoch5.pth"
-    bert_model = "/var/scratch/syg340/project/stance_code/Evaluation/319/neg_siamese_bert_epoch5.pth"
-    data_dir = "/var/scratch/syg340/project/stance_code/Dataset"
+    bert_model = "/var/scratch/syg340/project/cos_siamese_models/10505025_1e5_neg_siamese_bert_epoch5.pth"
+    data_dir = "/var/scratch/syg340/project/stance_code/Dataset/"
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset/ibmcs/"
 
     data_dir_output = "/var/scratch/syg340/project/stance_code/Evaluation/bert_dummy_output/"
