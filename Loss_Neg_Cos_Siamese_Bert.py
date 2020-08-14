@@ -308,8 +308,8 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
                 labels2[labels2==1] = -1
                 labels2[labels2==0] = 1
                 
-                loss_cos3 = loss_fct_cos(pooled_output2, pooled_output3, labels2)
-                loss_cos4 = loss_fct_cos(pooled_output4, pooled_output1, labels2)
+                loss_cos2 = loss_fct_cos(pooled_output2, pooled_output3, labels2)
+                loss_cos3 = loss_fct_cos(pooled_output4, pooled_output1, labels2)
                 
                 labels2[labels2== 1] = 0
                 labels2[labels2==-1] = 1
@@ -318,7 +318,7 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
                 #claim, perspective & opp claim, opp perspective
                 labels3[labels3==0] = -1
                 loss_cos = loss_fct_cos(pooled_output, pooled_output2, labels3)
-                loss_cos2 = loss_fct_cos(pooled_output3, pooled_output4, labels3)
+                loss_cos4 = loss_fct_cos(pooled_output3, pooled_output4, labels3)
                 labels3[labels3== -1] = 0
                 
 #                 logger.info('loss_cos:')
