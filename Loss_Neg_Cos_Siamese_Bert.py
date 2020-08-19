@@ -606,6 +606,7 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
         for _ in trange(int(num_train_epochs), desc="Epoch"):
             tr_loss = 0
             nb_tr_examples, nb_tr_steps = 0, 0
+            process_bar = tqdm(train_dataloader)
             for step, batch in enumerate(tqdm(train_dataloader, desc="Iteration")):
                 batch = tuple(t.to(device) for t in batch)
                 input_ids, input_mask, segment_ids, label_ids, claim_input_ids, claim_input_mask, claim_segment_ids, claim_label_ids, opp_input_ids, opp_input_mask, opp_segment_ids, opp_label_ids, opp_claim_input_ids, opp_claim_input_mask, opp_claim_segment_ids, opp_claim_label_ids = batch
@@ -624,6 +625,7 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
                     loss = loss * loss_scale
                 if gradient_accumulation_steps > 1:
                     loss = loss / gradient_accumulation_steps
+                process_bar.set_description("Loss: %0.8f" % (loss.sum().item()))
                 loss.backward()
                 tr_loss += loss.item()
                 nb_tr_examples += input_ids.size(0)
@@ -713,23 +715,23 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
         # Run prediction for full data
 #         eval_sampler = SequentialSampler(eval_data)
         eval_sampler = SequentialSampler(eval_data)
-        logger.info("1")
+#         logger.info("1")
         eval_dataloader = DataLoader(eval_data, sampler=eval_sampler, batch_size=eval_batch_size)
 #         print('all_input_ids:')
 #         print(all_input_ids)
-        logger.info("2")
+#         logger.info("2")
         
 
 #         model.load_state_dict(torch.load(saved_model))
         model_state_dict = torch.load(saved_model)
-        logger.info("3")
+#         logger.info("3")
         model = BertForConsistencyCueClassification.from_pretrained('bert-base-uncased', num_labels=2, state_dict=model_state_dict)
-        logger.info("4")
+#         logger.info("4")
         model.to(device)
-        logger.info("5")
+#         logger.info("5")
         
         model.eval()
-        logger.info("6")
+#         logger.info("6")
         # eval_loss, eval_accuracy = 0, 0
 
         eval_tp, eval_pred_c, eval_gold_c = 0, 0, 0
@@ -909,8 +911,8 @@ def evaluation_with_pretrained():
 
 
 if __name__ == "__main__":
-    experiments()
-#     evaluation_with_pretrained()
+#     experiments()
+    evaluation_with_pretrained()
 
 
 # In[ ]:
