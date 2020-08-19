@@ -258,6 +258,7 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
         for _ in trange(int(num_train_epochs), desc="Epoch"):
             tr_loss = 0
             nb_tr_examples, nb_tr_steps = 0, 0
+            process_bar = tqdm(train_dataloader)
             for step, batch in enumerate(tqdm(train_dataloader, desc="Iteration")):
                 batch = tuple(t.to(device) for t in batch)
                 input_ids, input_mask, segment_ids, label_ids = batch
@@ -270,6 +271,7 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
                     loss = loss * loss_scale
                 if gradient_accumulation_steps > 1:
                     loss = loss / gradient_accumulation_steps
+                process_bar.set_description("Loss: %0.8f" % (loss.sum().item()))
                 loss.backward()
                 tr_loss += loss.item()
                 nb_tr_examples += input_ids.size(0)
@@ -293,8 +295,8 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
                         optimizer.step()
                     model.zero_grad()
                     global_step += 1
-
-        torch.save(model.state_dict(), output_dir + "ibmcs_bert_base_epoch5.pth")
+            print("\nLoss: {}\n".format(tr_loss / nb_tr_steps))
+        torch.save(model.state_dict(), output_dir + "bert_base_epoch5.pth")
 
 
     if do_eval and (local_rank == -1 or torch.distributed.get_rank() == 0):
@@ -390,8 +392,8 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 #                   'loss': tr_loss/nb_tr_steps
                   }
 
-        output_eval_file = os.path.join(output_dir, "onnew_neg_bert_base_eval_results.txt")
-        output_raw_score = os.path.join(output_dir, "onnew_neg_bert_base_raw_score.csv")
+        output_eval_file = os.path.join(output_dir, "bert_base_epoch5_eval_results.txt")
+        output_raw_score = os.path.join(output_dir, "bert_base_epoch5_raw_score.csv")
         with open(output_eval_file, "w") as writer:
             logger.info("***** Eval results *****")
             for key in sorted(result.keys()):
@@ -422,9 +424,9 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 
 def experiments():
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset"
-    data_dir = "/var/scratch/syg340/project/stance_code/Dataset/ibmcs/"
+    data_dir = "/var/scratch/syg340/project/stance_code/Dataset/"
     
-    data_dir_output = "/var/scratch/syg340/project/cos_siamese_models/base_ibmcs/"
+    data_dir_output = "/var/scratch/syg340/project/models/"
 #     data_dir_output = "/var/scratch/syg340/project/stance_code/Evaluation/319/"
     train_and_test(data_dir=data_dir, do_train=True, do_eval=False, output_dir=data_dir_output,task_name="stance")
 
@@ -433,9 +435,9 @@ def experiments():
 
 
 def evaluation_with_pretrained():
-    bert_model = "/var/scratch/syg340/project/cos_siamese_models/319base/319_bertbase_epoch5.pth"
-#     data_dir = "/var/scratch/syg340/project/stance_code/Dataset"
-    data_dir = "/var/scratch/syg340/project/stance_code/Dataset/new_neg/"
+    bert_model = "/var/scratch/syg340/project/models/bert_base_epoch5.pth"
+    data_dir = "/var/scratch/syg340/project/stance_code/Dataset"
+#     data_dir = "/var/scratch/syg340/project/stance_code/Dataset/new_neg/"
 
     data_dir_output = "/var/scratch/syg340/project/stance_code/Evaluation/bert_dummy_output/"
     train_and_test(data_dir=data_dir, do_train=False, do_eval=True, output_dir=data_dir_output,task_name="stance",saved_model=bert_model)
