@@ -342,7 +342,7 @@ import csv
 from pytorch_pretrained_bert.file_utils import PYTORCH_PRETRAINED_BERT_CACHE
 def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
                    output_dir=None, max_seq_length=80, do_train=False, do_eval=False, do_lower_case=False,
-                   train_batch_size=24, eval_batch_size=8, learning_rate=1e-5, num_train_epochs=30,
+                   train_batch_size=24, eval_batch_size=8, learning_rate=2e-5, num_train_epochs=50,
                    warmup_proportion=0.1,no_cuda=False, local_rank=-1, seed=42, gradient_accumulation_steps=1,
                    optimize_on_cpu=False, fp16=False, loss_scale=128, saved_model=""):
     
@@ -650,7 +650,7 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
                     model.zero_grad()
                     global_step += 1
             print("\nLoss: {}\n".format(tr_loss / nb_tr_steps))
-        torch.save(model.state_dict(), output_dir +"fuse_cosloss_1033033033_1e5_neg_siamese_bert_epoch30.pth")
+        torch.save(model.state_dict(), output_dir +"fuse_cosloss_1033033033_2e5_neg_siamese_bert_epoch50.pth")
 
 
     if do_eval and (local_rank == -1 or torch.distributed.get_rank() == 0):
@@ -844,8 +844,8 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 #                   'loss': tr_loss/nb_tr_steps
                   }
 
-        output_eval_file = os.path.join(output_dir, "fuse_cosloss_1033033033_1e5_neg_siamese_bert_epoch30_eval_results.txt")
-        output_raw_score = os.path.join(output_dir, "fuse_cosloss_1033033033_1e5_neg_siamese_bert_epoch30_raw_score.csv")
+        output_eval_file = os.path.join(output_dir, "fuse_cosloss_1033033033_2e5_neg_siamese_bert_epoch50_eval_results.txt")
+        output_raw_score = os.path.join(output_dir, "fuse_cosloss_1033033033_2e5_neg_siamese_bert_epoch50_raw_score.csv")
         
         logger.info(classification_report(gold_labels, predicted_labels, target_names=label_list, digits=4))
         with open(output_eval_file, "w") as writer:
@@ -899,7 +899,7 @@ def experiments():
 
 def evaluation_with_pretrained():
 #     bert_model = "/var/scratch/syg340/project/cos_siamese_models/319cos/319_cos_camimu_siamese_bert_epoch5.pth"
-    bert_model = "/var/scratch/syg340/project/cos_siamese_models/fuse_cosloss_1033033033_1e5_neg_siamese_bert_epoch30.pth"
+    bert_model = "/var/scratch/syg340/project/cos_siamese_models/fuse_cosloss_1033033033_2e5_neg_siamese_bert_epoch50.pth"
     data_dir = "/var/scratch/syg340/project/stance_code/Dataset/"
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset/ibmcs/"
 
@@ -911,8 +911,8 @@ def evaluation_with_pretrained():
 
 
 if __name__ == "__main__":
-#     experiments()
-    evaluation_with_pretrained()
+    experiments()
+#     evaluation_with_pretrained()
 
 
 # In[ ]:
