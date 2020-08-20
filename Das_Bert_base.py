@@ -46,7 +46,7 @@ import csv
 from pytorch_pretrained_bert.file_utils import PYTORCH_PRETRAINED_BERT_CACHE
 def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
                    output_dir=None, max_seq_length=128, do_train=False, do_eval=False, do_lower_case=False,
-                   train_batch_size=32, eval_batch_size=8, learning_rate=5e-5, num_train_epochs=3,
+                   train_batch_size=32, eval_batch_size=8, learning_rate=2e-5, num_train_epochs=4,
                    warmup_proportion=0.1,no_cuda=False, local_rank=-1, seed=42, gradient_accumulation_steps=1,
                    optimize_on_cpu=False, fp16=False, loss_scale=128, saved_model=""):
     
@@ -296,7 +296,7 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
                     model.zero_grad()
                     global_step += 1
             print("\nLoss: {}\n".format(tr_loss / nb_tr_steps))
-        torch.save(model.state_dict(), output_dir + "bert_base_epoch3.pth")
+        torch.save(model.state_dict(), output_dir + "bert_base_bs32_lr2e_5_epoch4.pth")
 
 
     if do_eval and (local_rank == -1 or torch.distributed.get_rank() == 0):
@@ -392,8 +392,8 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 #                   'loss': tr_loss/nb_tr_steps
                   }
 
-        output_eval_file = os.path.join(output_dir, "bert_base_epoch3_eval_results.txt")
-        output_raw_score = os.path.join(output_dir, "bert_base_epoch3_raw_score.csv")
+        output_eval_file = os.path.join(output_dir, "bert_base_bs32_lr2e_5_epoch4_eval_results.txt")
+        output_raw_score = os.path.join(output_dir, "bert_base_bs32_lr2e_5_epoch4_raw_score.csv")
         with open(output_eval_file, "w") as writer:
             logger.info("***** Eval results *****")
             for key in sorted(result.keys()):
@@ -435,7 +435,7 @@ def experiments():
 
 
 def evaluation_with_pretrained():
-    bert_model = "/var/scratch/syg340/project/models/bert_base_epoch3.pth"
+    bert_model = "/var/scratch/syg340/project/models/bert_base_bs32_lr2e_5_epoch4.pth"
     data_dir = "/var/scratch/syg340/project/stance_code/Dataset"
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset/new_neg/"
 
@@ -446,8 +446,8 @@ def evaluation_with_pretrained():
 
 
 if __name__ == "__main__":
-#     experiments()
-    evaluation_with_pretrained()
+    experiments()
+#     evaluation_with_pretrained()
 
 
 # In[ ]:
