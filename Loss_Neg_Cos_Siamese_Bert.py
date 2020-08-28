@@ -342,7 +342,7 @@ import csv
 from pytorch_pretrained_bert.file_utils import PYTORCH_PRETRAINED_BERT_CACHE
 def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
                    output_dir=None, max_seq_length=80, do_train=False, do_eval=False, do_lower_case=False,
-                   train_batch_size=24, eval_batch_size=8, learning_rate=2e-5, num_train_epochs=30,
+                   train_batch_size=24, eval_batch_size=8, learning_rate=2e-5, num_train_epochs=50,
                    warmup_proportion=0.1,no_cuda=False, local_rank=-1, seed=42, gradient_accumulation_steps=1,
                    optimize_on_cpu=False, fp16=False, loss_scale=128, saved_model=""):
     
@@ -844,8 +844,8 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 #                   'loss': tr_loss/nb_tr_steps
                   }
 
-        output_eval_file = os.path.join(output_dir, "fuse_cosloss_1111_2e5_neg_siamese_bert_epoch30_eval_results.txt")
-        output_raw_score = os.path.join(output_dir, "fuse_cosloss_1111_2e5_neg_siamese_bert_epoch30_raw_score.csv")
+        output_eval_file = os.path.join(output_dir, "fuse_cosloss_1033033033_2e5_neg_siamese_bert_epoch50_eval_results.txt")
+        output_raw_score = os.path.join(output_dir, "fuse_cosloss_1033033033_2e5_neg_siamese_bert_epoch50_raw_score.csv")
         
         logger.info(classification_report(gold_labels, predicted_labels, target_names=label_list, digits=4))
         with open(output_eval_file, "w") as writer:
@@ -868,11 +868,11 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
                     "gold": str(gold)
                 })
                 
-        writer = open(output_raw_score, "w")
-        for prob, pred_label, gold_label in zip(predicted_prob, predicted_labels, gold_labels):
-            writer.write("{}\t{}\t{}\n".format(prob.cpu().tolist(), pred_label, gold_label))
+#         writer = open(output_raw_score, "w")
+#         for prob, pred_label, gold_label in zip(predicted_prob, predicted_labels, gold_labels):
+#             writer.write("{}\t{}\t{}\n".format(prob.cpu().tolist(), pred_label, gold_label))
 
-        writer.close()
+#         writer.close()
 
 # In[ ]:
 
@@ -899,7 +899,7 @@ def experiments():
 
 def evaluation_with_pretrained():
 #     bert_model = "/var/scratch/syg340/project/cos_siamese_models/319cos/319_cos_camimu_siamese_bert_epoch5.pth"
-    bert_model = "/var/scratch/syg340/project/cos_siamese_models/fuse_cosloss_1111_2e5_neg_siamese_bert_epoch30.pth"
+    bert_model = "/var/scratch/syg340/project/cos_siamese_models/fuse_cosloss_1033033033_2e5_neg_siamese_bert_epoch50.pth"
     data_dir = "/var/scratch/syg340/project/stance_code/Dataset/"
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset/ibmcs/"
 
