@@ -1,101 +1,101 @@
-	Label	x	y	claim	opp_perspective	perspective	undermine_score	support_score	predict_label	gold
-0	0	0	0	School Day Should Be Extended	There are enough funding...	Not enough fundng...	3.8474565	-3.2621233	0	0
-1	0	0	0	Raise The School Leaving Age To 18	There are no cases where leaving school early is necessary	There are cases where leaving school early is necessary	4.292388	-3.7477374	0	0
-2	0	0	0	Raise The School Leaving Age To 18	Forced education achieves a lot	Forced education achieves little	4.393428299999999	-3.8800025	0	0
-3	0	0	0	Raise The School Leaving Age To 18	A lot is accomplished when education is forced.	Little is accomplished when education is forced.	4.33742	-3.8015494	0	0
-4	0	0	0	Raise The School Leaving Age To 18	Education that is forced does a lot.	Education that is forced does little.	4.268746	-3.7784278	0	0
-5	0	0	0	Raise The School Leaving Age To 18	Forced education achieves a lot	Forced Education Achieves Little	4.393428299999999	-3.8800025	0	0
-6	0	0	0	Raise The School Leaving Age To 18	All skills are best learnt in a classroom environment.	Not all skills are best learnt in a classroom environment.	4.465371599999999	-3.8196735	0	0
-7	0	0	0	Raise The School Leaving Age To 18	Some skills are better learned inside the classroom.	Some skills are better learned outside the classroom.	4.2055607	-3.75505	0	0
-8	0	0	0	Raise The School Leaving Age To 18	The classroom environment is ideal for all lessons.	The classroom environment is not ideal for all lessons.	4.4076324	-3.7953925	0	0
-9	0	0	0	Raise The School Leaving Age To 18	Young people should not have the choice to decide for themselves	Young people should have the choice to decide for themselves	4.016087000000001	-3.5231147	0	0
-10	0	0	0	Raise The School Leaving Age To 18	Young people should not have the freedom to make their own choices.	Young people should have the freedom to make their own choices.	3.751729	-3.3001914	0	0
-11	0	0	0	Raise The School Leaving Age To 18	Young people should not be able to think for themselves and make their own decisions.	Young people should be able to think for themselves and make their own decisions.	3.7551756	-3.3180094	0	0
-12	0	0	0	Raise The School Leaving Age To 18	Realistically cost	Unrealistically costly	4.402664700000001	-3.7610846000000002	0	0
-13	0	0	0	Raise The School Leaving Age To 18	Everyone is good at studying	Not everyone is good at studying	4.276291400000001	-3.7626352	0	0
-14	0	0	0	Raise The School Leaving Age To 18	Most people are able to handle the rigor of university-level coursework.	Some people are unable to handle the rigor of university-level coursework.	4.275007	-3.7209444	0	0
-15	0	0	0	Raise The School Leaving Age To 18	We should force people to study even if they aren't good at it and choose not to.	We shouldn't force people to study if they aren't good at it and choose not to.	3.8980978	-3.3980207	0	0
-16	0	0	0	Raise The School Leaving Age To 18	Everyone is good academically	not everyone is good academically	4.356134	-3.806480399999999	0	0
-17	0	0	0	Raise The School Leaving Age To 18	Most people are good at studying	some people are not good at studying	4.297219	-3.7406003	0	0
-18	0	0	0	Raise The School Leaving Age To 18	Compulsory studying would not be taking young people out of the workforce	Compulsory studying would be taking young people out of the workforce	4.3780184	-3.764206	0	0
-19	0	0	0	Raise The School Leaving Age To 18	Making university education compulsory would not take young people out of the workforce.	Making university education compulsory would take young people out of the workforce.	4.393289	-3.733044399999999	0	0
-20	0	0	0	Raise The School Leaving Age To 18	No young people would be taken out of workforce by compulsory studying	some young people would be taken out of workforce by compulsory studying	4.246264	-3.7304027	0	0
-21	0	0	0	Raise The School Leaving Age To 18	compulsory studying does not remove young people from the workforce	compulsory studying may remove young people from the workforce	4.4060864	-3.826198600000001	0	0
-22	0	0	0	Make all museums free of charge	Funding for museums is not wasteful	Funding for museums is wasteful	2.7990518	-2.045372	0	0
-23	0	0	0	Make all museums free of charge	We should expect the state to fund museums	We should not expect the state to fund museums	4.2750115	-3.7347713	0	0
-24	0	0	0	Make all museums free of charge	If state-funded, there is much incentive to increase numbers of visitors	If state-funded, there is little incentive to increase numbers of visitors	4.124723	-3.5222085	0	0
-25	0	0	0	Chess must be at the Olympics	Opening up the Olympics for borderline sports is good in itself	Opening up the Olympics for borderline sports is bad in itself	4.399758	-3.807458	0	0
-26	0	0	0	Chess must be at the Olympics	Chess has the necessary physical activity	Chess lacks the necessary physical activity	4.3503957	-3.8374004	0	0
-27	0	0	0	Chess must be at the Olympics	Chess can ensure fair play	Chess cannot ensure fair play	4.2896748	-3.729776	0	0
-28	0	0	0	Federal States are better than unitary nations	Federal States don't often have persistent losers.	Federal States often have persistent losers.	2.6882594	-2.152657	0	0
-29	0	0	0	Federal States are better than unitary nations	Winners abound in federal states.	Losers abound in federal states.	2.8760102	-2.3455877	0	0
-30	0	0	0	Positive Discrimination Towards Women in Society Is Justified	Positive discrimination towards women should be allowed	Positive discrimination towards women should not be allowed	4.358373	-3.8725967	0	0
-31	0	0	0	Positive Discrimination Towards Women in Society Is Justified	It is Women, Not Men, who are Disadvantaged in our Society	It is Men, Not Women, who are Disadvantaged in our Society	4.2587624	-3.7668028	0	0
-32	0	0	0	Positive Discrimination Towards Women in Society Is Justified	Will not Cause Resentment Between Men and Women	Will Cause Resentment Between Men and Women	4.3341255	-3.7495422	0	0
-33	0	0	0	Positive Discrimination Towards Women in Society Is Justified	It does address the underlying issues	It does not address the underlying issues	4.423783999999999	-3.79001	0	0
-34	0	0	0	Positive Discrimination Towards Women in Society Is Justified	Positive discrimination for women is not discrimination	Positive discrimination for women is discrimination	3.7414155	-3.523315	0	0
-35	0	0	0	Positive Discrimination Towards Women in Society Is Justified	All-women shortlists or quotas have a constituent's freedom of choice	All-women shortlists or quotas restrict a constituent's freedom of choice	4.2582235	-3.7387083	0	0
-36	0	0	0	Positive Discrimination Towards Women in Society Is Justified	Positive discrimination does not take away voters' freedom of choice by limiting their choices to women	Positive discrimination takes away voters' freedom of choice by limiting their choices to women	4.355630400000001	-3.8473358	0	0
-37	0	0	0	 College education is worth it	Some argue that a college education may be necessary even there are many people who have succeeded despite not having college degrees. 	Some argue that a college education may not be necessary, since there are many people who have succeeded despite not having college degrees. 	4.4052215	-3.819374299999999	0	0
-38	0	0	0	 College education is worth it	The question of whether or not a college education is necessary for success is one that is not debated, even many successful people are not college educated.	The question of whether or not a college education is necessary for success is one that is debated, as many successful people are not college educated.	4.2056603	-3.60676	0	0
-39	0	0	0	 College education is worth it	Many people with college degrees find themselves working in positions in which their degrees are a requirement. 	Many people with college degrees find themselves working in positions in which their degrees are not a requirement. 	3.7654536	-3.2821002	0	0
-40	0	0	0	 College education is worth it	Colleges may be educating students instead of indoctrinating them.	Colleges may be indoctrinating students instead of educating them.	4.454010500000001	-3.826944399999999	0	0
-41	0	0	0	 College education is worth it	Colleges may be helping them further their education rather than brainwashing their students.	Colleges may be brainwashing their students rather than helping them further their education.	4.4588223	-3.831228	0	0
-42	0	0	0	 College education is worth it	Even too many students earning degrees has not diluted the value of a bachelor's degree.	Too many students earning degrees has diluted the value of a bachelor's degree.	4.3005815	-3.650487	0	0
-43	0	0	0	 College education is worth it	The value of a bachelor's degree has not lessened.	The value of a bachelor's degree has lessened.	2.293519	-2.1241724	0	0
-44	0	0	0	 College education is worth it	Few recent college graduates are un- or underemployed.	Many recent college graduates are un- or underemployed.	4.3693876	-3.7943697	0	0
-45	0	0	0	 College education is worth it	In recent times, there aren't significant numbers of unemployed and underemployed college graduates. 	In recent times, there are significant numbers of unemployed and underemployed college graduates. 	4.162766	-3.6208527	0	0
-46	0	0	0	 College education is worth it	A college degree is guarantee of workplace benefits.	A college degree is no guarantee of workplace benefits.	4.292464	-3.7367043	0	0
-47	0	0	0	 College education is worth it	There is guarantee there will be benefits.	There is no guarantee there will be benefits.	4.2473106	-3.717349	0	0
-48	0	0	0	 College education is worth it	Learning a trade profession is a worse option than college for many young adults.	Learning a trade profession is a better option than college for many young adults.	2.8700209	-2.2424016	0	0
-49	0	0	0	 College education is worth it	The total cost of going to college does not include the cost of missing opportunities to make money at a job.	The total cost of going to college also includes the cost of missing opportunities to make money at a job.	3.5429661	-2.9142008	0	0
-50	0	0	0	 College education is worth it	College stress can not lead to health problems and other negative consequences.	College stress can lead to health problems and other negative consequences.	4.440911	-3.805735299999999	0	0
-51	0	0	0	 College education is worth it	College degrees do guarantee learning or job preparation.	College degrees do not guarantee learning or job preparation.	4.384069999999999	-3.8078713	0	0
-52	0	0	0	 College education is worth it	Acquiring a degree does guarantee you a job.	Acquiring a degree does not guarantee you a job.	3.8753579	-3.2501874	0	0
-53	0	0	0	 College education is worth it	Universities have unlimited places available	Universities don’t have unlimited places available	4.258568299999999	-3.7277875	0	0
-54	0	0	0	Socialism is Dead	Socialism has not changed historically to meet the challenges of the moment and is not addressing those of the 21st century in new ways	Socialism has changed historically to meet the challenges of the moment and is addressing those of the 21st century in new ways	3.785892	-3.4918022	0	0
-55	0	0	0	Socialism is Dead	Socialism can not be molded to fit the needs of the moment. 	Socialism can be molded to fit the needs of the moment. 	3.8923147	-3.498706299999999	0	0
-56	0	0	0	Socialism is Dead	Socialism is not an ever changing set of principles that can be applied in new ways to meet the challenges of a changing world.	Socialism is a an ever changing set of principles that can be applied in new ways to meet the challenges of a changing world.	3.8726964	-3.5167913	0	0
-57	0	0	0	Socialism is Dead	socialism have not changed and adapted to meet the upcoming challenges of the 21st century	socialism have changed and adapted to meet the upcoming challenges of the 21st century	3.649356	-3.4255068	0	0
-58	0	0	0	Socialism is Dead	Socialism is a less secure system than the free market in Capitalism	Socialism is a more secure system than the free market in Capitalism	3.6406534	-3.435417	0	0
-59	0	0	0	Socialism is Dead	Capitalism outranks Socialism in security.	Socialism outranks capitalism in security.	3.3376784	-3.1611447	0	0
-60	0	0	0	College football should replace the bowl championship series (BCS)	The proposed playoff system alternatives are actually more fair than the BCS system in place.	The proposed playoff system alternatives are actually less fair than the BCS system in place.	4.242433	-3.7273717	0	0
-61	0	0	0	Pensions should be privatised	Historical evidence has shown that privatisation has been successful	Historical evidence has shown that privatisation has been unsuccessful	4.268177	-3.64279	0	0
-62	0	0	0	You have nothing to worry about surveillance if you have done nothing wrong	Full of trust	Lack of trust	2.1860237	-2.1254666	0	0
-63	0	0	0	You have nothing to worry about surveillance if you have done nothing wrong	There is a lot of trust	There is no trust	4.001204	-3.5978608	0	0
-64	0	0	0	You have nothing to worry about surveillance if you have done nothing wrong	Agencies do not use surveillance to abuse their power.	Agencies use surveillance to abuse their power.	0.46881932	-0.07598344	0	0
-65	0	0	0	You have nothing to worry about surveillance if you have done nothing wrong	Gain of Privacy	Loss of Privacy	2.9881716	-2.8109293	0	0
-66	0	0	0	You have nothing to worry about surveillance if you have done nothing wrong	People will not lose their privacy.	People will lose their privacy.	3.115934	-2.5369878	0	0
-67	0	0	0	You have nothing to worry about surveillance if you have done nothing wrong	Privacy will not go away.	Privacy will go away.	3.78451	-3.2568934	0	0
-68	0	0	0	The use of animals as objects of sport and entertainment should be banned.	Fighting bulls have a worse quality of life than meat-producing bulls	Fighting bulls have a better quality of life than meat-producing bulls	3.5130382	-3.251214	0	0
-69	0	0	0	In Parliamentary Democracies, A Change Of Prime Minister Should Automatically Trigger A General Election.	It would not create instability and logistical problems	It would create instability and logistical problems	4.5107055	-3.8148828	0	0
-70	0	0	0	In Parliamentary Democracies, A Change Of Prime Minister Should Automatically Trigger A General Election.	The concept underestimates the role of the Prime Minister	The concept overestimates the role of the Prime Minister	4.3690653	-3.76421	0	0
-71	0	0	0	Puerto Rico should seek American statehood	Puerto Rican statehood is economical for the US	Puerto Rican statehood is not economical for the US	4.3691907	-3.8581743	0	0
-72	0	0	0	Puerto Rico should seek American statehood	Puerto Rican statehood will benefit the US economically.	Puerto Rican statehood will not benefit the US economically.	4.470261	-3.8851497	0	0
-73	0	0	0	Puerto Rico should seek American statehood	Making Puerto Rico a state is a good economic decision for the US. 	Making Puerto Rico a state is not a good economic decision for the US. 	4.345025	-3.818248000000001	0	0
-74	0	0	0	Puerto Rico should seek American statehood	Becoming a state would not hurt the other 50 states.	Becoming a state would hurt the other 50 states.	4.392351000000001	-3.8228757	0	0
-75	0	0	0	There is a good case for stating that there is a God	God' is not a concept designed to promote a set of values	'God' is merely a concept designed to promote a set of values	4.331127599999999	-3.7677064	0	0
-76	0	0	0	There is a good case for stating that there is a God	People think that a benevolent God can exist because bad things happen...	People think that a benevolent God cannot exist because bad things happen...	4.14884	-3.7028112	0	0
-77	0	0	0	The law on self defence should cover ‘grossly disproportionate’ actions	We should allow state sponsored revenge	We should not allow state sponsored revenge	4.0015755	-3.5757434	0	0
-78	0	0	0	The law on self defence should cover ‘grossly disproportionate’ actions	There is not enough leeway in the law of self defence.	There is already enough leeway in the law of self defence.	3.3103607	-2.634904	0	0
-79	0	0	0	Animal testing should be banned.	Animal researchers treat animals unhumanely, neither for the animals' sake nor to ensure reliable test results.	Animal researchers treat animals humanely, both for the animals' sake and to ensure reliable test results.	3.8158305	-3.4494777	0	0
-80	0	0	0	Animal testing should be banned.	Animals are treated badly during animal testing. 	Animals are treated well during animal testing. 	3.7278788	-3.4302692	0	0
-81	0	0	0	Animal testing should be banned.	Research animals are badly treated 	Research animals are well treated 	3.8044877	-3.4438553	0	0
-82	0	0	0	Animal testing should be banned.	Animals do have rights, therefore it is unacceptable to experiment on them.	Animals do not have rights, therefore it is acceptable to experiment on them.	3.2083497	-2.7726707	0	0
-83	0	0	0	Animal testing should be banned.	Animals do have rights.	Animals don't have rights.	3.4295883	-2.8733864	0	0
-84	0	0	0	Animal testing should be banned.	Testing is not needed for really new drugs	Testing is needed for really new drugs	3.1154146	-2.5205197	0	0
-85	0	0	0	Animal testing should be banned.	We do not need to be able to test drugs on animals.  	We need to be able to test drugs on animals.  	3.9994998	-3.4887297	0	0
-86	0	0	0	Animal testing should be banned.	We never use animal testing even when it is needed.  	We try to only use animal testing when it is needed.  	3.3992288	-3.1023302	0	0
-87	0	0	0	Animal testing should be banned.	Sometimes we have other choices for Animal research, so we don't need to do some animal testing. 	Sometimes we have no other choices for Animal research, but then to do some animal testing. 	1.5870607	-1.3290569	0	0
-88	0	0	0	Animal testing should be banned.	Animal research does not ensure greater safety for humans	Animal research ensures greater safety for humans	3.7648942	-3.4482286	0	0
-89	0	0	0	Animal testing should be banned.	Animal testing has not contributed to many life-saving cures and treatments.	Animal testing has contributed to many life-saving cures and treatments.	3.9658	-3.539384	0	0
-90	0	0	0	Animal testing should be banned.	Animal research has not played a vital role in a great many of the major medical advances of the last century	Animal research has played a vital role in a great many of the major medical advances of the last century	3.8602219	-3.4873524	0	0
-91	0	0	0	Animal testing should be banned.	There are no satisfactory alternatives to animal research	There are no satisfactory alternatives to animal research	2.156136	-1.7520703	0	0
-92	0	0	0	Animal testing should be banned.	Animals themselves do not benefit from the results of animal testing.	Animals themselves benefit from the results of animal testing.	3.9408588	-3.535791	0	0
-93	0	0	0	Animal testing should be banned.	Most animals that are used in scientific testing have worse lives. 	Most animals that are used in scientific testing have better lives. 	3.5787926	-3.288217	0	0
-94	0	0	0	Animal testing should be banned.	Religious traditions do not allow for human dominion over animals.	Religious traditions allow for human dominion over animals.	1.4996517	-1.2507449	0	0
-95	0	0	0	Animal testing should be banned.	Animals are not the only choice for testing. 	Animals are the only choice for testing. 	3.7691765	-3.479461	0	0
-96	0	0	0	Animal testing should be banned.	Animals are not appropriate research subjects even they are similar to human beings in many ways. 	Animals are appropriate research subjects because they are similar to human beings in many ways. 	3.7494323	-3.4040847	0	0
-97	0	0	0	Instant Replay Should Be Used in Major League Baseball	Many plays lend themselves to video review	Many plays don’t lend themselves to video review	4.0565505	-3.4692292	0	0
-98	0	0	0	Instant Replay Should Be Used in Major League Baseball	video can catch all plays at a game	video cannot catch all plays at a game	4.301819999999999	-3.667375	0	0
-99	0	0	0	Instant Replay Should Be Used in Major League Baseball	Instant replay is deceptive and not inconclusive	Instant replay might be deceptive or inconclusive	4.553247	-3.8548627	0	0
+Label	x	y	claim	opp_perspective	perspective	undermine_score	support_score	predict_label	gold
+0	0	0	School Day Should Be Extended	There are enough funding...	Not enough fundng...	3.8474565	-3.2621233	0	0
+0	0	0	Raise The School Leaving Age To 18	There are no cases where leaving school early is necessary	There are cases where leaving school early is necessary	4.292388	-3.7477374	0	0
+0	0	0	Raise The School Leaving Age To 18	Forced education achieves a lot	Forced education achieves little	4.393428299999999	-3.8800025	0	0
+0	0	0	Raise The School Leaving Age To 18	A lot is accomplished when education is forced.	Little is accomplished when education is forced.	4.33742	-3.8015494	0	0
+0	0	0	Raise The School Leaving Age To 18	Education that is forced does a lot.	Education that is forced does little.	4.268746	-3.7784278	0	0
+0	0	0	Raise The School Leaving Age To 18	Forced education achieves a lot	Forced Education Achieves Little	4.393428299999999	-3.8800025	0	0
+0	0	0	Raise The School Leaving Age To 18	All skills are best learnt in a classroom environment.	Not all skills are best learnt in a classroom environment.	4.465371599999999	-3.8196735	0	0
+0	0	0	Raise The School Leaving Age To 18	Some skills are better learned inside the classroom.	Some skills are better learned outside the classroom.	4.2055607	-3.75505	0	0
+0	0	0	Raise The School Leaving Age To 18	The classroom environment is ideal for all lessons.	The classroom environment is not ideal for all lessons.	4.4076324	-3.7953925	0	0
+0	0	0	Raise The School Leaving Age To 18	Young people should not have the choice to decide for themselves	Young people should have the choice to decide for themselves	4.016087000000001	-3.5231147	0	0
+0	0	0	Raise The School Leaving Age To 18	Young people should not have the freedom to make their own choices.	Young people should have the freedom to make their own choices.	3.751729	-3.3001914	0	0
+0	0	0	Raise The School Leaving Age To 18	Young people should not be able to think for themselves and make their own decisions.	Young people should be able to think for themselves and make their own decisions.	3.7551756	-3.3180094	0	0
+0	0	0	Raise The School Leaving Age To 18	Realistically cost	Unrealistically costly	4.402664700000001	-3.7610846000000002	0	0
+0	0	0	Raise The School Leaving Age To 18	Everyone is good at studying	Not everyone is good at studying	4.276291400000001	-3.7626352	0	0
+0	0	0	Raise The School Leaving Age To 18	Most people are able to handle the rigor of university-level coursework.	Some people are unable to handle the rigor of university-level coursework.	4.275007	-3.7209444	0	0
+0	0	0	Raise The School Leaving Age To 18	We should force people to study even if they aren't good at it and choose not to.	We shouldn't force people to study if they aren't good at it and choose not to.	3.8980978	-3.3980207	0	0
+0	0	0	Raise The School Leaving Age To 18	Everyone is good academically	not everyone is good academically	4.356134	-3.806480399999999	0	0
+0	0	0	Raise The School Leaving Age To 18	Most people are good at studying	some people are not good at studying	4.297219	-3.7406003	0	0
+0	0	0	Raise The School Leaving Age To 18	Compulsory studying would not be taking young people out of the workforce	Compulsory studying would be taking young people out of the workforce	4.3780184	-3.764206	0	0
+0	0	0	Raise The School Leaving Age To 18	Making university education compulsory would not take young people out of the workforce.	Making university education compulsory would take young people out of the workforce.	4.393289	-3.733044399999999	0	0
+0	0	0	Raise The School Leaving Age To 18	No young people would be taken out of workforce by compulsory studying	some young people would be taken out of workforce by compulsory studying	4.246264	-3.7304027	0	0
+0	0	0	Raise The School Leaving Age To 18	compulsory studying does not remove young people from the workforce	compulsory studying may remove young people from the workforce	4.4060864	-3.826198600000001	0	0
+0	0	0	Make all museums free of charge	Funding for museums is not wasteful	Funding for museums is wasteful	2.7990518	-2.045372	0	0
+0	0	0	Make all museums free of charge	We should expect the state to fund museums	We should not expect the state to fund museums	4.2750115	-3.7347713	0	0
+0	0	0	Make all museums free of charge	If state-funded, there is much incentive to increase numbers of visitors	If state-funded, there is little incentive to increase numbers of visitors	4.124723	-3.5222085	0	0
+0	0	0	Chess must be at the Olympics	Opening up the Olympics for borderline sports is good in itself	Opening up the Olympics for borderline sports is bad in itself	4.399758	-3.807458	0	0
+0	0	0	Chess must be at the Olympics	Chess has the necessary physical activity	Chess lacks the necessary physical activity	4.3503957	-3.8374004	0	0
+0	0	0	Chess must be at the Olympics	Chess can ensure fair play	Chess cannot ensure fair play	4.2896748	-3.729776	0	0
+0	0	0	Federal States are better than unitary nations	Federal States don't often have persistent losers.	Federal States often have persistent losers.	2.6882594	-2.152657	0	0
+0	0	0	Federal States are better than unitary nations	Winners abound in federal states.	Losers abound in federal states.	2.8760102	-2.3455877	0	0
+0	0	0	Positive Discrimination Towards Women in Society Is Justified	Positive discrimination towards women should be allowed	Positive discrimination towards women should not be allowed	4.358373	-3.8725967	0	0
+0	0	0	Positive Discrimination Towards Women in Society Is Justified	It is Women, Not Men, who are Disadvantaged in our Society	It is Men, Not Women, who are Disadvantaged in our Society	4.2587624	-3.7668028	0	0
+0	0	0	Positive Discrimination Towards Women in Society Is Justified	Will not Cause Resentment Between Men and Women	Will Cause Resentment Between Men and Women	4.3341255	-3.7495422	0	0
+0	0	0	Positive Discrimination Towards Women in Society Is Justified	It does address the underlying issues	It does not address the underlying issues	4.423783999999999	-3.79001	0	0
+0	0	0	Positive Discrimination Towards Women in Society Is Justified	Positive discrimination for women is not discrimination	Positive discrimination for women is discrimination	3.7414155	-3.523315	0	0
+0	0	0	Positive Discrimination Towards Women in Society Is Justified	All-women shortlists or quotas have a constituent's freedom of choice	All-women shortlists or quotas restrict a constituent's freedom of choice	4.2582235	-3.7387083	0	0
+0	0	0	Positive Discrimination Towards Women in Society Is Justified	Positive discrimination does not take away voters' freedom of choice by limiting their choices to women	Positive discrimination takes away voters' freedom of choice by limiting their choices to women	4.355630400000001	-3.8473358	0	0
+0	0	0	 College education is worth it	Some argue that a college education may be necessary even there are many people who have succeeded despite not having college degrees. 	Some argue that a college education may not be necessary, since there are many people who have succeeded despite not having college degrees. 	4.4052215	-3.819374299999999	0	0
+0	0	0	 College education is worth it	The question of whether or not a college education is necessary for success is one that is not debated, even many successful people are not college educated.	The question of whether or not a college education is necessary for success is one that is debated, as many successful people are not college educated.	4.2056603	-3.60676	0	0
+0	0	0	 College education is worth it	Many people with college degrees find themselves working in positions in which their degrees are a requirement. 	Many people with college degrees find themselves working in positions in which their degrees are not a requirement. 	3.7654536	-3.2821002	0	0
+0	0	0	 College education is worth it	Colleges may be educating students instead of indoctrinating them.	Colleges may be indoctrinating students instead of educating them.	4.454010500000001	-3.826944399999999	0	0
+0	0	0	 College education is worth it	Colleges may be helping them further their education rather than brainwashing their students.	Colleges may be brainwashing their students rather than helping them further their education.	4.4588223	-3.831228	0	0
+0	0	0	 College education is worth it	Even too many students earning degrees has not diluted the value of a bachelor's degree.	Too many students earning degrees has diluted the value of a bachelor's degree.	4.3005815	-3.650487	0	0
+0	0	0	 College education is worth it	The value of a bachelor's degree has not lessened.	The value of a bachelor's degree has lessened.	2.293519	-2.1241724	0	0
+0	0	0	 College education is worth it	Few recent college graduates are un- or underemployed.	Many recent college graduates are un- or underemployed.	4.3693876	-3.7943697	0	0
+0	0	0	 College education is worth it	In recent times, there aren't significant numbers of unemployed and underemployed college graduates. 	In recent times, there are significant numbers of unemployed and underemployed college graduates. 	4.162766	-3.6208527	0	0
+0	0	0	 College education is worth it	A college degree is guarantee of workplace benefits.	A college degree is no guarantee of workplace benefits.	4.292464	-3.7367043	0	0
+0	0	0	 College education is worth it	There is guarantee there will be benefits.	There is no guarantee there will be benefits.	4.2473106	-3.717349	0	0
+0	0	0	 College education is worth it	Learning a trade profession is a worse option than college for many young adults.	Learning a trade profession is a better option than college for many young adults.	2.8700209	-2.2424016	0	0
+0	0	0	 College education is worth it	The total cost of going to college does not include the cost of missing opportunities to make money at a job.	The total cost of going to college also includes the cost of missing opportunities to make money at a job.	3.5429661	-2.9142008	0	0
+0	0	0	 College education is worth it	College stress can not lead to health problems and other negative consequences.	College stress can lead to health problems and other negative consequences.	4.440911	-3.805735299999999	0	0
+0	0	0	 College education is worth it	College degrees do guarantee learning or job preparation.	College degrees do not guarantee learning or job preparation.	4.384069999999999	-3.8078713	0	0
+0	0	0	 College education is worth it	Acquiring a degree does guarantee you a job.	Acquiring a degree does not guarantee you a job.	3.8753579	-3.2501874	0	0
+0	0	0	 College education is worth it	Universities have unlimited places available	Universities don’t have unlimited places available	4.258568299999999	-3.7277875	0	0
+0	0	0	Socialism is Dead	Socialism has not changed historically to meet the challenges of the moment and is not addressing those of the 21st century in new ways	Socialism has changed historically to meet the challenges of the moment and is addressing those of the 21st century in new ways	3.785892	-3.4918022	0	0
+0	0	0	Socialism is Dead	Socialism can not be molded to fit the needs of the moment. 	Socialism can be molded to fit the needs of the moment. 	3.8923147	-3.498706299999999	0	0
+0	0	0	Socialism is Dead	Socialism is not an ever changing set of principles that can be applied in new ways to meet the challenges of a changing world.	Socialism is a an ever changing set of principles that can be applied in new ways to meet the challenges of a changing world.	3.8726964	-3.5167913	0	0
+0	0	0	Socialism is Dead	socialism have not changed and adapted to meet the upcoming challenges of the 21st century	socialism have changed and adapted to meet the upcoming challenges of the 21st century	3.649356	-3.4255068	0	0
+0	0	0	Socialism is Dead	Socialism is a less secure system than the free market in Capitalism	Socialism is a more secure system than the free market in Capitalism	3.6406534	-3.435417	0	0
+0	0	0	Socialism is Dead	Capitalism outranks Socialism in security.	Socialism outranks capitalism in security.	3.3376784	-3.1611447	0	0
+0	0	0	College football should replace the bowl championship series (BCS)	The proposed playoff system alternatives are actually more fair than the BCS system in place.	The proposed playoff system alternatives are actually less fair than the BCS system in place.	4.242433	-3.7273717	0	0
+0	0	0	Pensions should be privatised	Historical evidence has shown that privatisation has been successful	Historical evidence has shown that privatisation has been unsuccessful	4.268177	-3.64279	0	0
+0	0	0	You have nothing to worry about surveillance if you have done nothing wrong	Full of trust	Lack of trust	2.1860237	-2.1254666	0	0
+0	0	0	You have nothing to worry about surveillance if you have done nothing wrong	There is a lot of trust	There is no trust	4.001204	-3.5978608	0	0
+0	0	0	You have nothing to worry about surveillance if you have done nothing wrong	Agencies do not use surveillance to abuse their power.	Agencies use surveillance to abuse their power.	0.46881932	-0.07598344	0	0
+0	0	0	You have nothing to worry about surveillance if you have done nothing wrong	Gain of Privacy	Loss of Privacy	2.9881716	-2.8109293	0	0
+0	0	0	You have nothing to worry about surveillance if you have done nothing wrong	People will not lose their privacy.	People will lose their privacy.	3.115934	-2.5369878	0	0
+0	0	0	You have nothing to worry about surveillance if you have done nothing wrong	Privacy will not go away.	Privacy will go away.	3.78451	-3.2568934	0	0
+0	0	0	The use of animals as objects of sport and entertainment should be banned.	Fighting bulls have a worse quality of life than meat-producing bulls	Fighting bulls have a better quality of life than meat-producing bulls	3.5130382	-3.251214	0	0
+0	0	0	In Parliamentary Democracies, A Change Of Prime Minister Should Automatically Trigger A General Election.	It would not create instability and logistical problems	It would create instability and logistical problems	4.5107055	-3.8148828	0	0
+0	0	0	In Parliamentary Democracies, A Change Of Prime Minister Should Automatically Trigger A General Election.	The concept underestimates the role of the Prime Minister	The concept overestimates the role of the Prime Minister	4.3690653	-3.76421	0	0
+0	0	0	Puerto Rico should seek American statehood	Puerto Rican statehood is economical for the US	Puerto Rican statehood is not economical for the US	4.3691907	-3.8581743	0	0
+0	0	0	Puerto Rico should seek American statehood	Puerto Rican statehood will benefit the US economically.	Puerto Rican statehood will not benefit the US economically.	4.470261	-3.8851497	0	0
+0	0	0	Puerto Rico should seek American statehood	Making Puerto Rico a state is a good economic decision for the US. 	Making Puerto Rico a state is not a good economic decision for the US. 	4.345025	-3.818248000000001	0	0
+0	0	0	Puerto Rico should seek American statehood	Becoming a state would not hurt the other 50 states.	Becoming a state would hurt the other 50 states.	4.392351000000001	-3.8228757	0	0
+0	0	0	There is a good case for stating that there is a God	God' is not a concept designed to promote a set of values	'God' is merely a concept designed to promote a set of values	4.331127599999999	-3.7677064	0	0
+0	0	0	There is a good case for stating that there is a God	People think that a benevolent God can exist because bad things happen...	People think that a benevolent God cannot exist because bad things happen...	4.14884	-3.7028112	0	0
+0	0	0	The law on self defence should cover ‘grossly disproportionate’ actions	We should allow state sponsored revenge	We should not allow state sponsored revenge	4.0015755	-3.5757434	0	0
+0	0	0	The law on self defence should cover ‘grossly disproportionate’ actions	There is not enough leeway in the law of self defence.	There is already enough leeway in the law of self defence.	3.3103607	-2.634904	0	0
+0	0	0	Animal testing should be banned.	Animal researchers treat animals unhumanely, neither for the animals' sake nor to ensure reliable test results.	Animal researchers treat animals humanely, both for the animals' sake and to ensure reliable test results.	3.8158305	-3.4494777	0	0
+0	0	0	Animal testing should be banned.	Animals are treated badly during animal testing. 	Animals are treated well during animal testing. 	3.7278788	-3.4302692	0	0
+0	0	0	Animal testing should be banned.	Research animals are badly treated 	Research animals are well treated 	3.8044877	-3.4438553	0	0
+0	0	0	Animal testing should be banned.	Animals do have rights, therefore it is unacceptable to experiment on them.	Animals do not have rights, therefore it is acceptable to experiment on them.	3.2083497	-2.7726707	0	0
+0	0	0	Animal testing should be banned.	Animals do have rights.	Animals don't have rights.	3.4295883	-2.8733864	0	0
+0	0	0	Animal testing should be banned.	Testing is not needed for really new drugs	Testing is needed for really new drugs	3.1154146	-2.5205197	0	0
+0	0	0	Animal testing should be banned.	We do not need to be able to test drugs on animals.  	We need to be able to test drugs on animals.  	3.9994998	-3.4887297	0	0
+0	0	0	Animal testing should be banned.	We never use animal testing even when it is needed.  	We try to only use animal testing when it is needed.  	3.3992288	-3.1023302	0	0
+0	0	0	Animal testing should be banned.	Sometimes we have other choices for Animal research, so we don't need to do some animal testing. 	Sometimes we have no other choices for Animal research, but then to do some animal testing. 	1.5870607	-1.3290569	0	0
+0	0	0	Animal testing should be banned.	Animal research does not ensure greater safety for humans	Animal research ensures greater safety for humans	3.7648942	-3.4482286	0	0
+0	0	0	Animal testing should be banned.	Animal testing has not contributed to many life-saving cures and treatments.	Animal testing has contributed to many life-saving cures and treatments.	3.9658	-3.539384	0	0
+0	0	0	Animal testing should be banned.	Animal research has not played a vital role in a great many of the major medical advances of the last century	Animal research has played a vital role in a great many of the major medical advances of the last century	3.8602219	-3.4873524	0	0
+0	0	0	Animal testing should be banned.	There are no satisfactory alternatives to animal research	There are no satisfactory alternatives to animal research	2.156136	-1.7520703	0	0
+0	0	0	Animal testing should be banned.	Animals themselves do not benefit from the results of animal testing.	Animals themselves benefit from the results of animal testing.	3.9408588	-3.535791	0	0
+0	0	0	Animal testing should be banned.	Most animals that are used in scientific testing have worse lives. 	Most animals that are used in scientific testing have better lives. 	3.5787926	-3.288217	0	0
+0	0	0	Animal testing should be banned.	Religious traditions do not allow for human dominion over animals.	Religious traditions allow for human dominion over animals.	1.4996517	-1.2507449	0	0
+0	0	0	Animal testing should be banned.	Animals are not the only choice for testing. 	Animals are the only choice for testing. 	3.7691765	-3.479461	0	0
+0	0	0	Animal testing should be banned.	Animals are not appropriate research subjects even they are similar to human beings in many ways. 	Animals are appropriate research subjects because they are similar to human beings in many ways. 	3.7494323	-3.4040847	0	0
+0	0	0	Instant Replay Should Be Used in Major League Baseball	Many plays lend themselves to video review	Many plays don’t lend themselves to video review	4.0565505	-3.4692292	0	0
+0	0	0	Instant Replay Should Be Used in Major League Baseball	video can catch all plays at a game	video cannot catch all plays at a game	4.301819999999999	-3.667375	0	0
+0	0	0	Instant Replay Should Be Used in Major League Baseball	Instant replay is deceptive and not inconclusive	Instant replay might be deceptive or inconclusive	4.553247	-3.8548627	0	0
