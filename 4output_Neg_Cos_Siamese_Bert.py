@@ -779,12 +779,13 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
                 tmp_eval_loss = model(input_ids=input_ids, token_type_ids=segment_ids, attention_mask=input_mask, labels=label_ids, input_ids2=claim_input_ids, token_type_ids2=claim_segment_ids, attention_mask2=claim_input_mask, labels2=claim_label_ids, input_ids3=opp_input_ids, token_type_ids3=opp_segment_ids, attention_mask3=opp_input_mask, labels3=opp_label_ids, input_ids4=opp_claim_input_ids, token_type_ids4=opp_claim_segment_ids, attention_mask4=opp_claim_input_mask, labels4=opp_claim_label_ids)
                 
                 logits = model(input_ids=input_ids, token_type_ids=segment_ids, attention_mask=input_mask, input_ids2=claim_input_ids, token_type_ids2=claim_segment_ids, attention_mask2=claim_input_mask, input_ids3=opp_input_ids, token_type_ids3=opp_segment_ids, attention_mask3=opp_input_mask, input_ids4=opp_claim_input_ids, token_type_ids4=opp_claim_segment_ids, attention_mask4=opp_claim_input_mask)
-                logits = logits[0]
+                
                 logits_cp = logits[1]
                 logits_cop = logits[2]
                 logits_ocp = logits[3]
                 logits_ocop = logits[4]
                 
+                logits = logits[0]
                 
 #                 predicted_prob.extend(torch.nn.functional.softmax(logits, dim=1))
 
