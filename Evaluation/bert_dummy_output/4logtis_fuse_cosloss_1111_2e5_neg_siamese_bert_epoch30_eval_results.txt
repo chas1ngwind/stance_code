@@ -1,0 +1,16 @@
+eval_accuracy = 0.7552039966694422
+eval_loss = 3.710217347758454
+eval_macro_f1 = 0.7648940427620633
+eval_macro_p = 0.7547144439171021
+eval_macro_r = 0.7753520012656226
+eval_micro_f1 = 0.7675889328063241
+eval_micro_p = 0.7633647798742138
+eval_micro_r = 0.7718600953895072
+              precision    recall  f1-score   support
+
+           0     0.7460    0.7369    0.7414      1144
+           1     0.7634    0.7719    0.7676      1258
+
+   micro avg     0.7552    0.7552    0.7552      2402
+   macro avg     0.7547    0.7544    0.7545      2402
+weighted avg     0.7551    0.7552    0.7551      2402
