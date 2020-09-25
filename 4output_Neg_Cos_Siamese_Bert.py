@@ -673,8 +673,9 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 #         new_dev_df = generate_opp_dataset(dev_df)
         
 #         new_dev_df.to_csv(os.path.join(data_dir, "new_dev.tsv"),sep='\t',index=False)
-
-        eval_examples = processor.get_test_examples(data_dir)
+        
+        eval_examples = processor.get_train_examples(data_dir)
+#         eval_examples = processor.get_test_examples(data_dir)
 #         eval_examples = processor.get_dev_examples(data_dir)
         claim_features = convert_claims_to_features(eval_examples, label_list, max_seq_length, tokenizer)
         eval_features = convert_pers_to_features(eval_examples, label_list, max_seq_length, tokenizer)
@@ -857,8 +858,8 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 #                   'loss': tr_loss/nb_tr_steps
                   }
 
-        output_eval_file = os.path.join(output_dir, "4logtis_fuse_cosloss_1111_2e5_neg_siamese_bert_epoch30_eval_results.txt")
-        output_raw_score = os.path.join(output_dir, "4logtis_fuse_cosloss_1111_2e5_neg_siamese_bert_epoch30_raw_score.csv")
+        output_eval_file = os.path.join(output_dir, "train_4logtis_fuse_cosloss_1111_2e5_neg_siamese_bert_epoch30_eval_results.txt")
+        output_raw_score = os.path.join(output_dir, "train_4logtis_fuse_cosloss_1111_2e5_neg_siamese_bert_epoch30_raw_score.csv")
         
         logger.info(classification_report(gold_labels, predicted_labels, target_names=label_list, digits=4))
         with open(output_eval_file, "w") as writer:
