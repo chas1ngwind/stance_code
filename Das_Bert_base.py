@@ -392,8 +392,8 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 #                   'loss': tr_loss/nb_tr_steps
                   }
 
-        output_eval_file = os.path.join(output_dir, "onnew_neg_opposite_perspectives_bert_base_eval_results.txt")
-        output_raw_score = os.path.join(output_dir, "onnew_neg_opposite_perspectives_bert_base_raw_score.csv")
+        output_eval_file = os.path.join(output_dir, "on_naive_subset_neg_opposite_perspectives_bert_base_eval_results.txt")
+        output_raw_score = os.path.join(output_dir, "on_naive_subset_neg_opposite_perspectives_bert_base_raw_score.csv")
         with open(output_eval_file, "w") as writer:
             logger.info("***** Eval results *****")
             for key in sorted(result.keys()):
@@ -437,7 +437,7 @@ def experiments():
 def evaluation_with_pretrained():
     bert_model = "/var/scratch/syg340/project/models/bert_base_bs32_lr2e_5_epoch4.pth"
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset"
-    data_dir = "/var/scratch/syg340/project/stance_code/Dataset/auto_opposite/"
+    data_dir = "/var/scratch/syg340/project/stance_code/Dataset/naive_opposite/subset/"
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset/manul_opposite/500_gold0/"
 
     data_dir_output = "/var/scratch/syg340/project/stance_code/Evaluation/antonym_output/"
