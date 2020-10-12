@@ -1283,7 +1283,7 @@ class TriProcessor(DataProcessor):
             text_a = line[3]
             text_b = line[4]
             text_c = line[5]
-            text_d = line[6]
+            text_d = None
             label = line[0]
             
             examples.append(
