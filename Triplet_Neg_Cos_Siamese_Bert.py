@@ -19,7 +19,7 @@ from pytorch_pretrained_bert.optimization import BertAdam
 # In[10]:
 
 
-from run_classifier import NegProcessor, generate_opp_dataset, convert_opp_pers_to_features, convert_opp_claims_to_features, StanceProcessor, MrpcProcessor, logger, convert_examples_to_features,   set_optimizer_params_grad, copy_optimizer_params_to_model, accuracy, p_r_f1, tp_pcount_gcount, convert_claims_to_features, convert_pers_to_features
+from run_classifier import NegProcessor,TriProcessor, generate_opp_dataset,generate_opp_pers_dataset, convert_triopp_pers_to_features, convert_opp_claims_to_features, StanceProcessor, MrpcProcessor, logger, convert_examples_to_features,   set_optimizer_params_grad, copy_optimizer_params_to_model, accuracy, p_r_f1, tp_pcount_gcount, convert_claims_to_features, convert_pers_to_features
 
 
 # In[11]:
@@ -48,8 +48,35 @@ from pytorch_pretrained_bert.modeling import BertForSequenceClassification, Bert
 from torch.nn import BCEWithLogitsLoss, CosineEmbeddingLoss,CrossEntropyLoss, MSELoss
 
 
-# In[13]:
 
+# In[13]:
+class TripletLoss(torch.nn.Module):
+    """
+    Triplet loss function.
+    """
+
+    def __init__(self, margin=2.0):
+        super(TripletLoss, self).__init__()
+        self.margin = margin
+
+    def forward(self, anchor, pers, opp_pers, label):
+        print("LABEL:")
+        print(label)
+        if label == 1:
+            squarred_distance_1 = (anchor - pers).pow(2).sum(1)
+        
+            squarred_distance_2 = (anchor - opp_pers).pow(2).sum(1)
+        
+            triplet_loss = F.relu( self.margin + squarred_distance_1 - squarred_distance_2 ).mean()
+            
+        elif label == 0:
+            squarred_distance_1 = (anchor - opp_pers).pow(2).sum(1)
+        
+            squarred_distance_2 = (anchor - pers).pow(2).sum(1)
+        
+            triplet_loss = F.relu( self.margin + squarred_distance_1 - squarred_distance_2 ).mean()
+            
+        return triplet_loss
 
 
 class BertForConsistencyCueClassification(BertPreTrainedModel):
@@ -83,13 +110,13 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
         inputs_embeds2=None,
         labels2=None
         
-#         input_ids3=None,
-#         attention_mask3=None,
-#         token_type_ids3=None,
-#         position_ids3=None,
-#         head_mask3=None,
-#         inputs_embeds3=None,
-#         labels3=None,
+        input_ids3=None,
+        attention_mask3=None,
+        token_type_ids3=None,
+        position_ids3=None,
+        head_mask3=None,
+        inputs_embeds3=None,
+        labels3=None,
         
 #         input_ids4=None,
 #         attention_mask4=None,
@@ -270,7 +297,7 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
 
         ####   grid search end
 #         if input_ids4 and input_ids3:
-        final_logits = (1*logits_ce)-(1*cop_logits_ce)-(1*ocp_logits_ce)+(1*ocop_logits_ce)
+        final_logits = (1*logits_ce)-(1*cop_logits_ce)
 #         elif input_ids3:
 #             final_logits = logits_ce-(0.33*cop_logits_ce)
 #         elif input_ids4:
@@ -300,32 +327,15 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
 #                 print('loss_ori:')
 #                 print(loss_ori)
                 loss_fct_cos = CosineEmbeddingLoss()
+                loss_fct_tri = TripletLoss()
 
 #                 labels2[labels2==0] = -1
 #                 loss_cos = loss_fct_cos(pooled_output, pooled_output2, labels2)
 #                 labels2[labels2==-1] = 0
 
-                #claim,opp perspective & opp claim,perspective
-                labels2[labels2==1] = -1
-                labels2[labels2==0] = 1
+                loss_tri = loss_fct_tri(pooled_output2, pooled_output, pooled_output3, labels)
                 
-                loss_cos2 = loss_fct_cos(pooled_output2, pooled_output3, labels2)
-                loss_cos3 = loss_fct_cos(pooled_output4, pooled_output, labels2)
-                
-                labels2[labels2== 1] = 0
-                labels2[labels2==-1] = 1
-                
-                
-                #claim, perspective & opp claim, opp perspective
-                labels3[labels3==0] = -1
-                loss_cos = loss_fct_cos(pooled_output, pooled_output2, labels3)
-                loss_cos4 = loss_fct_cos(pooled_output3, pooled_output4, labels3)
-                labels3[labels3== -1] = 0
-                
-#                 logger.info('loss_cos:')
-#                 logger.info(loss_cos)
-                loss_sim = loss_cos+(1*loss_cos2)+(1*loss_cos3)+(1*loss_cos4)
-                loss = loss_ce+loss_sim
+                loss = loss_ce+loss_tri
 #                 logger.info('final loss:')
 #                 logger.info(loss)
                 
@@ -343,7 +353,7 @@ import csv
 from pytorch_pretrained_bert.file_utils import PYTORCH_PRETRAINED_BERT_CACHE
 def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
                    output_dir=None, max_seq_length=80, do_train=False, do_eval=False, do_lower_case=False,
-                   train_batch_size=24, eval_batch_size=8, learning_rate=2e-5, num_train_epochs=50,
+                   train_batch_size=24, eval_batch_size=8, learning_rate=2e-5, num_train_epochs=25,
                    warmup_proportion=0.1,no_cuda=False, local_rank=-1, seed=42, gradient_accumulation_steps=1,
                    optimize_on_cpu=False, fp16=False, loss_scale=128, saved_model=""):
     
@@ -445,7 +455,8 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 #         "mnli": MnliProcessor,
         "mrpc": MrpcProcessor,
         "stance":StanceProcessor,
-        "neg":NegProcessor
+        "neg":NegProcessor,
+        "tri": TriProcessor
     }
 
     if local_rank == -1 or no_cuda:
@@ -501,10 +512,20 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
     if do_train:
         
         train_df = processor.get_train_df(data_dir)
+        test_df = processor.get_test_df(data_dir)
+        dev_df = processor.get_dev_df(data_dir)
         
-        new_train_df = generate_opp_dataset(train_df)
+        new_train_df = generate_opp_pers_dataset(train_df)
         
-        new_train_df.to_csv(os.path.join(data_dir, "new_train.tsv"),sep='\t',index=False)
+        new_train_df.to_csv(os.path.join(data_dir, "tri_train.tsv"),sep='\t',index=False)
+        
+        new_test_df = generate_opp_pers_dataset(test_df)
+        
+        new_test_df.to_csv(os.path.join(data_dir, "tri_test.tsv"),sep='\t',index=False)
+        
+        new_dev_df = generate_opp_pers_dataset(dev_df)
+        
+        new_dev_df.to_csv(os.path.join(data_dir, "tri_dev.tsv"),sep='\t',index=False)
         
         train_examples = processor.get_train_examples(data_dir)
         
@@ -553,11 +574,13 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
     if do_train:
 
         claim_features = convert_claims_to_features(train_examples, label_list, max_seq_length, tokenizer)
+        logger.info("claims features done")
         train_features = convert_pers_to_features(train_examples, label_list, max_seq_length, tokenizer)
         logger.info("perspective features done")
-        opposite_claim_features = convert_opp_claims_to_features(train_examples, label_list, max_seq_length, tokenizer)
-        logger.info("opposite claim features done")
-        opposite_perspective_features = convert_opp_pers_to_features(train_examples, label_list, max_seq_length, tokenizer)
+#         opposite_claim_features = convert_opp_claims_to_features(train_examples, label_list, max_seq_length, tokenizer)
+#         logger.info("opposite claim features done")
+        opposite_perspective_features = convert_triopp_pers_to_features(train_examples, label_list, max_seq_length, tokenizer)
+        logger.info("opp perspective features done")
 
         logger.info("***** Running training *****")
         logger.info("  Num examples = %d", len(train_examples))
@@ -587,14 +610,14 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 #         opp_pers_segment_ids = torch.tensor([f.segment_ids for f in opposite_perspective_features if f.segment_ids], dtype=torch.long)
 #         opp_pers_label_ids = torch.tensor([f.label_id for f in opposite_perspective_features if f.label_id], dtype=torch.long)
 
-        opp_claims_input_ids = torch.tensor([f.input_ids for f in opposite_claim_features], dtype=torch.long)
-        opp_claims_input_mask = torch.tensor([f.input_mask for f in opposite_claim_features], dtype=torch.long)
-        opp_claims_segment_ids = torch.tensor([f.segment_ids for f in opposite_claim_features], dtype=torch.long)
-        opp_claims_label_ids = torch.tensor([f.label_id for f in opposite_claim_features], dtype=torch.long)
+#         opp_claims_input_ids = torch.tensor([f.input_ids for f in opposite_claim_features], dtype=torch.long)
+#         opp_claims_input_mask = torch.tensor([f.input_mask for f in opposite_claim_features], dtype=torch.long)
+#         opp_claims_segment_ids = torch.tensor([f.segment_ids for f in opposite_claim_features], dtype=torch.long)
+#         opp_claims_label_ids = torch.tensor([f.label_id for f in opposite_claim_features], dtype=torch.long)
         
 #         logger.info("  opp pers id: %d, opp pers mask: %d, opp pers seg: %d, opp pers label: %d, opp calims label: %d, calims label: %d ", len(opp_pers_input_ids),len(opp_pers_input_mask),len(opp_pers_segment_ids),len(opp_pers_label_ids),len(opp_claims_label_ids),len(claims_label_ids))
         
-        train_data = TensorDataset(pers_input_ids, pers_input_mask, pers_segment_ids, pers_label_ids, claims_input_ids, claims_input_mask, claims_segment_ids, claims_label_ids, opp_pers_input_ids, opp_pers_input_mask, opp_pers_segment_ids, opp_pers_label_ids, opp_claims_input_ids, opp_claims_input_mask, opp_claims_segment_ids, opp_claims_label_ids)
+        train_data = TensorDataset(pers_input_ids, pers_input_mask, pers_segment_ids, pers_label_ids, claims_input_ids, claims_input_mask, claims_segment_ids, claims_label_ids, opp_pers_input_ids, opp_pers_input_mask, opp_pers_segment_ids, opp_pers_label_ids)
 
         if local_rank == -1:
             train_sampler = RandomSampler(train_data)
@@ -610,9 +633,9 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
             process_bar = tqdm(train_dataloader)
             for step, batch in enumerate(tqdm(train_dataloader, desc="Iteration")):
                 batch = tuple(t.to(device) for t in batch)
-                input_ids, input_mask, segment_ids, label_ids, claim_input_ids, claim_input_mask, claim_segment_ids, claim_label_ids, opp_input_ids, opp_input_mask, opp_segment_ids, opp_label_ids, opp_claim_input_ids, opp_claim_input_mask, opp_claim_segment_ids, opp_claim_label_ids = batch
+                input_ids, input_mask, segment_ids, label_ids, claim_input_ids, claim_input_mask, claim_segment_ids, claim_label_ids, opp_input_ids, opp_input_mask, opp_segment_ids, opp_label_ids = batch
                 
-                out_results = model(input_ids=input_ids, token_type_ids=segment_ids, attention_mask=input_mask, labels=label_ids, input_ids2=claim_input_ids, token_type_ids2=claim_segment_ids, attention_mask2=claim_input_mask, labels2=claim_label_ids, input_ids3=opp_input_ids, token_type_ids3=opp_segment_ids, attention_mask3=opp_input_mask, labels3=opp_label_ids, input_ids4=opp_claim_input_ids, token_type_ids4=opp_claim_segment_ids, attention_mask4=opp_claim_input_mask, labels4=opp_claim_label_ids)
+                out_results = model(input_ids=input_ids, token_type_ids=segment_ids, attention_mask=input_mask, labels=label_ids, input_ids2=claim_input_ids, token_type_ids2=claim_segment_ids, attention_mask2=claim_input_mask, labels2=claim_label_ids, input_ids3=opp_input_ids, token_type_ids3=opp_segment_ids, attention_mask3=opp_input_mask, labels3=opp_label_ids)
 #                 loss = model(input_ids, segment_ids, input_mask, label_ids)
 #                 print("out_results:")
 #                 print(out_results)
@@ -651,7 +674,7 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
                     model.zero_grad()
                     global_step += 1
             print("\nLoss: {}\n".format(tr_loss / nb_tr_steps))
-        torch.save(model.state_dict(), output_dir +"fuse_cosloss_1111_2e5_neg_siamese_bert_epoch30.pth")
+        torch.save(model.state_dict(), output_dir +"triplet_siamese_bs24_lr2e_5_epoch25.pth")
 
 
     if do_eval and (local_rank == -1 or torch.distributed.get_rank() == 0):
@@ -680,8 +703,8 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
         claim_features = convert_claims_to_features(eval_examples, label_list, max_seq_length, tokenizer)
         eval_features = convert_pers_to_features(eval_examples, label_list, max_seq_length, tokenizer)
         
-        opposite_claim_features = convert_opp_claims_to_features(eval_examples, label_list, max_seq_length, tokenizer)
-        opposite_eval_features = convert_opp_pers_to_features(eval_examples, label_list, max_seq_length, tokenizer)
+#         opposite_claim_features = convert_opp_claims_to_features(eval_examples, label_list, max_seq_length, tokenizer)
+        opposite_eval_features = convert_triopp_pers_to_features(eval_examples, label_list, max_seq_length, tokenizer)
             
     
         logger.info("***** Running evaluation *****")
@@ -703,14 +726,14 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
         opp_pers_segment_ids = torch.tensor([f.segment_ids for f in opposite_eval_features], dtype=torch.long)
         opp_pers_label_ids = torch.tensor([f.label_id for f in opposite_eval_features], dtype=torch.long)
         
-        opp_claims_input_ids = torch.tensor([f.input_ids for f in opposite_claim_features], dtype=torch.long)
-        opp_claims_input_mask = torch.tensor([f.input_mask for f in opposite_claim_features], dtype=torch.long)
-        opp_claims_segment_ids = torch.tensor([f.segment_ids for f in opposite_claim_features], dtype=torch.long)
-        opp_claims_label_ids = torch.tensor([f.label_id for f in opposite_claim_features], dtype=torch.long)
+#         opp_claims_input_ids = torch.tensor([f.input_ids for f in opposite_claim_features], dtype=torch.long)
+#         opp_claims_input_mask = torch.tensor([f.input_mask for f in opposite_claim_features], dtype=torch.long)
+#         opp_claims_segment_ids = torch.tensor([f.segment_ids for f in opposite_claim_features], dtype=torch.long)
+#         opp_claims_label_ids = torch.tensor([f.label_id for f in opposite_claim_features], dtype=torch.long)
         
 #         logger.info("%d%d%d%d", len(pers_input_ids),len(claims_input_ids),len(opp_pers_input_ids),len(opp_claims_input_ids))
         
-        eval_data = TensorDataset(pers_input_ids, pers_input_mask, pers_segment_ids, pers_label_ids, claims_input_ids, claims_input_mask, claims_segment_ids, claims_label_ids, opp_pers_input_ids, opp_pers_input_mask, opp_pers_segment_ids, opp_pers_label_ids, opp_claims_input_ids, opp_claims_input_mask, opp_claims_segment_ids, opp_claims_label_ids)
+        eval_data = TensorDataset(pers_input_ids, pers_input_mask, pers_segment_ids, pers_label_ids, claims_input_ids, claims_input_mask, claims_segment_ids, claims_label_ids, opp_pers_input_ids, opp_pers_input_mask, opp_pers_segment_ids, opp_pers_label_ids)
         
 #         logger.info(eval_data)
         # Run prediction for full data
@@ -744,7 +767,7 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
         gold_labels = []
 
         nb_eval_steps, nb_eval_examples = 0, 0
-        for input_ids, input_mask, segment_ids, label_ids, claim_input_ids, claim_input_mask, claim_segment_ids, claim_label_ids, opp_input_ids, opp_input_mask, opp_segment_ids, opp_label_ids, opp_claim_input_ids, opp_claim_input_mask, opp_claim_segment_ids, opp_claim_label_ids in eval_dataloader:
+        for input_ids, input_mask, segment_ids, label_ids, claim_input_ids, claim_input_mask, claim_segment_ids, claim_label_ids, opp_input_ids, opp_input_mask, opp_segment_ids, opp_label_ids in eval_dataloader:
             
             input_ids = input_ids.to(device)
             input_mask = input_mask.to(device)
@@ -761,10 +784,10 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
             opp_segment_ids = opp_segment_ids.to(device)
             opp_label_ids = opp_label_ids.to(device)
             
-            opp_claim_input_ids = opp_claim_input_ids.to(device)
-            opp_claim_input_mask = opp_claim_input_mask.to(device)
-            opp_claim_segment_ids = opp_claim_segment_ids.to(device)
-            opp_claim_label_ids = opp_claim_label_ids.to(device)
+#             opp_claim_input_ids = opp_claim_input_ids.to(device)
+#             opp_claim_input_mask = opp_claim_input_mask.to(device)
+#             opp_claim_segment_ids = opp_claim_segment_ids.to(device)
+#             opp_claim_label_ids = opp_claim_label_ids.to(device)
 
 #             print("start")
 #             print(input_ids)
@@ -777,9 +800,9 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 #             print(claim_label_ids)
 #             print("end")
             with torch.no_grad():
-                tmp_eval_loss = model(input_ids=input_ids, token_type_ids=segment_ids, attention_mask=input_mask, labels=label_ids, input_ids2=claim_input_ids, token_type_ids2=claim_segment_ids, attention_mask2=claim_input_mask, labels2=claim_label_ids, input_ids3=opp_input_ids, token_type_ids3=opp_segment_ids, attention_mask3=opp_input_mask, labels3=opp_label_ids, input_ids4=opp_claim_input_ids, token_type_ids4=opp_claim_segment_ids, attention_mask4=opp_claim_input_mask, labels4=opp_claim_label_ids)
+                tmp_eval_loss = model(input_ids=input_ids, token_type_ids=segment_ids, attention_mask=input_mask, labels=label_ids, input_ids2=claim_input_ids, token_type_ids2=claim_segment_ids, attention_mask2=claim_input_mask, labels2=claim_label_ids, input_ids3=opp_input_ids, token_type_ids3=opp_segment_ids, attention_mask3=opp_input_mask, labels3=opp_label_ids)
                 
-                logits = model(input_ids=input_ids, token_type_ids=segment_ids, attention_mask=input_mask, input_ids2=claim_input_ids, token_type_ids2=claim_segment_ids, attention_mask2=claim_input_mask, input_ids3=opp_input_ids, token_type_ids3=opp_segment_ids, attention_mask3=opp_input_mask, input_ids4=opp_claim_input_ids, token_type_ids4=opp_claim_segment_ids, attention_mask4=opp_claim_input_mask)
+                logits = model(input_ids=input_ids, token_type_ids=segment_ids, attention_mask=input_mask, input_ids2=claim_input_ids, token_type_ids2=claim_segment_ids, attention_mask2=claim_input_mask, input_ids3=opp_input_ids, token_type_ids3=opp_segment_ids, attention_mask3=opp_input_mask)
                 
                 predicted_prob.extend(torch.nn.functional.softmax(logits, dim=1))
 #                 logits_grid = model(input_ids=input_ids, token_type_ids=segment_ids, attention_mask=input_mask, input_ids2=claim_input_ids, token_type_ids2=claim_segment_ids, attention_mask2=claim_input_mask, input_ids3=opp_input_ids, token_type_ids3=opp_segment_ids, attention_mask3=opp_input_mask, input_ids4=opp_claim_input_ids, token_type_ids4=opp_claim_segment_ids, attention_mask4=opp_claim_input_mask)
@@ -845,8 +868,8 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 #                   'loss': tr_loss/nb_tr_steps
                   }
 
-        output_eval_file = os.path.join(output_dir, "fuse_cosloss_1033033033_2e5_neg_siamese_bert_epoch50_eval_results.txt")
-        output_raw_score = os.path.join(output_dir, "fuse_cosloss_1033033033_2e5_neg_siamese_bert_epoch50_raw_score.csv")
+        output_eval_file = os.path.join(output_dir, "triplet_siamese_bs24_lr2e_5_epoch25_eval_results.txt")
+        output_raw_score = os.path.join(output_dir, "triplet_siamese_bs24_lr2e_5_epoch25_raw_score.csv")
         
         logger.info(classification_report(gold_labels, predicted_labels, target_names=label_list, digits=4))
         with open(output_eval_file, "w") as writer:
@@ -854,7 +877,7 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
             for key in sorted(result.keys()):
                 logger.info("  %s = %s", key, str(result[key]))
                 writer.write("%s = %s\n" % (key, str(result[key])))
-            writer.write(classification_report(gold_labels, predicted_labels, target_names=label_list, digits=4))
+#             writer.write(classification_report(gold_labels, predicted_labels, target_names=label_list, digits=4))
 
 
         with open(output_raw_score, 'w') as fout:
@@ -890,9 +913,9 @@ def experiments():
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset/ibmcs/"
     
     
-    data_dir_output = "/var/scratch/syg340/project/cos_siamese_models/"
+    data_dir_output = "/var/scratch/syg340/project/triplet_siamese_models/"
 #     data_dir_output = "/var/scratch/syg340/project/stance_code/Evaluation/319/"
-    train_and_test(data_dir=data_dir, do_train=True, do_eval=False, output_dir=data_dir_output,task_name="neg")
+    train_and_test(data_dir=data_dir, do_train=True, do_eval=False, output_dir=data_dir_output,task_name="tri")
 
 
 # In[10]:
@@ -900,20 +923,20 @@ def experiments():
 
 def evaluation_with_pretrained():
 #     bert_model = "/var/scratch/syg340/project/cos_siamese_models/319cos/319_cos_camimu_siamese_bert_epoch5.pth"
-    bert_model = "/var/scratch/syg340/project/cos_siamese_models/fuse_cosloss_1033033033_2e5_neg_siamese_bert_epoch50.pth"
+    bert_model = "/var/scratch/syg340/project/triplet_siamese_models/triplet_siamese_bs24_lr2e_5_epoch25.pth"
     data_dir = "/var/scratch/syg340/project/stance_code/Dataset/"
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset/ibmcs/"
 
     data_dir_output = "/var/scratch/syg340/project/stance_code/Evaluation/bert_dummy_output/"
-    train_and_test(data_dir=data_dir, do_train=False, do_eval=True, output_dir=data_dir_output,task_name="neg",saved_model=bert_model)
+    train_and_test(data_dir=data_dir, do_train=False, do_eval=True, output_dir=data_dir_output,task_name="tri",saved_model=bert_model)
 
 
 # In[11]:
 
 
 if __name__ == "__main__":
-#     experiments()
-    evaluation_with_pretrained()
+    experiments()
+#     evaluation_with_pretrained()
 
 
 # In[ ]:
