@@ -108,7 +108,7 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
         position_ids2=None,
         head_mask2=None,
         inputs_embeds2=None,
-        labels2=None
+        labels2=None,
         
         input_ids3=None,
         attention_mask3=None,
@@ -116,7 +116,7 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
         position_ids3=None,
         head_mask3=None,
         inputs_embeds3=None,
-        labels3=None,
+        labels3=None
         
 #         input_ids4=None,
 #         attention_mask4=None,
