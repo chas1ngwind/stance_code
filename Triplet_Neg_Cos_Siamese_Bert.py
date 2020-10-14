@@ -66,7 +66,7 @@ class TripletLoss(torch.nn.Module):
         
         squarred_distance_2 = (anchor - negative).pow(2).sum(1)
         
-        triplet_loss = F.relu( self.margin + squarred_distance_1 - squarred_distance_2 ).mean()
+        triplet_loss = torch.nn.functional.relu( self.margin + squarred_distance_1 - squarred_distance_2 ).mean()
         
         return triplet_loss
 
