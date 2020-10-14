@@ -8,6 +8,7 @@ import torch
 import random
 import numpy as np
 import os
+import copy
 
 from sklearn.metrics import classification_report
 from tqdm import tqdm, trange
@@ -50,6 +51,7 @@ from torch.nn import BCEWithLogitsLoss, CosineEmbeddingLoss,CrossEntropyLoss, MS
 
 
 # In[13]:
+
 class TripletLoss(torch.nn.Module):
     """
     Triplet loss function.
@@ -59,23 +61,14 @@ class TripletLoss(torch.nn.Module):
         super(TripletLoss, self).__init__()
         self.margin = margin
 
-    def forward(self, anchor, pers, opp_pers, label):
-        print("LABEL:")
-        print(label)
-        if label == 1:
-            squarred_distance_1 = (anchor - pers).pow(2).sum(1)
+    def forward(self, anchor, positive, negative):
+
+        squarred_distance_1 = (anchor - positive).pow(2).sum(1)
         
-            squarred_distance_2 = (anchor - opp_pers).pow(2).sum(1)
+        squarred_distance_2 = (anchor - negative).pow(2).sum(1)
         
-            triplet_loss = F.relu( self.margin + squarred_distance_1 - squarred_distance_2 ).mean()
-            
-        elif label == 0:
-            squarred_distance_1 = (anchor - opp_pers).pow(2).sum(1)
+        triplet_loss = F.relu( self.margin + squarred_distance_1 - squarred_distance_2 ).mean()
         
-            squarred_distance_2 = (anchor - pers).pow(2).sum(1)
-        
-            triplet_loss = F.relu( self.margin + squarred_distance_1 - squarred_distance_2 ).mean()
-            
         return triplet_loss
 
 
@@ -332,8 +325,26 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
 #                 labels2[labels2==0] = -1
 #                 loss_cos = loss_fct_cos(pooled_output, pooled_output2, labels2)
 #                 labels2[labels2==-1] = 0
+                k=0
+                index=[]
+                for i in labels:
+                    k=k+1
+                    if i ==0:
+                        index.append(k)
+                pooled_output_inter = copy.deepcopy(pooled_output0)
+                pooled_output3_inter = copy.deepcopy(pooled_output3)
+                
+                pooled_output_inter2 = copy.deepcopy(pooled_output)
+                pooled_output3_inter2 = copy.deepcopy(pooled_output3)
+                       
+                for l in index:
+                    pooled_output_inter[l-1],pooled_output3_inter[l-1]=pooled_output3_inter[l-1],pooled_output_inter[l-1]
+                
+                for l in index:
+                    pooled_output3_inter2[l-1],pooled_output_inter2[l-1]=pooled_output_inter2[l-1],pooled_output3_inter2[l-1]
 
-                loss_tri = loss_fct_tri(pooled_output2, pooled_output, pooled_output3, labels)
+
+                loss_tri = loss_fct_tri(pooled_output2, pooled_output_inter, pooled_output3_inter2)
                 
                 loss = loss_ce+loss_tri
 #                 logger.info('final loss:')
