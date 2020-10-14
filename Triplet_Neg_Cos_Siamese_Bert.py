@@ -8,7 +8,6 @@ import torch
 import random
 import numpy as np
 import os
-import copy
 
 from sklearn.metrics import classification_report
 from tqdm import tqdm, trange
@@ -331,11 +330,11 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
                     k=k+1
                     if i ==0:
                         index.append(k)
-                pooled_output_inter = copy.deepcopy(pooled_output)
-                pooled_output3_inter = copy.deepcopy(pooled_output3)
+                pooled_output_inter = pooled_output.clone().detach()
+                pooled_output3_inter = pooled_output3.clone().detach()
                 
-                pooled_output_inter2 = copy.deepcopy(pooled_output)
-                pooled_output3_inter2 = copy.deepcopy(pooled_output3)
+                pooled_output_inter2 = pooled_output.clone().detach()
+                pooled_output3_inter2 = pooled_output3.clone().detach()
                        
                 for l in index:
                     pooled_output_inter[l-1],pooled_output3_inter[l-1]=pooled_output3_inter[l-1],pooled_output_inter[l-1]
