@@ -331,7 +331,7 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
                     k=k+1
                     if i ==0:
                         index.append(k)
-                pooled_output_inter = copy.deepcopy(pooled_output0)
+                pooled_output_inter = copy.deepcopy(pooled_output)
                 pooled_output3_inter = copy.deepcopy(pooled_output3)
                 
                 pooled_output_inter2 = copy.deepcopy(pooled_output)
