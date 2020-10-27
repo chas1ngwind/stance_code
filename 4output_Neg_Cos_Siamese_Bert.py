@@ -861,13 +861,13 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
         output_eval_file = os.path.join(output_dir, "train_4logtis_fuse_cosloss_1111_2e5_neg_siamese_bert_epoch30_eval_results.txt")
         output_raw_score = os.path.join(output_dir, "train_4logtis_fuse_cosloss_1111_2e5_neg_siamese_bert_epoch30_raw_score.csv")
         
-        logger.info(classification_report(gold_labels, predicted_labels, target_names=label_list, digits=4))
+#         logger.info(classification_report(gold_labels, predicted_labels, target_names=label_list, digits=4))
         with open(output_eval_file, "w") as writer:
             logger.info("***** Eval results *****")
             for key in sorted(result.keys()):
                 logger.info("  %s = %s", key, str(result[key]))
                 writer.write("%s = %s\n" % (key, str(result[key])))
-            writer.write(classification_report(gold_labels, predicted_labels, target_names=label_list, digits=4))
+#             writer.write(classification_report(gold_labels, predicted_labels, target_names=label_list, digits=4))
 
 
         with open(output_raw_score, 'w') as fout:

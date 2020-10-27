@@ -50,25 +50,33 @@ from torch.nn import BCEWithLogitsLoss, CosineEmbeddingLoss,CrossEntropyLoss, MS
 
 
 # In[13]:
-
+from enum import Enum
+class TripletDistanceMetric(Enum):
+    """
+    The metric for the triplet loss
+    """
+    COSINE = lambda x, y: 1 - F.cosine_similarity(x, y)
+    EUCLIDEAN = lambda x, y: F.pairwise_distance(x, y, p=2)
+    MANHATTAN = lambda x, y: F.pairwise_distance(x, y, p=1)
+    
 class TripletLoss(torch.nn.Module):
     """
-    Triplet loss function.
+    Updated triplet loss function
     """
-
-    def __init__(self, margin=2.0):
+    def __init__(self, distance_metric=TripletDistanceMetric.COSINE, triplet_margin=1.0):
         super(TripletLoss, self).__init__()
-        self.margin = margin
+        self.distance_metric = distance_metric
+        self.triplet_margin = triplet_margin
 
     def forward(self, anchor, positive, negative):
+        
 
-        squarred_distance_1 = (anchor - positive).pow(2).sum(1)
-        
-        squarred_distance_2 = (anchor - negative).pow(2).sum(1)
-        
-        triplet_loss = torch.nn.functional.relu( self.margin + squarred_distance_1 - squarred_distance_2 ).mean()
-        
-        return triplet_loss
+        rep_anchor, rep_pos, rep_neg = reps
+        distance_pos = self.distance_metric(anchor, positive)
+        distance_neg = self.distance_metric(anchor, negative)
+
+        losses = torch.nn.functional.relu(distance_pos - distance_neg + self.triplet_margin)
+        return losses.mean()
 
 
 class BertForConsistencyCueClassification(BertPreTrainedModel):
@@ -684,7 +692,7 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
                     model.zero_grad()
                     global_step += 1
             print("\nLoss: {}\n".format(tr_loss / nb_tr_steps))
-        torch.save(model.state_dict(), output_dir +"triplet_siamese_bs24_lr2e_5_epoch25.pth")
+        torch.save(model.state_dict(), output_dir +"margin1_costriplet_siamese_bs24_lr2e_5_epoch25.pth")
 
 
     if do_eval and (local_rank == -1 or torch.distributed.get_rank() == 0):
@@ -878,8 +886,8 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 #                   'loss': tr_loss/nb_tr_steps
                   }
 
-        output_eval_file = os.path.join(output_dir, "triplet_siamese_bs24_lr2e_5_epoch25_eval_results.txt")
-        output_raw_score = os.path.join(output_dir, "triplet_siamese_bs24_lr2e_5_epoch25_raw_score.csv")
+        output_eval_file = os.path.join(output_dir, "margin1_costriplet_siamese_bs24_lr2e_5_epoch25_eval_results.txt")
+        output_raw_score = os.path.join(output_dir, "margin1_costriplet_siamese_bs24_lr2e_5_epoch25_raw_score.csv")
         
 #         logger.info(classification_report(gold_labels, predicted_labels, target_names=label_list, digits=4))
         with open(output_eval_file, "w") as writer:
@@ -933,7 +941,7 @@ def experiments():
 
 def evaluation_with_pretrained():
 #     bert_model = "/var/scratch/syg340/project/cos_siamese_models/319cos/319_cos_camimu_siamese_bert_epoch5.pth"
-    bert_model = "/var/scratch/syg340/project/triplet_siamese_models/triplet_siamese_bs24_lr2e_5_epoch25.pth"
+    bert_model = "/var/scratch/syg340/project/triplet_siamese_models/margin1_costriplet_siamese_bs24_lr2e_5_epoch25.pth"
     data_dir = "/var/scratch/syg340/project/stance_code/Dataset/"
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset/ibmcs/"
 
@@ -945,8 +953,8 @@ def evaluation_with_pretrained():
 
 
 if __name__ == "__main__":
-#     experiments()
-    evaluation_with_pretrained()
+    experiments()
+#     evaluation_with_pretrained()
 #
 
 # In[ ]:
