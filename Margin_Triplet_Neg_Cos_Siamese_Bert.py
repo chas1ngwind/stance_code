@@ -69,9 +69,6 @@ class TripletLoss(torch.nn.Module):
         self.triplet_margin = triplet_margin
 
     def forward(self, anchor, positive, negative):
-        
-
-        rep_anchor, rep_pos, rep_neg = reps
         distance_pos = self.distance_metric(anchor, positive)
         distance_neg = self.distance_metric(anchor, negative)
 
