@@ -369,7 +369,7 @@ import csv
 from pytorch_pretrained_bert.file_utils import PYTORCH_PRETRAINED_BERT_CACHE
 def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
                    output_dir=None, max_seq_length=80, do_train=False, do_eval=False, do_lower_case=False,
-                   train_batch_size=24, eval_batch_size=8, learning_rate=2e-5, num_train_epochs=25,
+                   train_batch_size=24, eval_batch_size=8, learning_rate=2e-5, num_train_epochs=30,
                    warmup_proportion=0.1,no_cuda=False, local_rank=-1, seed=42, gradient_accumulation_steps=1,
                    optimize_on_cpu=False, fp16=False, loss_scale=128, saved_model=""):
     
@@ -951,8 +951,8 @@ def evaluation_with_pretrained():
 
 
 if __name__ == "__main__":
-#     experiments()
-    evaluation_with_pretrained()
+    experiments()
+#     evaluation_with_pretrained()
 #
 
 # In[ ]:
