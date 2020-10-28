@@ -939,7 +939,7 @@ def experiments():
 
 def evaluation_with_pretrained():
 #     bert_model = "/var/scratch/syg340/project/cos_siamese_models/319cos/319_cos_camimu_siamese_bert_epoch5.pth"
-    bert_model = "/var/scratch/syg340/project/triplet_siamese_models/margin1_costriplet_cos_siamese_bs24_lr2e_5_epoch25.pth"
+    bert_model = "/var/scratch/syg340/project/triplet_siamese_models/margin1_costriplet_cos_siamese_bs24_lr2e_5_epoch30.pth"
     data_dir = "/var/scratch/syg340/project/stance_code/Dataset/"
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset/ibmcs/"
 
