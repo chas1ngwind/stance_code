@@ -536,7 +536,7 @@ import csv
 from pytorch_pretrained_bert.file_utils import PYTORCH_PRETRAINED_BERT_CACHE
 def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
                    output_dir=None, max_seq_length=32, do_train=False, do_eval=False, do_lower_case=False,
-                   train_batch_size=32, eval_batch_size=8, learning_rate=5e-5, num_train_epochs=3,
+                   train_batch_size=32, eval_batch_size=8, learning_rate=5e-5, num_train_epochs=5,
                    warmup_proportion=0.1,no_cuda=False, local_rank=-1, seed=42, gradient_accumulation_steps=1,
                    optimize_on_cpu=False, fp16=False, loss_scale=128, saved_model=""):
 
@@ -907,8 +907,8 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 #                   'loss': tr_loss/nb_tr_steps
                   }
 
-        output_eval_file = os.path.join(output_dir, "on_naive_subset_neg_opposite_perspectives_bert_cons_epoch5_eval_results.txt")
-        output_raw_score = os.path.join(output_dir, "on_naive_subset_neg_opposite_perspectives_bert_cons_epoch5_raw_score.csv")
+        output_eval_file = os.path.join(output_dir, "on_tri_bert_cons_epoch5_eval_results.txt")
+        output_raw_score = os.path.join(output_dir, "on_tri_bert_cons_epoch5_raw_score.csv")
         with open(output_eval_file, "w") as writer:
             logger.info("***** Eval results *****")
             for key in sorted(result.keys()):
@@ -954,7 +954,7 @@ def evaluation_with_pretrained():
     bert_model = "/var/scratch/syg340/project/models/non_reverse_bertcons_epoch5.pth"
 #     bertcons_epoch5.pth
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset"
-    data_dir = "/var/scratch/syg340/project/stance_code/Dataset/naive_opposite/subset/"
+    data_dir = "/var/scratch/syg340/project/stance_code/Dataset/tri/"
 
     data_dir_output = "/var/scratch/syg340/project/stance_code/Evaluation/antonym_output/"
     train_and_test(data_dir=data_dir, do_train=False, do_eval=True, output_dir=data_dir_output,task_name="stance",saved_model=bert_model)
