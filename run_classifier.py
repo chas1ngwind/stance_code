@@ -1303,18 +1303,18 @@ class TriProcessor(DataProcessor):
     def _create_examples_from_command(self, lines, set_type):
         """Creates examples for the training and dev sets."""
         examples = []
-        for (i, line) in enumerate(lines):
-            if i == 0:
-                continue
-            guid = "%s-%s" % (set_type, i)
-            text_a = line[0]
-            text_b = line[1]
-            text_c = line[2]
-            text_d = None
-            label = line[3]
-            
-            examples.append(
-                InputExample(guid=guid, text_a=text_a, text_b=text_b, text_c=text_c, text_d=text_d, label=label))
+        
+        if i == 0:
+            continue
+        guid = "%s-%s" % (set_type, i)
+        text_a = lines[0]
+        text_b = lines[1]
+        text_c = lines[2]
+        text_d = None
+        label = lines[3]
+
+        examples.append(
+            InputExample(guid=guid, text_a=text_a, text_b=text_b, text_c=text_c, text_d=text_d, label=label))
         return examples
     
     
