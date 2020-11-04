@@ -323,18 +323,18 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
 #                 loss_ori = loss_fct_ce(logits_ori.view(-1, self.num_labels), labels.view(-1))
 #                 print('loss_ori:')
 #                 print(loss_ori)
-                loss_fct_cos = CosineEmbeddingLoss()
+#                 loss_fct_cos = CosineEmbeddingLoss()
                 loss_fct_tri = TripletLoss()
 
-                labels2[labels2==0] = -1
-                loss_cos = loss_fct_cos(pooled_output, pooled_output2, labels2)
-                labels2[labels2==-1] = 0
+#                 labels2[labels2==0] = -1
+#                 loss_cos = loss_fct_cos(pooled_output, pooled_output2, labels2)
+#                 labels2[labels2==-1] = 0
                 
-                labels3[labels3==1] = -1
-                labels3[labels3==0] = 1
-                loss_cos2 = loss_fct_cos(pooled_output, pooled_output3, labels3)
-                labels3[labels3== 1] = 0
-                labels3[labels3== -1] = 1
+#                 labels3[labels3==1] = -1
+#                 labels3[labels3==0] = 1
+#                 loss_cos2 = loss_fct_cos(pooled_output, pooled_output3, labels3)
+#                 labels3[labels3== 1] = 0
+#                 labels3[labels3== -1] = 1
                 
                 k=0
                 index=[]
@@ -357,9 +357,9 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
 
                 loss_tri = loss_fct_tri(pooled_output2, pooled_output_inter, pooled_output3_inter2)
                 
-                loss = loss_ce+loss_tri+loss_cos
+                loss = loss_ce+loss_tri
 #                 logger.info('final loss:')
-                logger.info('final loss: %s' %str(loss_tri))
+#                 logger.info(loss)
                 
 #             outputs = (loss,) + outputs
 #             outputs = (loss,) + logits_cos 
@@ -696,7 +696,7 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
                     model.zero_grad()
                     global_step += 1
             print("\nLoss: {}\n".format(tr_loss / nb_tr_steps))
-        torch.save(model.state_dict(), output_dir +"margin15_costriplet_cos_siamese_bs24_lr3e_5_epoch15.pth")
+        torch.save(model.state_dict(), output_dir +"margin15_Only_costriplet_ce_siamese_bs24_lr3e_5_epoch15.pth")
 
 
     if do_eval and (local_rank == -1 or torch.distributed.get_rank() == 0):
@@ -877,7 +877,6 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 
         eval_loss = eval_loss / nb_eval_steps
         eval_accuracy = eval_accuracy / nb_eval_examples
-#         print("\nLoss: {}\n".format(eval_loss / nb_eval_steps))
         result = {
                   'eval_loss': eval_loss,
                   'eval_accuracy':eval_accuracy,
@@ -891,8 +890,8 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 #                   'loss': tr_loss/nb_tr_steps
                   }
 
-        output_eval_file = os.path.join(output_dir, "margin15_costriplet_cos_siamese_bs24_lr3e_5_epoch15_eval_results.txt")
-        output_raw_score = os.path.join(output_dir, "margin15_costriplet_cos_siamese_bs24_lr3e_5_epoch15_raw_score.csv")
+        output_eval_file = os.path.join(output_dir, "margin15_Only_costriplet_ce_siamese_bs24_lr3e_5_epoch15_eval_results.txt")
+        output_raw_score = os.path.join(output_dir, "margin15_Only_costriplet_ce_siamese_bs24_lr3e_5_epoch15_raw_score.csv")
         
 #         logger.info(classification_report(gold_labels, predicted_labels, target_names=label_list, digits=4))
         with open(output_eval_file, "w") as writer:
@@ -946,7 +945,7 @@ def experiments():
 
 def evaluation_with_pretrained():
 #     bert_model = "/var/scratch/syg340/project/cos_siamese_models/319cos/319_cos_camimu_siamese_bert_epoch5.pth"
-    bert_model = "/var/scratch/syg340/project/triplet_siamese_models/margin15_costriplet_cos_siamese_bs24_lr3e_5_epoch15.pth"
+    bert_model = "/var/scratch/syg340/project/triplet_siamese_models/margin15_Only_costriplet_ce_siamese_bs24_lr3e_5_epoch15.pth"
     data_dir = "/var/scratch/syg340/project/stance_code/Dataset/"
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset/ibmcs/"
 
