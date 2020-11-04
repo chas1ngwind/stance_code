@@ -102,7 +102,7 @@ class DataProcessor(object):
                 lines.append(line)
             return lines
         
-    def _read_from_command(claim, perspective, opp_perspective, label):
+    def _read_from_command(cls, claim, perspective, opp_perspective, label):
         lines = [claim, perspective, opp_perspective, label]
         return lines
 
