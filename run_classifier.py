@@ -23,6 +23,7 @@ import os
 import logging
 import argparse
 import random
+import sys
 from tqdm import tqdm, trange
 
 import numpy as np
@@ -100,6 +101,10 @@ class DataProcessor(object):
             for line in reader:
                 lines.append(line)
             return lines
+        
+    def _read_from_command(claim, perspective, opp_perspective, label):
+        lines = [claim, perspective, opp_perspective, label]
+        return lines
 
 
 import spacy
@@ -1272,6 +1277,11 @@ class TriProcessor(DataProcessor):
     def get_labels(self):
         """See base class."""
         return ["0", "1"]
+    
+    def get_test_from_command(self, claim, perspective, opp_perspective, label):
+        """get sequence from command"""
+        return self._create_examples_from_command(
+            self._read_from_command(claim, perspective, opp_perspective, label), "test")
 
     def _create_examples(self, lines, set_type):
         """Creates examples for the training and dev sets."""
@@ -1288,7 +1298,24 @@ class TriProcessor(DataProcessor):
             
             examples.append(
                 InputExample(guid=guid, text_a=text_a, text_b=text_b, text_c=text_c, text_d=text_d, label=label))
-        return examples    
+        return examples
+    
+    def _create_examples_from_command(self, lines, set_type):
+        """Creates examples for the training and dev sets."""
+        examples = []
+        for (i, line) in enumerate(lines):
+            if i == 0:
+                continue
+            guid = "%s-%s" % (set_type, i)
+            text_a = line[0]
+            text_b = line[1]
+            text_c = line[2]
+            text_d = None
+            label = line[3]
+            
+            examples.append(
+                InputExample(guid=guid, text_a=text_a, text_b=text_b, text_c=text_c, text_d=text_d, label=label))
+        return examples
     
     
 
