@@ -856,43 +856,43 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
             raw_score += zip(logits, pred_label, label_ids)
             
             # Macro F1 (averaged P, R across mini batches)
-            tmp_eval_p, tmp_eval_r, tmp_eval_f1 = p_r_f1(logits, label_ids)
+#             tmp_eval_p, tmp_eval_r, tmp_eval_f1 = p_r_f1(logits, label_ids)
 
-            eval_macro_p += tmp_eval_p
-            eval_macro_r += tmp_eval_r
+#             eval_macro_p += tmp_eval_p
+#             eval_macro_r += tmp_eval_r
 
-            eval_loss += tmp_eval_loss.mean().item()
-            eval_accuracy += tmp_eval_accuracy
+#             eval_loss += tmp_eval_loss.mean().item()
+#             eval_accuracy += tmp_eval_accuracy
             
             nb_eval_examples += input_ids.size(0)
             nb_eval_steps += 1
 
 
         # Micro F1 (aggregated tp, fp, fn counts across all examples)
-        eval_micro_p = eval_tp / eval_pred_c
-        eval_micro_r = eval_tp / eval_gold_c
-        eval_micro_f1 = 2 * eval_micro_p * eval_micro_r / (eval_micro_p + eval_micro_r)
+#         eval_micro_p = eval_tp / eval_pred_c
+#         eval_micro_r = eval_tp / eval_gold_c
+#         eval_micro_f1 = 2 * eval_micro_p * eval_micro_r / (eval_micro_p + eval_micro_r)
 
         # Macro F1 (averaged P, R across mini batches)
-        eval_macro_p = eval_macro_p / nb_eval_steps
-        eval_macro_r = eval_macro_r / nb_eval_steps
-        eval_macro_f1 = 2 * eval_macro_p * eval_macro_r / (eval_macro_p + eval_macro_r)
+#         eval_macro_p = eval_macro_p / nb_eval_steps
+#         eval_macro_r = eval_macro_r / nb_eval_steps
+#         eval_macro_f1 = 2 * eval_macro_p * eval_macro_r / (eval_macro_p + eval_macro_r)
 
-        eval_loss = eval_loss / nb_eval_steps
-        eval_accuracy = eval_accuracy / nb_eval_examples
+#         eval_loss = eval_loss / nb_eval_steps
+#         eval_accuracy = eval_accuracy / nb_eval_examples
 #         print("\nLoss: {}\n".format(eval_loss / nb_eval_steps))
-        result = {
-                  'eval_loss': eval_loss,
-                  'eval_accuracy':eval_accuracy,
-                  'eval_micro_p': eval_micro_p,
-                  'eval_micro_r': eval_micro_r,
-                  'eval_micro_f1': eval_micro_f1,
-                  'eval_macro_p': eval_macro_p,
-                  'eval_macro_r': eval_macro_r,
-                  'eval_macro_f1': eval_macro_f1,
-#                   'global_step': global_step,
-#                   'loss': tr_loss/nb_tr_steps
-                  }
+#         result = {
+#                   'eval_loss': eval_loss,
+#                   'eval_accuracy':eval_accuracy,
+#                   'eval_micro_p': eval_micro_p,
+#                   'eval_micro_r': eval_micro_r,
+#                   'eval_micro_f1': eval_micro_f1,
+#                   'eval_macro_p': eval_macro_p,
+#                   'eval_macro_r': eval_macro_r,
+#                   'eval_macro_f1': eval_macro_f1,
+# #                   'global_step': global_step,
+# #                   'loss': tr_loss/nb_tr_steps
+#                   }
 
 #         output_eval_file = os.path.join(output_dir, "margin2_costriplet_cos_siamese_bs24_lr2e_5_epoch15_eval_results.txt")
         output_raw_score = os.path.join(output_dir, "Individual_margin2_costriplet_cos_siamese_bs24_lr2e_5_epoch15_raw_score.csv")
