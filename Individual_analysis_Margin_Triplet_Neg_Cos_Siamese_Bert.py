@@ -722,10 +722,6 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 #         new_dev_df.to_csv(os.path.join(data_dir, "new_dev.tsv"),sep='\t',index=False)
 
 #         eval_examples = processor.get_test_examples(data_dir)
-        print(sys.argv[1])
-        print(sys.argv[2])
-        print(sys.argv[3])
-        print(sys.argv[4])
         eval_examples = processor.get_test_from_command(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
         
 #         eval_examples = processor.get_dev_examples(data_dir)
