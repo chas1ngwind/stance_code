@@ -359,7 +359,7 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
                 
                 loss = loss_ce+loss_tri+loss_cos
 #                 logger.info('final loss:')
-                logger.info('final loss: %s' %str(loss_tri))
+                logger.info('Tri loss: %s' %str(loss_tri))
                 
 #             outputs = (loss,) + outputs
 #             outputs = (loss,) + logits_cos 
@@ -958,8 +958,8 @@ def evaluation_with_pretrained():
 
 
 if __name__ == "__main__":
-    experiments()
-#     evaluation_with_pretrained()
+#     experiments()
+    evaluation_with_pretrained()
 #
 
 # In[ ]:
