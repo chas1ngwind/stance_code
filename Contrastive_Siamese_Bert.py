@@ -48,7 +48,7 @@ from pytorch_pretrained_bert.modeling import BertForSequenceClassification, Bert
 from torch.nn import BCEWithLogitsLoss, CosineEmbeddingLoss,CrossEntropyLoss, MSELoss
 
 
-class ContrastiveLoss(nn.Module):
+class ContrastiveLoss(torch.nn.Module):
     """
     Contrastive loss
     Takes embeddings of two samples and a target label == 1 if samples are from the same class and label == 0 otherwise
