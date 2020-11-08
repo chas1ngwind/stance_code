@@ -48,24 +48,41 @@ from pytorch_pretrained_bert.modeling import BertForSequenceClassification, Bert
 from torch.nn import BCEWithLogitsLoss, CosineEmbeddingLoss,CrossEntropyLoss, MSELoss
 
 
-# In[13]:
-class ContrastiveLoss(torch.nn.Module):
+class ContrastiveLoss(nn.Module):
     """
-    Contrastive loss function.
-    Based on: http://yann.lecun.com/exdb/publis/pdf/hadsell-chopra-lecun-06.pdf
+    Contrastive loss
+    Takes embeddings of two samples and a target label == 1 if samples are from the same class and label == 0 otherwise
     """
 
-    def __init__(self, margin=2.0):
+    def __init__(self, margin=1.0):
         super(ContrastiveLoss, self).__init__()
         self.margin = margin
+        self.eps = 1e-9
 
-    def forward(self, dist, label):
+    def forward(self, output1, output2, target, size_average=True):
+        distances = (output2 - output1).pow(2).sum(1)  # squared distances
+        losses = 0.5 * (target.float() * distances +
+                        (1 + -1 * target).float() * torch.nn.functional.relu(self.margin - (distances + self.eps).sqrt()).pow(2))
+        return losses.mean() if size_average else losses.sum()
 
-        loss = torch.mean(1/2*(label) * torch.pow(dist, 2) +
-                                      1/2*(1-label) * torch.pow(torch.clamp(self.margin - dist, min=0.0), 2))
+# In[13]:
+# class ContrastiveLoss(torch.nn.Module):
+#     """
+#     Contrastive loss function.
+#     Based on: http://yann.lecun.com/exdb/publis/pdf/hadsell-chopra-lecun-06.pdf
+#     """
+
+#     def __init__(self, margin=1.0):
+#         super(ContrastiveLoss, self).__init__()
+#         self.margin = margin
+
+#     def forward(self, dist, label):
+
+#         loss = torch.mean(1/2*(label) * torch.pow(dist, 2) +
+#                                       1/2*(1-label) * torch.pow(torch.clamp(self.margin - dist, min=0.0), 2))
 
 
-        return loss
+#         return loss
 
 class BertForConsistencyCueClassification(BertPreTrainedModel):
     def __init__(self, config, num_labels=2):
@@ -207,8 +224,8 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
                 loss = loss_fct(logits.view(-1), labels.view(-1))
             else:
                 loss_fct_cts = ContrastiveLoss()
-                reps = torch.dist(pooled_output, pooled_output2, 2)
-                loss_cts = loss_fct_cts(reps, labels)
+#                 reps = torch.dist(pooled_output, pooled_output2, 2)
+                loss_cts = loss_fct_cts(pooled_output, pooled_output2, labels)
                 
                 loss_fct_ce = CrossEntropyLoss()
                 loss_ce = loss_fct_ce(logits_ce.view(-1, self.num_labels), labels.view(-1))
@@ -520,7 +537,7 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
                     model.zero_grad()
                     global_step += 1
             print("\nLoss: {}\n".format(tr_loss / nb_tr_steps))
-        torch.save(model.state_dict(), output_dir + "bert_sia_contrastive_bs24_lr2e_5_epoch25.pth")
+        torch.save(model.state_dict(), output_dir + "contrastive_marigin1_bert_sia_bs24_lr2e_5_epoch25.pth")
 
 
     if do_eval and (local_rank == -1 or torch.distributed.get_rank() == 0):
@@ -657,8 +674,8 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 #                   'loss': tr_loss/nb_tr_steps
                   }
 
-        output_eval_file = os.path.join(output_dir, "bert_sia_contrastive_bs24_lr2e_5_epoch25_eval_results.txt")
-        output_raw_score = os.path.join(output_dir, "bert_sia_contrastive_bs24_lr2e_5_epoch25_raw_score.csv")
+        output_eval_file = os.path.join(output_dir, "contrastive_marigin1_bert_sia_bs24_lr2e_5_epoch25_eval_results.txt")
+        output_raw_score = os.path.join(output_dir, "contrastive_marigin1_bert_sia_bs24_lr2e_5_epoch25_raw_score.csv")
 #         logger.info(classification_report(gold_labels, predicted_labels, target_names=label_list, digits=4))
         with open(output_eval_file, "w") as writer:
             logger.info("***** Eval results *****")
@@ -706,7 +723,7 @@ def experiments():
 def evaluation_with_pretrained():
 #     bert_model = "/var/scratch/syg340/project/cos_siamese_models/319cos/319_cos_camimu_siamese_bert_epoch5.pth"
 #     bert_model = "/var/scratch/syg340/project/cos_siamese_models/siamese/cos_camimu_siamese_bert_epoch5.pth"
-    bert_model = "/var/scratch/syg340/project/contrastive_siamese_models/bert_sia_contrastive_bs24_lr2e_5_epoch25.pth"
+    bert_model = "/var/scratch/syg340/project/contrastive_siamese_models/contrastive_marigin1_bert_sia_bs24_lr2e_5_epoch25.pth"
 #     bert_model = "/var/scratch/syg340/project/cos_siamese_models/siamese_ibmcs/ibmcs_siamese_bert_epoch5.pth"
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset"
     data_dir = "/var/scratch/syg340/project/stance_code/Dataset/"
@@ -719,8 +736,8 @@ def evaluation_with_pretrained():
 
 
 if __name__ == "__main__":
-#     experiments()
-    evaluation_with_pretrained()
+    experiments()
+#     evaluation_with_pretrained()
 
 
 # In[ ]:
