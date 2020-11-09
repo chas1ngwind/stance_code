@@ -736,8 +736,8 @@ def evaluation_with_pretrained():
 
 
 if __name__ == "__main__":
-    experiments()
-#     evaluation_with_pretrained()
+#     experiments()
+    evaluation_with_pretrained()
 
 
 # In[ ]:
