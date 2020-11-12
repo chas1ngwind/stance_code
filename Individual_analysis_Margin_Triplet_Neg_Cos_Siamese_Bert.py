@@ -74,7 +74,7 @@ class TripletLoss(torch.nn.Module):
         distance_neg = self.distance_metric(anchor, negative)
 
         losses = torch.nn.functional.relu(distance_pos - distance_neg + self.triplet_margin)
-        logger.info('Margin: %s' %(str(triplet_margin)))
+        logger.info('Margin: %s' %(str(self.triplet_margin)))
         logger.info('pos_distance: %s; neg_distance: %s; diff: %s' %(str(distance_pos), str(distance_neg), str(distance_pos - distance_neg)))
         return losses.mean()
 
