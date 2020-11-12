@@ -63,7 +63,7 @@ class TripletLoss(torch.nn.Module):
     """
     Updated triplet loss function
     """
-    def __init__(self, distance_metric=TripletDistanceMetric.COSINE, triplet_margin=10):
+    def __init__(self, distance_metric=TripletDistanceMetric.COSINE, triplet_margin=1):
         super(TripletLoss, self).__init__()
         self.distance_metric = distance_metric
         self.triplet_margin = triplet_margin
@@ -84,7 +84,7 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
         self.bert = BertModel(config)
         self.dropout = torch.nn.Dropout(config.hidden_dropout_prob)
         self.classifier = torch.nn.Linear(config.hidden_size*4+1, num_labels)
-        self.classifier2 = torch.nn.Linear(config.hidden_size*4, num_labels)
+        self.classifier2 = torch.nn.Linear(2*(config.hidden_size*4+1), num_labels)
         self.apply(self.init_bert_weights)
 #         self.init_weights()
 
@@ -292,21 +292,14 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
 #                     for ocop in (list(np.arange(0,2.5,0.5))+[10,100,1000]):
 #                         logits_grid.append((ori*logits_ce)-(cop*cop_logits_ce)-(ocp*ocp_logits_ce)+(ocop*ocop_logits_ce))
 
-        ####   grid search end
-#         if input_ids4 and input_ids3:
-        final_logits = (1*logits_ce)-(1*cop_logits_ce)
-#         elif input_ids3:
-#             final_logits = logits_ce-(0.33*cop_logits_ce)
-#         elif input_ids4:
-#             final_logits = logits_ce-(0.33*ocp_logits_ce)
-#         else:
-#             final_logits = logits_ce
-#         print('logits_ce:')
-#         print(logits_ce)
+        concat_output_all = torch.cat((final_output_all, cop_final_output_all),1)
+    
+        final_logits = self.classifier2(concat_output_all)
+
         
-#         logits_ori = self.classifier2(final_output_camimu)
-#         print('logits_ori:')
-#         print(logits_ori)
+#         final_logits = (1*logits_ce)-(1*cop_logits_ce)
+    
+
 
         #Calculate loss during training process
         if labels is not None:
@@ -358,8 +351,7 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
                 loss_tri = loss_fct_tri(pooled_output2, pooled_output_inter, pooled_output3_inter2)
                 
                 loss = loss_ce+loss_tri
-#                 logger.info('final loss:')
-#                 logger.info(loss)
+                logger.info('Ce: %s; Tri: %s' %(str(loss_ce), str(loss_tri)))
                 
 #             outputs = (loss,) + outputs
 #             outputs = (loss,) + logits_cos 
@@ -375,7 +367,7 @@ import csv
 from pytorch_pretrained_bert.file_utils import PYTORCH_PRETRAINED_BERT_CACHE
 def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
                    output_dir=None, max_seq_length=80, do_train=False, do_eval=False, do_lower_case=False,
-                   train_batch_size=24, eval_batch_size=8, learning_rate=2e-5, num_train_epochs=25,
+                   train_batch_size=24, eval_batch_size=8, learning_rate=2e-5, num_train_epochs=15,
                    warmup_proportion=0.1,no_cuda=False, local_rank=-1, seed=42, gradient_accumulation_steps=1,
                    optimize_on_cpu=False, fp16=False, loss_scale=128, saved_model=""):
     
@@ -696,7 +688,7 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
                     model.zero_grad()
                     global_step += 1
             print("\nLoss: {}\n".format(tr_loss / nb_tr_steps))
-        torch.save(model.state_dict(), output_dir +"margin100_Only_costriplet_ce_siamese_bs24_lr2e_5_epoch25.pth")
+        torch.save(model.state_dict(), output_dir +"concat_margin1_Only_costriplet_ce_siamese_bs24_lr2e_5_epoch15.pth")
 
 
     if do_eval and (local_rank == -1 or torch.distributed.get_rank() == 0):
@@ -890,8 +882,8 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 #                   'loss': tr_loss/nb_tr_steps
                   }
 
-        output_eval_file = os.path.join(output_dir, "margin100_Only_costriplet_ce_siamese_bs24_lr2e_5_epoch25_eval_results.txt")
-        output_raw_score = os.path.join(output_dir, "margin100_Only_costriplet_ce_siamese_bs24_lr2e_5_epoch25_raw_score.csv")
+        output_eval_file = os.path.join(output_dir, "concat_margin1_Only_costriplet_ce_siamese_bs24_lr2e_5_epoch15_eval_results.txt")
+        output_raw_score = os.path.join(output_dir, "concat_margin1_Only_costriplet_ce_siamese_bs24_lr2e_5_epoch15_raw_score.csv")
         
 #         logger.info(classification_report(gold_labels, predicted_labels, target_names=label_list, digits=4))
         with open(output_eval_file, "w") as writer:
@@ -945,7 +937,7 @@ def experiments():
 
 def evaluation_with_pretrained():
 #     bert_model = "/var/scratch/syg340/project/cos_siamese_models/319cos/319_cos_camimu_siamese_bert_epoch5.pth"
-    bert_model = "/var/scratch/syg340/project/triplet_siamese_models/margin100_Only_costriplet_ce_siamese_bs24_lr2e_5_epoch25.pth"
+    bert_model = "/var/scratch/syg340/project/triplet_siamese_models/concat_margin1_Only_costriplet_ce_siamese_bs24_lr2e_5_epoch15.pth"
     data_dir = "/var/scratch/syg340/project/stance_code/Dataset/"
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset/ibmcs/"
 
@@ -957,8 +949,8 @@ def evaluation_with_pretrained():
 
 
 if __name__ == "__main__":
-#     experiments()
-    evaluation_with_pretrained()
+    experiments()
+#     evaluation_with_pretrained()
 #
 
 # In[ ]:
