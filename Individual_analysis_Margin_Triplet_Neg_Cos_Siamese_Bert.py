@@ -74,6 +74,8 @@ class TripletLoss(torch.nn.Module):
         distance_neg = self.distance_metric(anchor, negative)
 
         losses = torch.nn.functional.relu(distance_pos - distance_neg + self.triplet_margin)
+        logger.info('Margin: %s' %(str(triplet_margin)))
+        logger.info('pos_distance: %s; neg_distance: %s; diff: %s' %(str(distance_pos), str(distance_neg), str(distance_pos - distance_neg)))
         return losses.mean()
 
 
@@ -357,8 +359,9 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
 
 
                 loss_tri = loss_fct_tri(pooled_output2, pooled_output_inter, pooled_output3_inter2)
-                
+                logger.info('Ce: %s; Tri: %s; Cos: %s' %(str(loss_ce), str(loss_tri), str(loss_cos)))
                 loss = loss_ce+loss_tri+loss_cos
+                logger.info('Final Loss: %s' %(str(loss)))
 #                 logger.info('final loss:')
 #                 logger.info(loss)
                 
