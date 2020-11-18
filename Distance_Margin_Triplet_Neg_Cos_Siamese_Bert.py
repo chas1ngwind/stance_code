@@ -768,7 +768,9 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
         # eval_loss, eval_accuracy = 0, 0
 
         eval_tp, eval_pred_c, eval_gold_c = 0, 0, 0
+        distance_eval_tp, distance_eval_pred_c, distance_eval_gold_c = 0, 0, 0
         eval_loss, eval_accuracy, eval_macro_p, eval_macro_r = 0, 0, 0, 0
+        distance_eval_accuracy, distance_eval_macro_p, distance_eval_macro_r = 0, 0, 0
 
         raw_score = []
         predicted_labels = []
