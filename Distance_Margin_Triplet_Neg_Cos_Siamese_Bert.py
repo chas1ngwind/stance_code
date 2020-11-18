@@ -930,7 +930,7 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 
 
         with open(output_raw_score, 'w') as fout:
-            fields = ["undermine_score", "support_score","predict_label", "gold"]
+            fields = ["undermine_score", "support_score", "cp_distance", "cop_distance", "predict_label", "distance_label", "gold"]
             writer = csv.DictWriter(fout, fieldnames=fields)
             writer.writeheader()
             for score, distance, pred, distance_pred, gold in raw_score:
