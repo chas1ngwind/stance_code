@@ -1,0 +1,8 @@
+eval_accuracy = 0.4744756628413138
+eval_loss = 1.9999998649464379
+eval_macro_f1 = 0.1021021021021021
+eval_macro_p = 1.0
+eval_macro_r = 0.05379746835443038
+eval_micro_f1 = nan
+eval_micro_p = nan
+eval_micro_r = 0.0
