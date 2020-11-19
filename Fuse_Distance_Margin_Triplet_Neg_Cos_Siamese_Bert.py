@@ -359,7 +359,7 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
                 return outputs
         else:
             #Get predictions when doing evaluation
-            return final_logits, distance_logtis
+            return final_logits, distance_reps
         
           # (loss), logits, (hidden_states), (attentions)
 
