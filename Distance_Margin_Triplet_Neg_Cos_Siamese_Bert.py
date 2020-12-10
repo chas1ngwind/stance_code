@@ -918,8 +918,8 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 #                   'loss': tr_loss/nb_tr_steps
                   }
 
-        output_eval_file = os.path.join(output_dir, "test_distance_concat_margin1_costriplet_cos_siamese_bs24_lr2e_5_epoch15_eval_results.txt")
-        output_raw_score = os.path.join(output_dir, "test_distance_concat_margin1_costriplet_cos_siamese_bs24_lr2e_5_epoch15_raw_score.csv")
+        output_eval_file = os.path.join(output_dir, "train_distance_concat_margin1_costriplet_cos_siamese_bs24_lr2e_5_epoch15_eval_results.txt")
+        output_raw_score = os.path.join(output_dir, "train_distance_concat_margin1_costriplet_cos_siamese_bs24_lr2e_5_epoch15_raw_score.csv")
         
 #         logger.info(classification_report(gold_labels, predicted_labels, target_names=label_list, digits=4))
         with open(output_eval_file, "w") as writer:
@@ -977,7 +977,7 @@ def experiments():
 def evaluation_with_pretrained():
 #     bert_model = "/var/scratch/syg340/project/cos_siamese_models/319cos/319_cos_camimu_siamese_bert_epoch5.pth"
     bert_model = "/var/scratch/syg340/project/triplet_siamese_models/concat_margin1_costriplet_cos_siamese_bs24_lr2e_5_epoch15.pth"
-    data_dir = "/var/scratch/syg340/project/stance_code/Dataset/"
+    data_dir = "/var/scratch/syg340/project/stance_code/Dataset/tri_train/"
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset/ibmcs/"
 
     data_dir_output = "/var/scratch/syg340/project/stance_code/Evaluation/bert_dummy_output/"
