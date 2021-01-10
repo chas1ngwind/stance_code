@@ -523,11 +523,11 @@ def generate_opp_dataset(df):
                         opposite.append(new_seq)
                         break
                 elif rule_id == "imply":
-                    if doc[start:end][0] == "implies":
+                    if str(doc[start:end][0]) == "implies":
                         new_seq = str(doc[0:start])+" does not imply "+str(doc[end:])
                         opposite.append(new_seq)
                         break
-                    elif doc[start:end][0] == "imply":
+                    elif str(doc[start:end][0]) == "imply":
                         new_seq = str(doc[0:start])+" do not imply "+str(doc[end:])
                         opposite.append(new_seq)
                         break
@@ -905,11 +905,11 @@ def generate_opp_pers_dataset(df):
                         opposite.append(new_seq)
                         break
                 elif rule_id == "imply":
-                    if doc[start:end][0] == "implies":
+                    if str(doc[start:end][0]) == "implies":
                         new_seq = str(doc[0:start])+" does not imply "+str(doc[end:])
                         opposite.append(new_seq)
                         break
-                    elif doc[start:end][0] == "imply":
+                    elif str(doc[start:end][0]) == "imply":
                         new_seq = str(doc[0:start])+" do not imply "+str(doc[end:])
                         opposite.append(new_seq)
                         break
