@@ -667,8 +667,8 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
         raise ValueError("At least one of `do_train` or `do_eval` must be True.")
 
     if do_train:
-        if os.path.exists(output_dir) and os.listdir(output_dir):
-            raise ValueError("Output directory ({}) already exists and is not emp1ty.".format(output_dir))
+#         if os.path.exists(output_dir) and os.listdir(output_dir):
+#             raise ValueError("Output directory ({}) already exists and is not emp1ty.".format(output_dir))
         os.makedirs(output_dir, exist_ok=True)
 
     task_name = task_name.lower()
