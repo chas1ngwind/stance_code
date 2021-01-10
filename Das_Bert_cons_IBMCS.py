@@ -170,7 +170,7 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
         pooled_outputC = outputsC
 
         pooled_output = self.dropout(pooled_output)
-#         pooled_outputC = self.dropout(pooled_outputC)
+        pooled_outputC = self.dropout(pooled_outputC)
         
         cos_pooled_outputs = torch.cosine_similarity(pooled_output, pooled_outputC, dim=1)
         
