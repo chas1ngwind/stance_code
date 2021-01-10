@@ -296,7 +296,7 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
                     model.zero_grad()
                     global_step += 1
             print("\nLoss: {}\n".format(tr_loss / nb_tr_steps))
-        torch.save(model.state_dict(), output_dir + "bert_base_bs32_lr2e_5_epoch4.pth")
+        torch.save(model.state_dict(), output_dir + "ibmcs_bert_base_bs32_lr2e_5_epoch4.pth")
 
 
     if do_eval and (local_rank == -1 or torch.distributed.get_rank() == 0):
@@ -392,8 +392,8 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 #                   'loss': tr_loss/nb_tr_steps
                   }
 
-        output_eval_file = os.path.join(output_dir, "train_on_per_eval_on_ibmcs_bert_base_bs32_lr2e_5_epoch4_eval_results.txt")
-        output_raw_score = os.path.join(output_dir, "train_on_per_eval_on_ibmcs_bert_base_bs32_lr2e_5_epoch4_raw_score.csv")
+        output_eval_file = os.path.join(output_dir, "train_on_ibmcs_eval_on_ibmcs_bert_base_bs32_lr2e_5_epoch4_eval_results.txt")
+        output_raw_score = os.path.join(output_dir, "train_on_ibmcs_eval_on_ibmcs_bert_base_bs32_lr2e_5_epoch4_raw_score.csv")
         with open(output_eval_file, "w") as writer:
             logger.info("***** Eval results *****")
             for key in sorted(result.keys()):
@@ -424,7 +424,7 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 
 def experiments():
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset"
-    data_dir = "/var/scratch/syg340/project/stance_code/Dataset/"
+    data_dir = "/var/scratch/syg340/project/stance_code/Dataset/ibmcs"
     
     data_dir_output = "/var/scratch/syg340/project/models/"
 #     data_dir_output = "/var/scratch/syg340/project/stance_code/Evaluation/319/"
@@ -435,7 +435,7 @@ def experiments():
 
 
 def evaluation_with_pretrained():
-    bert_model = "/var/scratch/syg340/project/models/bert_base_bs32_lr2e_5_epoch4.pth"
+    bert_model = "/var/scratch/syg340/project/models/ibmcs_bert_base_bs32_lr2e_5_epoch4.pth"
     data_dir = "/var/scratch/syg340/project/stance_code/Dataset/ibmcs/"
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset/naive_opposite/subset/"
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset/manul_opposite/500_gold0/"
@@ -447,8 +447,8 @@ def evaluation_with_pretrained():
 
 
 if __name__ == "__main__":
-#     experiments()
-    evaluation_with_pretrained()
+    experiments()
+#     evaluation_with_pretrained()
 
 
 # In[ ]:

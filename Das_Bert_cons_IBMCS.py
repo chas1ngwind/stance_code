@@ -785,7 +785,7 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
                     model.zero_grad()
                     global_step += 1
 
-        torch.save(model.state_dict(), output_dir + "non_reverse_bertcons_epoch5.pth")
+        torch.save(model.state_dict(), output_dir + "ibmcs_non_reverse_bertcons_epoch5.pth")
 
 
     if do_eval and (local_rank == -1 or torch.distributed.get_rank() == 0):
@@ -907,8 +907,8 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 #                   'loss': tr_loss/nb_tr_steps
                   }
 
-        output_eval_file = os.path.join(output_dir, "train_on_per_eval_on_ibmcs_bert_cons_epoch5_eval_results.txt")
-        output_raw_score = os.path.join(output_dir, "train_on_per_eval_on_ibmcs_bert_cons_epoch5_raw_score.csv")
+        output_eval_file = os.path.join(output_dir, "train_on_ibmcs_eval_on_ibmcs_bert_cons_epoch5_eval_results.txt")
+        output_raw_score = os.path.join(output_dir, "train_on_ibmcs_eval_on_ibmcs_bert_cons_epoch5_raw_score.csv")
         with open(output_eval_file, "w") as writer:
             logger.info("***** Eval results *****")
             for key in sorted(result.keys()):
@@ -939,7 +939,7 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 
 def experiments():
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset"
-    data_dir = "/var/scratch/syg340/project/stance_code/Dataset/"
+    data_dir = "/var/scratch/syg340/project/stance_code/Dataset/ibmcs/"
     
     data_dir_output = "/var/scratch/syg340/project/models/"
 #     data_dir_output = "/var/scratch/syg340/project/stance_code/Evaluation/319/"
@@ -951,7 +951,7 @@ def experiments():
 
 def evaluation_with_pretrained():
 #     bert_model = "/var/scratch/syg340/project/cos_siamese_models/319stancy/319_bertcons_epoch5.pth"
-    bert_model = "/var/scratch/syg340/project/models/non_reverse_bertcons_epoch5.pth"
+    bert_model = "/var/scratch/syg340/project/models/ibmcs_non_reverse_bertcons_epoch5.pth"
 #     bertcons_epoch5.pth
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset"
     data_dir = "/var/scratch/syg340/project/stance_code/Dataset/ibmcs/"
@@ -964,8 +964,8 @@ def evaluation_with_pretrained():
 
 
 if __name__ == "__main__":
-#     experiments()
-    evaluation_with_pretrained()
+    experiments()
+#     evaluation_with_pretrained()
 
 
 # In[ ]:

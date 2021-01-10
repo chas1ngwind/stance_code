@@ -500,7 +500,8 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
                     model.zero_grad()
                     global_step += 1
             print("\nLoss: {}\n".format(tr_loss / nb_tr_steps))
-        torch.save(model.state_dict(), output_dir + "new_neg_bert_sia_cos_bs24_lr2e_5_epoch25.pth")
+#         torch.save(model.state_dict(), output_dir + "bert_sia_cos_bs24_lr2e_5_epoch25.pth.pth")
+        torch.save(model.state_dict(), output_dir + "ibmcs_bert_sia_cos_bs24_lr2e_5_epoch25.pth.pth")
 
 
     if do_eval and (local_rank == -1 or torch.distributed.get_rank() == 0):
@@ -637,8 +638,11 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 #                   'loss': tr_loss/nb_tr_steps
                   }
 
-        output_eval_file = os.path.join(output_dir, "train_on_per_eval_on_ibmcs_bert_sia_cos_bs24_lr2e_5_epoch25_eval_results.txt")
-        output_raw_score = os.path.join(output_dir, "train_on_per_eval_on_ibmcs_bert_sia_cos_bs24_lr2e_5_epoch25_raw_score.csv")
+#         output_eval_file = os.path.join(output_dir, "train_on_per_eval_on_ibmcs_bert_sia_cos_bs24_lr2e_5_epoch25_eval_results.txt")
+#         output_raw_score = os.path.join(output_dir, "train_on_per_eval_on_ibmcs_bert_sia_cos_bs24_lr2e_5_epoch25_raw_score.csv")
+        
+        output_eval_file = os.path.join(output_dir, "train_on_ibmcs_eval_on_ibmcs_bert_sia_cos_bs24_lr2e_5_epoch25_eval_results.txt")
+        output_raw_score = os.path.join(output_dir, "train_on_ibmcs_eval_on_ibmcs_bert_sia_cos_bs24_lr2e_5_epoch25_raw_score.csv")
 #         logger.info(classification_report(gold_labels, predicted_labels, target_names=label_list, digits=4))
         with open(output_eval_file, "w") as writer:
             logger.info("***** Eval results *****")
@@ -672,7 +676,7 @@ def experiments():
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset"
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset/stancy/"
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset/"
-    data_dir = "/var/scratch/syg340/project/stance_code/Dataset/"
+    data_dir = "/var/scratch/syg340/project/stance_code/Dataset/ibmcs/"
     
     
     data_dir_output = "/var/scratch/syg340/project/cos_siamese_models/"
@@ -686,7 +690,7 @@ def experiments():
 def evaluation_with_pretrained():
 #     bert_model = "/var/scratch/syg340/project/cos_siamese_models/319cos/319_cos_camimu_siamese_bert_epoch5.pth"
 #     bert_model = "/var/scratch/syg340/project/cos_siamese_models/siamese/cos_camimu_siamese_bert_epoch5.pth"
-    bert_model = "/var/scratch/syg340/project/cos_siamese_models/bert_sia_cos_bs24_lr2e_5_epoch25.pth"
+    bert_model = "/var/scratch/syg340/project/cos_siamese_models/ibmcs_bert_sia_cos_bs24_lr2e_5_epoch25.pth"
 #     bert_model = "/var/scratch/syg340/project/cos_siamese_models/siamese_ibmcs/ibmcs_siamese_bert_epoch5.pth"
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset"
     data_dir = "/var/scratch/syg340/project/stance_code/Dataset/ibmcs/"
@@ -699,8 +703,8 @@ def evaluation_with_pretrained():
 
 
 if __name__ == "__main__":
-#     experiments()
-    evaluation_with_pretrained()
+    experiments()
+#     evaluation_with_pretrained()
 
 
 # In[ ]:
