@@ -501,7 +501,7 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
                     global_step += 1
             print("\nLoss: {}\n".format(tr_loss / nb_tr_steps))
 #         torch.save(model.state_dict(), output_dir + "bert_sia_cos_bs24_lr2e_5_epoch25.pth.pth")
-        torch.save(model.state_dict(), output_dir + "ibmcs_bert_sia_cos_bs24_lr2e_5_epoch25.pth.pth")
+        torch.save(model.state_dict(), output_dir + "ibmcs_bert_sia_cos_bs24_lr2e_5_epoch25.pth")
 
 
     if do_eval and (local_rank == -1 or torch.distributed.get_rank() == 0):
