@@ -1180,6 +1180,390 @@ def generate_opp_pers_dataset(df):
     df.reset_index(drop=True, inplace=True)
     
     return df
+
+
+
+def generate_opp_pers_dataset_with_naive(df):
+
+    matcher = PhraseMatcher(nlp.vocab, attr="lower")
+    matcher.add("not", None, nlp("not"), nlp("n't"))
+    matcher.add("can't", None, nlp("can't"))
+
+
+    matcher_positive = PhraseMatcher(nlp.vocab, attr="ORTH")
+    matcher_positive.add("type", None, nlp("is a type of"), nlp("are a type of") )
+    matcher_positive.add("imply", None, nlp("implies") )
+    matcher_positive.add("same", None, nlp("is the same as "), nlp("are the same as ") )
+    matcher_positive.add("rephrase", None, nlp(" is a rephrasing of") )
+    matcher_positive.add("form", None, nlp("is a another form of"))
+    matcher_positive.add("synonym", None, nlp(" is synonymous with"))
+    matcher_positive.add("can_be", None, nlp("can be"))
+
+
+    matcher_positive.add("much", None, nlp("much"), nlp("Much"))
+    matcher_positive.add("little", None, nlp("little"), nlp("Little"))
+    matcher_positive.add("more", None, nlp("more"), nlp("More"))
+    matcher_positive.add("less", None, nlp("less"), nlp("Less"))
+
+
+    matcher_positive.add("fore_synonym", None, nlp("are synonyms"), nlp("are synonymous"), nlp("is the same thing"), nlp("are the same thing") )
+    matcher_positive.add("then", None, nlp("then") )
+    matcher_positive.add("so", None, nlp("so") )
+    matcher_positive.add("must_be", None, nlp("must be"))
+    matcher_positive.add("hasto", None, nlp("has to be"))
+    matcher_positive.add("is_are", None, nlp("is"), nlp("are"), nlp("Are"), nlp("ARE"))
+
+    matcher_positive.add("to", None, nlp("to"))
+    matcher_positive.add("To", None, nlp("To"))
+    matcher_positive.add("increase", None, nlp("increase"), nlp("increases"), nlp("Increase"))
+
+    matcher_positive.add("should", None, nlp("should"), nlp("Should") )
+    matcher_positive.add("would", None, nlp("would"), nlp("Would"))
+    matcher_positive.add("could", None, nlp("could"), nlp("Could"))
+    matcher_positive.add("may", None, nlp("may"), nlp("May"))
+    matcher_positive.add("will", None, nlp("will"), nlp("Will"))
+    matcher_positive.add("can", None, nlp("can"), nlp("Can"))
+    matcher_positive.add("might", None, nlp("might"), nlp("Might"))
+    matcher_positive.add("must", None, nlp("must"), nlp("Must"), nlp("MUST"))
+
+    matcher_positive.add("encourage", None, nlp("encourage"), nlp("encourages"), nlp("Encourage"), nlp("Encourages"))
+
+    matcher_positive.add("n’t", None, nlp("n’t"))
+    matcher_positive.add("was_were", None, nlp("was"), nlp("were"))
+    matcher_positive.add("raise", None, nlp("raise"), nlp("raises"), nlp("Raise"), nlp("raising"), nlp("Raising"))
+    matcher_positive.add("better", None, nlp("better"), nlp("Better"))
+    matcher_positive.add("benefit", None, nlp("benefit"), nlp("benefits"), nlp("Benefit"), nlp("Benefits"))
+    matcher_positive.add("lack", None, nlp("lack"), nlp("lacks"), nlp("Lack"), nlp("Lacks"))
+    matcher_positive.add("nothing", None, nlp("nothing"), nlp("Nothing"))
+    matcher_positive.add("positive", None, nlp("positive"),nlp("Positive"))
+    matcher_positive.add("negative", None, nlp("negative"), nlp("Negative"))
+    matcher_positive.add("have", None, nlp("have"),nlp("Have"))
+    matcher_positive.add("has", None, nlp("has"), nlp("Has"))
+    matcher_positive.add("reduce", None, nlp("reduce"), nlp("Reduce"), nlp("reduces"), nlp("Reduces"), nlp("Reduced"), nlp("reduced"))
+    matcher_positive.add("increase", None, nlp("increase"), nlp("Increase"), nlp("increases"), nlp("Increases"), nlp("increased"), nlp("Increased"))
+    matcher_positive.add("without", None, nlp("without"), nlp("Without"))
+    matcher_positive.add("against", None, nlp("against"), nlp("Against"))
+    matcher_positive.add("need", None, nlp("need"), nlp("Need"), nlp("needs"), nlp("Needs"), nlp("needed"), nlp("Needed"))
+    matcher_positive.add("needed", None, nlp("needed"), nlp("Needed"))
+    matcher_positive.add("good", None, nlp("good"), nlp("Good"))
+    matcher_positive.add("bad", None, nlp("bad"), nlp("Bad"))
+    matcher_positive.add("support", None, nlp("support"), nlp("Support"), nlp("supports"), nlp("Supports"), nlp("supported"), nlp("Supported"))
+    matcher_positive.add("hurt_harm_damage", None, nlp("hurt"), nlp("hurts"), nlp("harm"), nlp("harms"), nlp("Hurt"), nlp("Hurts"), nlp("Harm"), nlp("Harms"), nlp("HARM"), nlp("damage"), nlp("damages"), nlp("Damage"), nlp("Damages"))
+    matcher_positive.add("help", None, nlp("help"), nlp("Help"), nlp("helps"), nlp("Helps"))
+    matcher_positive.add("protect", None, nlp("protect"), nlp("Protect"), nlp("protects"), nlp("Protects"), nlp("protecting"), nlp("protected"), nlp("Protecting"), nlp("Protected"))
+    matcher_positive.add("cause", None, nlp("cause"), nlp("Cause"), nlp("causes"), nlp("Causes"))
+    matcher_positive.add("allow", None, nlp("allow"), nlp("Allow"), nlp("allows"), nlp("Allows"))
+    matcher_positive.add("everyone", None, nlp("everyone"), nlp("Everyone"))
+    matcher_positive.add("deserve", None, nlp("deserve"), nlp("Deserve"), nlp("deserves"), nlp("Deserves"), nlp("deserved"), nlp("Deserved"))
+    
+    opposite = []
+    for perspective in df.perspective:
+        doc = nlp(perspective)
+        matches = matcher(doc)
+        positive_matches = matcher_positive(doc)
+        if matches:
+            for match_id, start, end in matches:
+                rule_id = nlp.vocab.strings[match_id]
+                if rule_id == "can't":
+                    new_seq = str(doc[0:start-1])+" can "+str(doc[end:])
+                    opposite.append(new_seq)
+                    break
+                elif rule_id == "not":
+                    if str(doc[start-1:start]) == "ca":
+                        continue
+                    else:
+                        new_seq = str(doc[0:start])+" "+str(doc[end:])
+                        opposite.append(new_seq)
+                        break
+        elif positive_matches:
+            for match_id, start, end in positive_matches:
+                rule_id = nlp.vocab.strings[match_id]
+                if rule_id == "type":
+                    if doc[start:end][0] == "is":
+                        new_seq = str(doc[0:start])+" is not a type of "+str(doc[end:])
+                        opposite.append(new_seq)
+                        break
+                    elif doc[start:end][0] == "are":
+                        new_seq = str(doc[0:start])+" are not a type of "+str(doc[end:])
+                        opposite.append(new_seq)
+                        break
+                elif rule_id == "imply":
+                    if str(doc[start:end][0]) == "implies":
+                        new_seq = str(doc[0:start])+" does not imply "+str(doc[end:])
+                        opposite.append(new_seq)
+                        break
+                    elif str(doc[start:end][0]) == "imply":
+                        new_seq = str(doc[0:start])+" do not imply "+str(doc[end:])
+                        opposite.append(new_seq)
+                        break
+                elif rule_id == "same":
+                    if doc[start:end][0] == "is":
+                        new_seq = str(doc[0:start])+" is not the same as "+str(doc[end:])
+                        opposite.append(new_seq)
+                        break
+                    if doc[start:end][0] == "are":
+                        new_seq = str(doc[0:start])+" are not the same as "+str(doc[end:])
+                        opposite.append(new_seq)
+                        break
+                elif rule_id == "rephrase":
+                    new_seq = str(doc[0:start])+" is not a rephrasing of "+str(doc[end:])
+                    opposite.append(new_seq)
+                    break 
+                elif rule_id == "form":
+                    new_seq = str(doc[0:start])+" is a another form of "+str(doc[end:])
+                    opposite.append(new_seq)
+                    break 
+                elif rule_id == "synonym":
+                    new_seq = str(doc[0:start])+" is not synonymous with "+str(doc[end:])
+                    opposite.append(new_seq)
+                    break 
+                elif rule_id == "can_be":
+                    new_seq = str(doc[0:start])+" can't be "+str(doc[end:])
+                    opposite.append(new_seq)
+                    break 
+                elif rule_id == "fore_synonym":
+                    new_seq = str(doc[0:start])+" are not synonymous"
+                    opposite.append(new_seq)
+                    break 
+                elif rule_id == "then":
+                    new_seq = str(doc[0:start])+" doesn't mean "+str(doc[end:])
+                    opposite.append(new_seq)
+                    break 
+                elif rule_id == "so":
+                    new_seq = str(doc[0:start])+" does not mean "+str(doc[end:])
+                    opposite.append(new_seq)
+                    break 
+                elif rule_id == "must_be":
+                    new_seq = str(doc[0:start])+" needn't be "+str(doc[end:])
+                    opposite.append(new_seq)
+                    break 
+                elif rule_id == "hasto":
+                    new_seq = str(doc[0:start])+" doesn't have to be"+str(doc[end:])
+                    opposite.append(new_seq)
+                    break
+                elif rule_id == "much":
+                    if str(doc[start:end][0]) == "Much":
+                        new_seq = str("Little "+str(doc[end:]))
+                        opposite.append(new_seq)
+                        break
+                    if str(doc[start:end][0]) == "much":
+                        new_seq = str(doc[0:start])+" little "+str(doc[end:])
+                        opposite.append(new_seq)
+                        break
+                elif rule_id == "little":
+                    if str(doc[start:end][0]) == "Little":
+                        new_seq = str("Much "+str(doc[end:]))
+                        opposite.append(new_seq)
+                        break
+                    if str(doc[start:end][0]) == "little":
+                        new_seq = str(doc[0:start])+" much "+str(doc[end:])
+                        opposite.append(new_seq)
+                        break
+                elif rule_id == "more":
+                    if str(doc[start:end][0]) == "More":
+                        new_seq = str("Less "+str(doc[end:]))
+                        opposite.append(new_seq)
+                        break
+                    if str(doc[start:end][0]) == "more":
+                        new_seq = str(doc[0:start])+" less "+str(doc[end:])
+                        opposite.append(new_seq)
+                        break
+                elif rule_id == "less":
+                    if str(doc[start:end][0]) == "Less":
+                        new_seq = str("More "+str(doc[end:]))
+                        opposite.append(new_seq)
+                        break
+                    if str(doc[start:end][0]) == "less":
+                        new_seq = str(doc[0:start])+" more "+str(doc[end:])
+                        opposite.append(new_seq)
+                        break
+                elif rule_id == "is_are":
+                    if str(doc[start:end][0]) == "is":
+                        new_seq = str(doc[0:start])+" is not "+str(doc[end:])
+                        opposite.append(new_seq)
+                        break
+                    if str(doc[start:end][0]) == "are":
+                        new_seq = str(doc[0:start])+" are not "+str(doc[end:])
+                        opposite.append(new_seq)
+                        break
+                    if str(doc[start:end][0]) == "Are":
+                        new_seq = str(doc[0:start])+" are not "+str(doc[end:])
+                        opposite.append(new_seq)
+                        break
+                    if str(doc[start:end][0]) == "ARE":
+                        new_seq = str(doc[0:start])+" are not "+str(doc[end:])
+                        opposite.append(new_seq)
+                        break
+                elif rule_id == "to":
+                    new_seq = str(doc[0:start])+" not to "+str(doc[end:])
+                    opposite.append(new_seq)
+                    break
+                elif rule_id == "To":
+                    new_seq = str(doc[0:start])+" Not to "+str(doc[end:])
+                    opposite.append(new_seq)
+                    break
+                elif rule_id == "increase":
+                    new_seq = str(doc[0:start])+" decrease "+str(doc[end:])
+                    opposite.append(new_seq)
+                    break
+                elif rule_id == "should":
+                    new_seq = str(doc[0:start])+" should not "+str(doc[end:])
+                    opposite.append(new_seq)
+                    break
+                elif rule_id == "would":
+                    new_seq = str(doc[0:start])+" would not "+str(doc[end:])
+                    opposite.append(new_seq)
+                    break
+                elif rule_id == "could":
+                    new_seq = str(doc[0:start])+" could not "+str(doc[end:])
+                    opposite.append(new_seq)
+                    break
+                elif rule_id == "may":
+                    new_seq = str(doc[0:start])+" may not "+str(doc[end:])
+                    opposite.append(new_seq)
+                    break
+                elif rule_id == "will":
+                    new_seq = str(doc[0:start])+" will not "+str(doc[end:])
+                    opposite.append(new_seq)
+                    break
+                elif rule_id == "can":
+                    new_seq = str(doc[0:start])+" can not "+str(doc[end:])
+                    opposite.append(new_seq)
+                    break
+                elif rule_id == "might":
+                    new_seq = str(doc[0:start])+" might not "+str(doc[end:])
+                    opposite.append(new_seq)
+                    break
+                elif rule_id == "must":
+                    new_seq = str(doc[0:start])+" must not "+str(doc[end:])
+                    opposite.append(new_seq)
+                    break
+                elif rule_id == "encourage":
+                    new_seq = str(doc[0:start])+" discourage "+str(doc[end:])
+                    opposite.append(new_seq)
+                    break
+                elif rule_id == "n’t":
+                    new_seq = str(doc[0:start])+" "+str(doc[end:])
+                    opposite.append(new_seq)
+                    break
+                elif rule_id == "was_were":
+                    if str(doc[start:end][0]) == "was":
+                        new_seq = str(doc[0:start])+" was not "+str(doc[end:])
+                        opposite.append(new_seq)
+                        break
+                    if str(doc[start:end][0]) == "were":
+                        new_seq = str(doc[0:start])+" were not "+str(doc[end:])
+                        opposite.append(new_seq)
+                        break
+                elif rule_id == "raise":
+                    new_seq = str(doc[0:start])+" lower "+str(doc[end:])
+                    opposite.append(new_seq)
+                    break
+                elif rule_id == "better":
+                    new_seq = str(doc[0:start])+" worse "+str(doc[end:])
+                    opposite.append(new_seq)
+                    break
+                elif rule_id == "benefit":
+                    new_seq = str(doc[0:start])+" harm "+str(doc[end:])
+                    opposite.append(new_seq)
+                    break
+                elif rule_id == "lack":
+                    new_seq = str(doc[0:start])+" glut "+str(doc[end:])
+                    opposite.append(new_seq)
+                    break
+                elif rule_id == "nothing":
+                    new_seq = str(doc[0:start])+" something "+str(doc[end:])
+                    opposite.append(new_seq)
+                    break
+                elif rule_id == "positive":
+                    new_seq = str(doc[0:start])+" negative "+str(doc[end:])
+                    opposite.append(new_seq)
+                    break
+                elif rule_id == "negative":
+                    new_seq = str(doc[0:start])+" positive "+str(doc[end:])
+                    opposite.append(new_seq)
+                    break
+                elif rule_id == "have":
+                    new_seq = str(doc[0:start])+" don't have "+str(doc[end:])
+                    opposite.append(new_seq)
+                    break
+                elif rule_id == "has":
+                    new_seq = str(doc[0:start])+" doesn't have "+str(doc[end:])
+                    opposite.append(new_seq)
+                    break
+                elif rule_id == "reduce":
+                    new_seq = str(doc[0:start])+" increase "+str(doc[end:])
+                    opposite.append(new_seq)
+                    break
+                elif rule_id == "increase":
+                    new_seq = str(doc[0:start])+" decrease "+str(doc[end:])
+                    opposite.append(new_seq)
+                    break
+                elif rule_id == "without":
+                    new_seq = str(doc[0:start])+" with "+str(doc[end:])
+                    opposite.append(new_seq)
+                    break
+                elif rule_id == "against":
+                    new_seq = str(doc[0:start])+" for "+str(doc[end:])
+                    opposite.append(new_seq)
+                    break
+                elif rule_id == "needed":
+                    new_seq = str(doc[0:start])+" not needed "+str(doc[end:])
+                    opposite.append(new_seq)
+                    break
+                elif rule_id == "need":
+                    new_seq = str(doc[0:start])+" don't need "+str(doc[end:])
+                    opposite.append(new_seq)
+                    break
+                elif rule_id == "good":
+                    new_seq = str(doc[0:start])+" bad "+str(doc[end:])
+                    opposite.append(new_seq)
+                    break
+                elif rule_id == "bad":
+                    new_seq = str(doc[0:start])+" good "+str(doc[end:])
+                    opposite.append(new_seq)
+                    break
+                elif rule_id == "support":
+                    new_seq = str(doc[0:start])+" oppose "+str(doc[end:])
+                    opposite.append(new_seq)
+                    break
+                elif rule_id == "hurt_harm_damage":
+                    new_seq = str(doc[0:start])+" protect "+str(doc[end:])
+                    opposite.append(new_seq)
+                    break
+                elif rule_id == "help":
+                    new_seq = str(doc[0:start])+" spoil "+str(doc[end:])
+                    opposite.append(new_seq)
+                    break
+                elif rule_id == "protect":
+                    new_seq = str(doc[0:start])+" destroy "+str(doc[end:])
+                    opposite.append(new_seq)
+                    break
+                elif rule_id == "cause":
+                    new_seq = str(doc[0:start])+" casue no "+str(doc[end:])
+                    opposite.append(new_seq)
+                    break
+                elif rule_id == "allow":
+                    new_seq = str(doc[0:start])+" disallow "+str(doc[end:])
+                    opposite.append(new_seq)
+                    break
+                elif rule_id == "everyone":
+                    new_seq = str(doc[0:start])+" noone "+str(doc[end:])
+                    opposite.append(new_seq)
+                    break
+                elif rule_id == "deserve":
+                    new_seq = str(doc[0:start])+" deserve no "+str(doc[end:])
+                    opposite.append(new_seq)
+                    break
+        else:
+#             new_seq = None
+            new_seq = str(doc)+" but it is not true. "
+            opposite.append(new_seq)
+    df["opposite_perspective"] = opposite
+#     df.dropna(inplace=True)
+    df.reset_index(drop=True, inplace=True)
+    
+    return df
     
     
 import pandas as pd   
