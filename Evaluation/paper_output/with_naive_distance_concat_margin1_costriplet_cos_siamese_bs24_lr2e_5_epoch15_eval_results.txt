@@ -1,0 +1,15 @@
+distance_accuracy = 0.7486476739992788
+distance_eval_macro_f1 = 0.7656274196620223
+distance_eval_macro_p = 0.7385480993550159
+distance_eval_macro_r = 0.7947680801427203
+distance_eval_micro_f1 = 0.7674341007674341
+distance_eval_micro_p = 0.7536041939711664
+distance_eval_micro_r = 0.7817811012916384
+eval_accuracy = 0.7767760548142806
+eval_loss = 2.8865297714983695
+eval_macro_f1 = 0.7818818342008613
+eval_macro_p = 0.7806333196102649
+eval_macro_r = 0.783134348840401
+eval_micro_f1 = 0.7864780958951363
+eval_micro_p = 0.7983193277310925
+eval_micro_r = 0.7749830047586675
