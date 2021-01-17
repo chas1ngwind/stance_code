@@ -524,7 +524,7 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
         test_df = processor.get_test_df(data_dir)
         dev_df = processor.get_dev_df(data_dir)
         
-        new_train_df = generate_opp_pers_dataset_with_naive(train_df)
+        new_train_df = generate_opp_pers_dataset(train_df)
         
         new_train_df.to_csv(os.path.join(data_dir, "tri_train.tsv"),sep='\t',index=False)
         
@@ -918,8 +918,8 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 #                   'loss': tr_loss/nb_tr_steps
                   }
 
-        output_eval_file = os.path.join(output_dir,"ori_model_with_naive_concat_margin1_costriplet_cos_siamese_bs24_lr2e_5_epoch15_eval_results.txt")
-        output_raw_score = os.path.join(output_dir,"ori_model_with_naive_concat_margin1_costriplet_cos_siamese_bs24_lr2e_5_epoch15_raw_score.csv")
+        output_eval_file = os.path.join(output_dir,"ori_model_with_naive_concat_margin1_costriplet_cos_siamese_bs24_lr2e_5_epoch25_eval_results.txt")
+        output_raw_score = os.path.join(output_dir,"ori_model_with_naive_concat_margin1_costriplet_cos_siamese_bs24_lr2e_5_epoch25_raw_score.csv")
         
 #         logger.info(classification_report(gold_labels, predicted_labels, target_names=label_list, digits=4))
         with open(output_eval_file, "w") as writer:
@@ -976,7 +976,7 @@ def experiments():
 
 def evaluation_with_pretrained():
 #     bert_model = "/var/scratch/syg340/project/cos_siamese_models/319cos/319_cos_camimu_siamese_bert_epoch5.pth"
-    bert_model = "/var/scratch/syg340/project/triplet_siamese_models/concat_margin1_costriplet_cos_siamese_bs24_lr2e_5_epoch15.pth"
+    bert_model = "/var/scratch/syg340/project/triplet_siamese_models/concat_margin1_costriplet_cos_siamese_bs24_lr2e_5_epoch25.pth"
     data_dir = "/var/scratch/syg340/project/stance_code/Dataset/paper/"
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset/tri_train/"
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset/ibmcs/"
