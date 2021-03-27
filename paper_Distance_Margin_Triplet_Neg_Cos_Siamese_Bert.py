@@ -73,7 +73,7 @@ class TripletLoss(torch.nn.Module):
         distance_neg = self.distance_metric(anchor, negative)
 
         losses = torch.nn.functional.relu(distance_pos - distance_neg + self.triplet_margin)
-        logger.info('pos_distance: %s; neg_distance: %s; diff: %s' %(str(distance_pos), str(distance_neg), str(distance_pos - distance_neg)))
+#         logger.info('pos_distance: %s; neg_distance: %s; diff: %s' %(str(distance_pos), str(distance_neg), str(distance_pos - distance_neg)))
         return losses.mean(), distance_pos, distance_neg
 
 
@@ -925,7 +925,7 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
         with open(output_eval_file, "w") as writer:
             logger.info("***** Eval results *****")
             for key in sorted(result.keys()):
-                logger.info("  %s = %s", key, str(result[key]))
+#                 logger.info("  %s = %s", key, str(result[key]))
                 writer.write("%s = %s\n" % (key, str(result[key])))
 #             writer.write(classification_report(gold_labels, predicted_labels, target_names=label_list, digits=4))
 
