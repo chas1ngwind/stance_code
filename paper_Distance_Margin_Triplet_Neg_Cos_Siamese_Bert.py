@@ -346,7 +346,7 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
                 
                 loss = loss_ce+loss_tri+loss_cos
 #                 logger.info('final loss:')
-                logger.info('Ce: %s; Tri: %s; Cos: %s' %(str(loss_ce), str(loss_tri), str(loss_cos)))
+#                 logger.info('Ce: %s; Tri: %s; Cos: %s' %(str(loss_ce), str(loss_tri), str(loss_cos)))
                 
 #             outputs = (loss,) + outputs
 #             outputs = (loss,) + logits_cos 
