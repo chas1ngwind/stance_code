@@ -303,230 +303,230 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
 
 # In[ ]:
 
-######################Comment From Here###############################################
+#####################Comment From Here###############################################
 
 
 
-# # In[11]:
+# In[11]:
 
 
-# tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 
 
-# # In[12]:
+# In[12]:
 
 
-# # Prepare model 
-# model = BertForConsistencyCueClassification.from_pretrained('bert-base-uncased', num_labels=2)
-# model.to(device)
+# Prepare model 
+model = BertForConsistencyCueClassification.from_pretrained('bert-base-uncased', num_labels=2)
+model.to(device)
 
-# # model = BertModel.from_pretrained('bert-base-uncased')
-
-
-# # # In[13]:
+# model = BertModel.from_pretrained('bert-base-uncased')
 
 
-# # # Get all of the model's parameters as a list of tuples.
-# # params = list(model.named_parameters())
+# # In[13]:
 
-# # # print('The BERT model has {:} different named parameters.\n'.format(len(params)))
 
-# # # print('==== Embedding Layer ====\n')
+# # Get all of the model's parameters as a list of tuples.
+# params = list(model.named_parameters())
 
-# # # for p in params[0:5]:
-# # #     print("{:<55} {:>12}".format(p[0], str(tuple(p[1].size()))))
+# # print('The BERT model has {:} different named parameters.\n'.format(len(params)))
 
-# # # print('\n==== First Transformer ====\n')
+# # print('==== Embedding Layer ====\n')
 
-# # # for p in params[5:21]:
-# # #     print("{:<55} {:>12}".format(p[0], str(tuple(p[1].size()))))
+# # for p in params[0:5]:
+# #     print("{:<55} {:>12}".format(p[0], str(tuple(p[1].size()))))
+
+# # print('\n==== First Transformer ====\n')
+
+# # for p in params[5:21]:
+# #     print("{:<55} {:>12}".format(p[0], str(tuple(p[1].size()))))
     
-# # # print('\n==== Output Layer ====\n')
+# # print('\n==== Output Layer ====\n')
 
-# # # for p in params[-4:]:
-# # #     print("{:<55} {:>12}".format(p[0], str(tuple(p[1].size()))))
-
-
-# # # In[14]:
+# # for p in params[-4:]:
+# #     print("{:<55} {:>12}".format(p[0], str(tuple(p[1].size()))))
 
 
-# # data_dir = "D:/Jupyter/data/dataset/perspective_stances/"
-# # data_dir = "D:/Projects/Stance/Dataset/BertForOppositeClassification/"
-# # # data_dir_output = "D:/Projects/Stance/Models/Consistency_Cues/"
-# # data_dir_output = "D:/Projects/Stance/Models/dataExpantion/"
-# # data_dir = "/var/scratch/syg340/project/stance_code/Dataset/"
+# # In[14]:
+
+
+# data_dir = "D:/Jupyter/data/dataset/perspective_stances/"
+# data_dir = "D:/Projects/Stance/Dataset/BertForOppositeClassification/"
+# # data_dir_output = "D:/Projects/Stance/Models/Consistency_Cues/"
+# data_dir_output = "D:/Projects/Stance/Models/dataExpantion/"
 # data_dir = "/var/scratch/syg340/project/stance_code/Dataset/"
+data_dir = "/var/scratch/syg340/project/stance_code/Dataset/"
     
-# data_dir_output = "/var/scratch/syg340/project/models/"
-# output_dir=data_dir_output
-# max_seq_length=128
-# max_grad_norm = 1.0
-# num_training_steps = 1000
-# num_warmup_steps = 100
-# warmup_proportion = float(num_warmup_steps) / float(num_training_steps)  # 0.1
-# # warmup_proportion = 0.1
-# train_batch_size=24
-# eval_batch_size=8
-# learning_rate=1e-5
-# num_train_epochs=15
-# local_rank=-1
-# seed=42
-# gradient_accumulation_steps=1
-# loss_scale=128
-# train_batch_size = int(train_batch_size / gradient_accumulation_steps)
+data_dir_output = "/var/scratch/syg340/project/models/"
+output_dir=data_dir_output
+max_seq_length=128
+max_grad_norm = 1.0
+num_training_steps = 1000
+num_warmup_steps = 100
+warmup_proportion = float(num_warmup_steps) / float(num_training_steps)  # 0.1
+# warmup_proportion = 0.1
+train_batch_size=24
+eval_batch_size=8
+learning_rate=1e-5
+num_train_epochs=15
+local_rank=-1
+seed=42
+gradient_accumulation_steps=1
+loss_scale=128
+train_batch_size = int(train_batch_size / gradient_accumulation_steps)
 
-# processors = {
-#         "mrpc": MrpcProcessor,
-#         "stance":StanceProcessor
-#     }
+processors = {
+        "mrpc": MrpcProcessor,
+        "stance":StanceProcessor
+    }
 
-# random.seed(seed)
-# np.random.seed(seed)
-# torch.manual_seed(seed)
-# torch.cuda.manual_seed_all(seed)
+random.seed(seed)
+np.random.seed(seed)
+torch.manual_seed(seed)
+torch.cuda.manual_seed_all(seed)
     
-# os.makedirs(output_dir, exist_ok=True)
-# processor = processors['stance']()
-# label_list = processor.get_labels()
-# num_labels = len(label_list)
-# # print('label list')
-# # print(label_list)
+os.makedirs(output_dir, exist_ok=True)
+processor = processors['stance']()
+label_list = processor.get_labels()
+num_labels = len(label_list)
+# print('label list')
+# print(label_list)
 
-# train_examples = processor.get_train_examples(data_dir)
-# num_train_steps = int(
-#     len(train_examples) / train_batch_size / gradient_accumulation_steps * num_train_epochs)
+train_examples = processor.get_train_examples(data_dir)
+num_train_steps = int(
+    len(train_examples) / train_batch_size / gradient_accumulation_steps * num_train_epochs)
 
-# ##preprare optimizer
-# param_optimizer = list(model.named_parameters())
-# no_decay = ['bias', 'gamma', 'beta']
-# optimizer_grouped_parameters = [
-#     {'params': [p for n, p in param_optimizer if not any(nd in n for nd in no_decay)], 'weight_decay_rate': 0.01},
-#     {'params': [p for n, p in param_optimizer if any(nd in n for nd in no_decay)], 'weight_decay_rate': 0.0}
-#     ]
-# t_total = num_train_steps
-# optimizer = BertAdam(optimizer_grouped_parameters,
-#                          lr=learning_rate,
-#                          warmup=warmup_proportion,
-#                          t_total=t_total)
-# # optimizer = AdamW(optimizer_grouped_parameters,
-# #                   lr = learning_rate, # args.learning_rate - default is 5e-5, our notebook had 2e-5
-# #                   eps = 1e-8, # args.adam_epsilon  - default is 1e-8.
-# #                   correct_bias=False
-# #                 )
+##preprare optimizer
+param_optimizer = list(model.named_parameters())
+no_decay = ['bias', 'gamma', 'beta']
+optimizer_grouped_parameters = [
+    {'params': [p for n, p in param_optimizer if not any(nd in n for nd in no_decay)], 'weight_decay_rate': 0.01},
+    {'params': [p for n, p in param_optimizer if any(nd in n for nd in no_decay)], 'weight_decay_rate': 0.0}
+    ]
+t_total = num_train_steps
+optimizer = BertAdam(optimizer_grouped_parameters,
+                         lr=learning_rate,
+                         warmup=warmup_proportion,
+                         t_total=t_total)
+# optimizer = AdamW(optimizer_grouped_parameters,
+#                   lr = learning_rate, # args.learning_rate - default is 5e-5, our notebook had 2e-5
+#                   eps = 1e-8, # args.adam_epsilon  - default is 1e-8.
+#                   correct_bias=False
+#                 )
 
-# # scheduler = get_linear_schedule_with_warmup(optimizer, num_warmup_steps=num_warmup_steps, num_training_steps=t_total)  # PyTorch scheduler
-
-
-# # In[15]:
+# scheduler = get_linear_schedule_with_warmup(optimizer, num_warmup_steps=num_warmup_steps, num_training_steps=t_total)  # PyTorch scheduler
 
 
-# global_step = 0
-# train_features = convert_examples_to_features(train_examples, label_list, max_seq_length, tokenizer)
-# claim_features = convert_claims_to_features(train_examples, label_list, max_seq_length, tokenizer)
-# logger.info("***** Running training *****")
-# logger.info("  Num examples = %d", len(train_examples))
-# logger.info("  Batch size = %d", train_batch_size)
-# logger.info("  Num steps = %d", num_train_steps)
+# In[15]:
 
 
-# all_input_ids = torch.tensor([f.input_ids for f in train_features], dtype=torch.long)
-# all_input_mask = torch.tensor([f.input_mask for f in train_features], dtype=torch.long)
-# all_segment_ids = torch.tensor([f.segment_ids for f in train_features], dtype=torch.long)
-# all_label_ids = torch.tensor([f.label_id for f in train_features], dtype=torch.long)
-
-# claims_input_ids = torch.tensor([f.input_ids for f in claim_features], dtype=torch.long)
-# claims_input_mask = torch.tensor([f.input_mask for f in claim_features], dtype=torch.long)
-# claims_segment_ids = torch.tensor([f.segment_ids for f in claim_features], dtype=torch.long)
-# claims_label_ids = torch.tensor([f.label_id for f in claim_features], dtype=torch.long)
-
-# train_data = TensorDataset(all_input_ids, all_input_mask, all_segment_ids, all_label_ids, claims_input_ids, claims_input_mask, claims_segment_ids, claims_label_ids)
-# train_sampler = RandomSampler(train_data)
-# train_dataloader = DataLoader(train_data, sampler=train_sampler, batch_size=train_batch_size)
-
-# # claims_data = TensorDataset(claims_input_ids, claims_input_mask, claims_segment_ids, claims_label_ids)
-# # claims_sampler = RandomSampler(claims_data)
-# # claims_dataloader = DataLoader(claims_data, sampler=train_sampler, batch_size=train_batch_size)
+global_step = 0
+train_features = convert_examples_to_features(train_examples, label_list, max_seq_length, tokenizer)
+claim_features = convert_claims_to_features(train_examples, label_list, max_seq_length, tokenizer)
+logger.info("***** Running training *****")
+logger.info("  Num examples = %d", len(train_examples))
+logger.info("  Batch size = %d", train_batch_size)
+logger.info("  Num steps = %d", num_train_steps)
 
 
-# # In[16]:
+all_input_ids = torch.tensor([f.input_ids for f in train_features], dtype=torch.long)
+all_input_mask = torch.tensor([f.input_mask for f in train_features], dtype=torch.long)
+all_segment_ids = torch.tensor([f.segment_ids for f in train_features], dtype=torch.long)
+all_label_ids = torch.tensor([f.label_id for f in train_features], dtype=torch.long)
+
+claims_input_ids = torch.tensor([f.input_ids for f in claim_features], dtype=torch.long)
+claims_input_mask = torch.tensor([f.input_mask for f in claim_features], dtype=torch.long)
+claims_segment_ids = torch.tensor([f.segment_ids for f in claim_features], dtype=torch.long)
+claims_label_ids = torch.tensor([f.label_id for f in claim_features], dtype=torch.long)
+
+train_data = TensorDataset(all_input_ids, all_input_mask, all_segment_ids, all_label_ids, claims_input_ids, claims_input_mask, claims_segment_ids, claims_label_ids)
+train_sampler = RandomSampler(train_data)
+train_dataloader = DataLoader(train_data, sampler=train_sampler, batch_size=train_batch_size)
+
+# claims_data = TensorDataset(claims_input_ids, claims_input_mask, claims_segment_ids, claims_label_ids)
+# claims_sampler = RandomSampler(claims_data)
+# claims_dataloader = DataLoader(claims_data, sampler=train_sampler, batch_size=train_batch_size)
 
 
-# model.train()
-# for _ in trange(int(num_train_epochs), desc="Epoch"):
-#     tr_loss = 0
-#     nb_tr_examples, nb_tr_steps = 0, 0
-#     for step, batch in enumerate(tqdm(train_dataloader, desc="Iteration")):
-#         batch = tuple(t.to(device) for t in batch)
-#         input_ids, input_mask, segment_ids, label_ids, claim_input_ids, claim_input_mask, claim_segment_ids, claim_label_ids = batch
-# #         ce_loss = model(input_ids, segment_ids, input_mask, label_ids)
-# #         cos_loss = model(claim_input_ids, claim_segment_ids, claim_input_mask, claim_label_ids)
+# In[16]:
+
+
+model.train()
+for _ in trange(int(num_train_epochs), desc="Epoch"):
+    tr_loss = 0
+    nb_tr_examples, nb_tr_steps = 0, 0
+    for step, batch in enumerate(tqdm(train_dataloader, desc="Iteration")):
+        batch = tuple(t.to(device) for t in batch)
+        input_ids, input_mask, segment_ids, label_ids, claim_input_ids, claim_input_mask, claim_segment_ids, claim_label_ids = batch
+#         ce_loss = model(input_ids, segment_ids, input_mask, label_ids)
+#         cos_loss = model(claim_input_ids, claim_segment_ids, claim_input_mask, claim_label_ids)
         
-# #         print("start")
-# #         print(input_ids)
-# #         print(input_mask)
-# #         print(segment_ids)
-# #         print(label_ids)
-# #         print(claim_input_ids)
-# #         print(claim_input_mask)
-# #         print(claim_segment_ids)
-# #         print(claim_label_ids)
-# #         print("end")
+#         print("start")
+#         print(input_ids)
+#         print(input_mask)
+#         print(segment_ids)
+#         print(label_ids)
+#         print(claim_input_ids)
+#         print(claim_input_mask)
+#         print(claim_segment_ids)
+#         print(claim_label_ids)
+#         print("end")
     
-#         out_results = model(input_ids=input_ids, token_type_ids=segment_ids, attention_mask=input_mask, labels=label_ids, input_ids2=claim_input_ids, token_type_ids2=claim_segment_ids, attention_mask2=claim_input_mask, labels2=claim_label_ids)
-# #         loss = ce_loss + cos_loss
-# #         print("out_results:")
-# #         print(out_results)
-#         loss = out_results
-# #         print(cos_loss)
-# #         print(loss.item())
-#         if n_gpu > 1:
-#             loss = loss.mean() # mean() to average on multi-gpu.
-# #         if fp16 and loss_scale != 1.0:
-# #             # rescale loss for fp16 training
-# #             # see https://docs.nvidia.com/deeplearning/sdk/mixed-precision-training/index.html
-# #             loss = loss * loss_scale
-#         if gradient_accumulation_steps > 1:
-#             loss = loss / gradient_accumulation_steps
-#         loss.backward()
+        out_results = model(input_ids=input_ids, token_type_ids=segment_ids, attention_mask=input_mask, labels=label_ids, input_ids2=claim_input_ids, token_type_ids2=claim_segment_ids, attention_mask2=claim_input_mask, labels2=claim_label_ids)
+#         loss = ce_loss + cos_loss
+#         print("out_results:")
+#         print(out_results)
+        loss = out_results
+#         print(cos_loss)
+#         print(loss.item())
+        if n_gpu > 1:
+            loss = loss.mean() # mean() to average on multi-gpu.
+#         if fp16 and loss_scale != 1.0:
+#             # rescale loss for fp16 training
+#             # see https://docs.nvidia.com/deeplearning/sdk/mixed-precision-training/index.html
+#             loss = loss * loss_scale
+        if gradient_accumulation_steps > 1:
+            loss = loss / gradient_accumulation_steps
+        loss.backward()
         
-#         tr_loss += loss.item()
-#         nb_tr_examples += input_ids.size(0)
-#         nb_tr_steps += 1
-#         if (step + 1) % gradient_accumulation_steps == 0:
-# #             if fp16 or optimize_on_cpu:
-# #                 if fp16 and loss_scale != 1.0:
-# #                     # scale down gradients for fp16 training
-# #                     for param in model.parameters():
-# #                         if param.grad is not None:
-# #                             param.grad.data = param.grad.data / loss_scale           
-# #                 is_nan = set_optimizer_params_grad(param_optimizer, model.named_parameters(), test_nan=True)
-# #                 if is_nan:
-# #                     logger.info("FP16 TRAINING: Nan in gradients, reducing loss scaling")
-# #                     loss_scale = loss_scale / 2
-# #                     model.zero_grad()
-# #                     continue 
-# #                 optimizer.step()
-# # #                 scheduler.step()
-# #                 copy_optimizer_params_to_model(model.named_parameters(), param_optimizer)
-# #             else:
-# #                 torch.nn.utils.clip_grad_norm_(model.parameters(), max_grad_norm)
-#             optimizer.step()
+        tr_loss += loss.item()
+        nb_tr_examples += input_ids.size(0)
+        nb_tr_steps += 1
+        if (step + 1) % gradient_accumulation_steps == 0:
+#             if fp16 or optimize_on_cpu:
+#                 if fp16 and loss_scale != 1.0:
+#                     # scale down gradients for fp16 training
+#                     for param in model.parameters():
+#                         if param.grad is not None:
+#                             param.grad.data = param.grad.data / loss_scale           
+#                 is_nan = set_optimizer_params_grad(param_optimizer, model.named_parameters(), test_nan=True)
+#                 if is_nan:
+#                     logger.info("FP16 TRAINING: Nan in gradients, reducing loss scaling")
+#                     loss_scale = loss_scale / 2
+#                     model.zero_grad()
+#                     continue 
+#                 optimizer.step()
 # #                 scheduler.step()
-#             model.zero_grad()
-#             global_step += 1
+#                 copy_optimizer_params_to_model(model.named_parameters(), param_optimizer)
+#             else:
+#                 torch.nn.utils.clip_grad_norm_(model.parameters(), max_grad_norm)
+            optimizer.step()
+#                 scheduler.step()
+            model.zero_grad()
+            global_step += 1
 
         
-# ## v2: concat
-# ## v3: multiply
-# model_to_save = model.module if hasattr(model, 'module') else model
-# torch.save(model.state_dict(), output_dir + "non_reverse_bertcons_epoch5.pth")
-# # torch.save(model_to_save.state_dict(), output_dir + "finetuned_consistencycues_expansion.bin")
+## v2: concat
+## v3: multiply
+model_to_save = model.module if hasattr(model, 'module') else model
+torch.save(model.state_dict(), output_dir + "non_reverse_bertcons_epoch5.pth")
+# torch.save(model_to_save.state_dict(), output_dir + "finetuned_consistencycues_expansion.bin")
 
 
-# In[ ]:
+In[ ]:
 
 
-######################Comment Ends Here###############################################
+#####################Comment Ends Here###############################################
 
 
 # In[13]:
