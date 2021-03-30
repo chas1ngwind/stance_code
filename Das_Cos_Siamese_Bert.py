@@ -171,8 +171,8 @@ class BertForConsistencyCueClassification(BertPreTrainedModel):
 #         7
 #         torch.Size([hidden_size*4, 768])
         
-        batch_size = list(pooled_output.size())[0]
-        hidden_size = list(pooled_output.size())[1]
+#         batch_size = list(pooled_output.size())[0]
+#         hidden_size = list(pooled_output.size())[1]
         
         final_output_all = torch.cat((final_output_camimu, cos_pooled_outputs.unsqueeze(1)),1)
         logits_ce = self.classifier(final_output_all)
