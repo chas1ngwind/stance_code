@@ -934,8 +934,8 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 #                   'loss': tr_loss/nb_tr_steps
                   }
 
-        output_eval_file = os.path.join(output_dir, "elim_ori_distance_concat_margin1_costriplet_cos_siamese_bs24_lr2e_5_epoch15_eval_results.txt")
-        output_raw_score = os.path.join(output_dir, "elim_ori_distance_concat_margin1_costriplet_cos_siamese_bs24_lr2e_5_epoch15_raw_score.csv")
+        output_eval_file = os.path.join(output_dir, "elim_opp_distance_concat_margin1_costriplet_cos_siamese_bs24_lr2e_5_epoch15_eval_results.txt")
+        output_raw_score = os.path.join(output_dir, "elim_opp_distance_concat_margin1_costriplet_cos_siamese_bs24_lr2e_5_epoch15_raw_score.csv")
         
 #         logger.info(classification_report(gold_labels, predicted_labels, target_names=label_list, digits=4))
         with open(output_eval_file, "w") as writer:
@@ -997,8 +997,8 @@ def evaluation_with_pretrained():
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset/tri_train/"
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset/ibmcs/"
 
-    data_dir = "/var/scratch/syg340/project/stance_code/not_elim/ori"
-#     data_dir = "/var/scratch/syg340/project/stance_code/not_elim/opp"
+#     data_dir = "/var/scratch/syg340/project/stance_code/not_elim/ori"
+    data_dir = "/var/scratch/syg340/project/stance_code/not_elim/opp"
 
 #     data_dir_output = "/var/scratch/syg340/project/stance_code/Evaluation/bert_dummy_output/"
     data_dir_output = "/var/scratch/syg340/project/stance_code/Evaluation/not_elim_output/"
