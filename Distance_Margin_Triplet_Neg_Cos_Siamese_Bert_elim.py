@@ -19,7 +19,7 @@ from pytorch_pretrained_bert.optimization import BertAdam
 # In[10]:
 
 
-from run_classifier import NegProcessor,TriProcessor, generate_opp_dataset,generate_opp_pers_dataset, convert_triopp_pers_to_features, convert_opp_claims_to_features, StanceProcessor, MrpcProcessor, logger, convert_examples_to_features,   set_optimizer_params_grad, copy_optimizer_params_to_model, accuracy, p_r_f1, tp_pcount_gcount, convert_claims_to_features, convert_pers_to_features
+from run_classifier import NegProcessor,TriProcessor, generate_opp_dataset,generate_opp_pers_dataset, convert_triopp_pers_to_features, convert_opp_claims_to_features, StanceProcessor, MrpcProcessor, logger, convert_examples_to_features,   set_optimizer_params_grad, copy_optimizer_params_to_model, accuracy, p_r_f1, tp_pcount_gcount, convert_claims_to_features, convert_pers_to_features, generate_opp_pers_dataset_not_elim
 
 
 # In[11]:
@@ -524,15 +524,15 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
         test_df = processor.get_test_df(data_dir)
         dev_df = processor.get_dev_df(data_dir)
         
-        new_train_df = generate_opp_pers_dataset(train_df)
+        new_train_df = generate_opp_pers_dataset_not_elim(train_df)
         
         new_train_df.to_csv(os.path.join(data_dir, "tri_train.tsv"),sep='\t',index=False)
         
-        new_test_df = generate_opp_pers_dataset(test_df)
+        new_test_df = generate_opp_pers_dataset_not_elim(test_df)
         
         new_test_df.to_csv(os.path.join(data_dir, "tri_test.tsv"),sep='\t',index=False)
         
-        new_dev_df = generate_opp_pers_dataset(dev_df)
+        new_dev_df = generate_opp_pers_dataset_not_elim(dev_df)
         
         new_dev_df.to_csv(os.path.join(data_dir, "tri_dev.tsv"),sep='\t',index=False)
         
@@ -687,21 +687,37 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
 
 
     if do_eval and (local_rank == -1 or torch.distributed.get_rank() == 0):
+        
+        train_df = processor.get_train_df(data_dir)
+        test_df = processor.get_test_df(data_dir)
+        dev_df = processor.get_dev_df(data_dir)
+        
+        new_train_df = generate_opp_pers_dataset_not_elim(train_df)
+        
+        new_train_df.to_csv(os.path.join(data_dir, "tri_train.tsv"),sep='\t',index=False)
+        
+        new_test_df = generate_opp_pers_dataset_not_elim(test_df)
+        
+        new_test_df.to_csv(os.path.join(data_dir, "tri_test.tsv"),sep='\t',index=False)
+        
+        new_dev_df = generate_opp_pers_dataset_not_elim(dev_df)
+        
+        new_dev_df.to_csv(os.path.join(data_dir, "tri_dev.tsv"),sep='\t',index=False)
      
     
-        test_df = processor.get_test_df(data_dir)
+#         test_df = processor.get_test_df(data_dir)
         
 #         new_test_df = generate_opp_dataset(test_df)
         
 #         new_test_df.to_csv(os.path.join(data_dir, "new_test.tsv"),sep='\t',index=False)
         
-        train_df = processor.get_train_df(data_dir)
+#         train_df = processor.get_train_df(data_dir)
         
 #         new_train_df = generate_opp_dataset(train_df)
         
 #         new_train_df.to_csv(os.path.join(data_dir, "new_train.tsv"),sep='\t',index=False)
         
-        dev_df = processor.get_dev_df(data_dir)
+#         dev_df = processor.get_dev_df(data_dir)
         
 #         new_dev_df = generate_opp_dataset(dev_df)
         

@@ -1564,7 +1564,41 @@ def generate_opp_pers_dataset_with_naive(df):
     df.reset_index(drop=True, inplace=True)
     
     return df
+
+
+def generate_opp_pers_dataset_not_elim(df):
+    matcher = PhraseMatcher(nlp.vocab, attr="lower")
+    matcher.add("not", None, nlp("not"), nlp("n't"))
+    matcher.add("can't", None, nlp("can't"))
     
+    opposite = []
+    for perspective in df.perspective:
+        doc = nlp(perspective)
+        matches = matcher(doc)
+#     positive_matches = matcher_positive(doc)
+        if matches:
+            for match_id, start, end in matches:
+                rule_id = nlp.vocab.strings[match_id]
+                if rule_id == "can't":
+                    new_seq = str(doc[0:start-1])+" can "+str(doc[end:])
+                    opposite.append(new_seq)
+                    break
+                elif rule_id == "not":
+                    if str(doc[start-1:start]) == "ca":
+                        continue
+                    else:
+                        new_seq = str(doc[0:start])+" "+str(doc[end:])
+                        opposite.append(new_seq)
+                        break
+        else:
+            new_seq = None
+            opposite.append(new_seq)
+    df["opposite_perspective"] = opposite
+    df.dropna(inplace=True)
+    df.reset_index(drop=True, inplace=True)
+    
+    return df
+
     
 import pandas as pd   
 class NegProcessor(DataProcessor):
