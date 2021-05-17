@@ -442,7 +442,7 @@ def evaluation_with_pretrained():
 
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset/manul_opposite/500_gold0/"
 
-    data_dir_output = "/var/scratch/syg340/project/stance_code/Evaluation/not_elim_output/"
+    data_dir_output = "/var/scratch/syg340/project/stance_code/not_elim_output/"
     train_and_test(data_dir=data_dir, do_train=False, do_eval=True, output_dir=data_dir_output,task_name="stance",saved_model=bert_model)
 
 # In[11]:
