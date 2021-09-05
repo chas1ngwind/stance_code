@@ -500,7 +500,7 @@ def train_and_test(data_dir, bert_model="bert-base-uncased", task_name=None,
                     model.zero_grad()
                     global_step += 1
             print("\nLoss: {}\n".format(tr_loss / nb_tr_steps))
-        torch.save(model.state_dict(), output_dir + "new_neg_bert_sia_cos_bs24_lr2e_5_epoch25.pth")
+        torch.save(model.state_dict(), output_dir + "train_on_reverse_perspectrum_sia_cos_bs24_lr2e_5_epoch25.pth")
 
 
     if do_eval and (local_rank == -1 or torch.distributed.get_rank() == 0):
@@ -672,7 +672,8 @@ def experiments():
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset"
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset/stancy/"
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset/"
-    data_dir = "/var/scratch/syg340/project/stance_code/Dataset/"
+#     data_dir = "/var/scratch/syg340/project/stance_code/Dataset/"
+    data_dir = "/var/scratch/syg340/project/stance_code/Dataset/reverse_perspectrum/"
     
     
     data_dir_output = "/var/scratch/syg340/project/cos_siamese_models/"
@@ -686,9 +687,10 @@ def experiments():
 def evaluation_with_pretrained():
 #     bert_model = "/var/scratch/syg340/project/cos_siamese_models/319cos/319_cos_camimu_siamese_bert_epoch5.pth"
 #     bert_model = "/var/scratch/syg340/project/cos_siamese_models/siamese/cos_camimu_siamese_bert_epoch5.pth"
-    bert_model = "/var/scratch/syg340/project/cos_siamese_models/bert_sia_cos_bs24_lr2e_5_epoch25.pth"
+#     bert_model = "/var/scratch/syg340/project/cos_siamese_models/bert_sia_cos_bs24_lr2e_5_epoch25.pth"
+    bert_model = "/var/scratch/syg340/project/cos_siamese_models/train_on_reverse_perspectrum_sia_cos_bs24_lr2e_5_epoch25.pth"
 #     bert_model = "/var/scratch/syg340/project/cos_siamese_models/siamese_ibmcs/ibmcs_siamese_bert_epoch5.pth"
-    data_dir = "/var/scratch/syg340/project/stance_code/Dataset/reverse_perspectrum/"
+#     data_dir = "/var/scratch/syg340/project/stance_code/Dataset/reverse_perspectrum/"
 #     data_dir = "/var/scratch/syg340/project/stance_code/Dataset/tri/"
 
     data_dir_output = "/var/scratch/syg340/project/stance_code/Evaluation/antonym_output/"
@@ -699,8 +701,8 @@ def evaluation_with_pretrained():
 
 
 if __name__ == "__main__":
-#     experiments()
-    evaluation_with_pretrained()
+    experiments()
+#     evaluation_with_pretrained()
 
 
 # In[ ]:
